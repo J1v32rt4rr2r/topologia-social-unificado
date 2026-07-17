@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -310,11 +312,14 @@ class Pipeline:
         return "\n".join(partes)
 
     def _guardar_resultado(self, r: ResultadoPipeline):
-        output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "pipeline_output"
+        base = Path(__file__).resolve()
+        for _ in range(4):
+            base = base.parent
+        output_dir = base / "data" / "pipeline_output"
         output_dir.mkdir(parents=True, exist_ok=True)
         timestamp = r.timestamp.strftime("%Y%m%d_%H%M%S")
         archivo = output_dir / f"{r.nombre_texto}_{timestamp}.json"
-        archivo.write_text(json.dumps({
+        contenido = json.dumps({
             "texto": r.nombre_texto,
             "timestamp": r.timestamp.isoformat(),
             "fase1": r.fase1,
@@ -324,5 +329,15 @@ class Pipeline:
             "fase5": r.fase5,
             "fase6": r.fase6,
             "error": r.error,
-        }, indent=2, default=str), encoding="utf-8")
+        }, indent=2, default=str)
+        try:
+            archivo.write_text(contenido, encoding="utf-8")
+        except OSError:
+            tmp = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json', encoding='utf-8')
+            tmp.write(contenido)
+            tmp.close()
+            subprocess.run(["powershell", "-Command",
+                f"Copy-Item -LiteralPath '{tmp.name}' -Destination '{archivo}' -Force"],
+                capture_output=True)
+            Path(tmp.name).unlink(missing_ok=True)
         logger.info(f"Resultado guardado en: {archivo}")
