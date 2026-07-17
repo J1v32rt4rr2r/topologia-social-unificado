@@ -1,0 +1,39 @@
+agentes:
+  artista:
+    nombre: "Artista"
+    temperatura: 0.8
+    modelo: "deepseek-chat"
+    max_tokens: 2048
+  estadista:
+    nombre: "Estadista"
+    temperatura: 0.2
+    modelo: "deepseek-chat"
+    max_tokens: 1024
+  filosofo:
+    nombre: "Filósofo"
+    temperatura: 0.2
+    modelo: "deepseek-chat"
+    max_tokens: 1024
+  sociologo:
+    nombre: "Sociólogo"
+    temperatura: 0.2
+    modelo: "deepseek-chat"
+    max_tokens: 1024
+  redactor:
+    nombre: "Redactor"
+    temperatura: 0.5
+    modelo: "deepseek-chat"
+    max_tokens: 2048
+
+orquestador:
+  iteraciones: 1
+  modo: "daily"
+
+memoria:
+  umbral_fragilidad: 70
+  umbral_alerta_delta: 45
+  umbral_cambio_acelerado: 5
+
+recolector:
+  max_items_por_fuente: 20
+  cache_segundos: 600

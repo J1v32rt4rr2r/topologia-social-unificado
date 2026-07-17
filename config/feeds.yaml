@@ -1,0 +1,32 @@
+rss:
+  - url: "https://news.google.com/rss?hl=es-419&gl=CL&ceid=CL:es-419"
+    activo: true
+  - url: "https://feeds.emol.com/emol/rss/portada"
+    activo: true
+  - url: "https://www.latercera.com/feed/"
+    activo: true
+  - url: "https://www.biobiochile.cl/feed"
+    activo: false
+  - url: "https://www.bbc.com/mundo/temas/america_latina/index.xml"
+    activo: false
+
+fuentes_locales:
+  - ruta: "C:/Users/Admin/Documents/opencode-analogic/noticias1.txt"
+    activo: false
+  - ruta: "C:/Users/Admin/Documents/opencode-analogic/Noticias2.txt"
+    activo: false
+
+poesia:
+  directorio_poemas: "C:/Users/Admin/Documents/opencode-analogic/Poemas"
+  autores_activos:
+    - "César Vallejo"
+    - "Rubén Darío"
+    - "Sor Juana Inés de la Cruz"
+    - "Alfonsina Storni"
+    - "Pablo Neruda"
+    - "Gabriela Mistral"
+
+busqueda:
+  motors: ["duckduckgo"]
+  max_resultados: 15
+  cache_segundos: 600

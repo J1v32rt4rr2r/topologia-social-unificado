@@ -1,0 +1,232 @@
+================================================================================
+ESTUDIO COMPARATIVO: LENGUAJE DE MINISTROS
+Pinera (2018-2022) vs Boric (2022-2026)
+Con figuras analogicas O1-O13
+================================================================================
+
+
+1. DATOS TOPOLOGICOS
+================================================================================
+
+1.1 Comparativa global
+
+  Indicador               Pinera          Boric           Diferencia
+  -------------------------------------------------------------------------
+  M_m (material)          4.122           4.011           -0.111
+  M_l (logico-valorativo) 4.211           4.600           +0.389  (Boric +)
+  M_s (social)            3.267           4.111           +0.844  (Boric +)
+  d (coherencia)         54.62 deg       44.93 deg       -9.69   (Boric -)
+
+  Boric tiene mejor coherencia (d=44.93 vs 54.62) y mayor
+  dimension logico-valorativa y social en el lenguaje.
+
+1.2 Comparativa por nodo
+
+  Nodo            Pinera N     Boric N     Pinera d   Boric d   Diferencia d
+  -------------------------------------------------------------------------
+  ECONOMIA        (4.2,6.2,4.2) (4.2,6.5,4.2) 22.58   24.76    +2.18
+  TRABAJO         (3.2,6.2,4.2) (4.2,6.2,6.2) 38.49   22.58    -15.91  (Boric +)
+  CONTINUIDAD     (2.5,4.2,3.2) (2.5,4.2,4.2) 41.26   47.59    +6.33
+  POLITICA        (4.2,4.2,6.5) (4.2,4.2,6.2) 24.76   22.58    -2.18
+  LENGUAJE        (5.2,3.2,2.3) (3.2,3.2,2.3) 61.72   35.94    -25.78  (Boric +)
+  ETICA/ESTETICA  (3.2,4.2,2.3) (4.2,5.2,2.3) 50.56   65.59    +15.03  (Pinera +)
+  TECNOLOGIA      (5.2,4.2,2.3) (5.2,6.5,6.2) 65.59   10.39    -55.20  (Boric +)
+  EDUCACION       (4.2,3.2,3.2) (4.2,4.2,4.2) 21.87    0.00    -21.87  (Boric +)
+  RELIGION/CREDO  (5.2,2.3,1.2) (4.2,1.2,1.2) 164.78  174.96   +10.18
+
+  Boric gana en 5/9 nodos (TRABAJO, LENGUAJE, TECNOLOGIA,
+  EDUCACION, POLITICA). Pinera gana en 2/9 (ETICA, ECONOMIA).
+  CONTINUIDAD y RELIGION/CREDO empeoran con Boric.
+
+
+2. FIGURAS ANALOGICAS DEL LENGUAJE MINISTERIAL
+================================================================================
+
+  Usando las 13 operaciones geometricas del sistema analogico:
+
+2.1 Lenguaje de ministros de Pinera
+
+  d = 54.62 deg
+
+  Figuras dominantes:
+
+  O1b - SEPARACION HORIZONTAL ACTIVA (exclusion activa)
+  =====================================================
+  Detectada en: LENGUAJE (d=61.72), TECNOLOGIA (d=65.59)
+  Frases clave: "Estamos en guerra" (Pinera),
+                "Levántense más temprano" (Hutt),
+                "Son delincuentes" (Hutt)
+  La figura es una linea horizontal que separa "ellos" de "nosotros".
+  El gobierno se posiciona como bando, no como institucion.
+
+  O6 - ORBITAL PARASITARIA (envidia/contraste)
+  ============================================
+  Detectada en: RELIGION/CREDO (d=164.78), TRABAJO (d=38.49)
+  El discurso ministerial genera una orbita donde ciertos grupos
+  (estudiantes, mapuche, sindicatos) son definidos por contraste
+  negativo: "no son como nosotros", "no respetan la ley".
+
+  O5 - ENTROPIA (degradacion)
+  ===========================
+  Detectada en: ETICA (d=50.56)
+  El lenguaje va degradando el significado de las demandas
+  sociales: protesta = vandalismo, demanda = ilegitimidad.
+
+  Geometria general del periodo Pinera:
+  PREDOMINIO DE HORIZONTALES DE CONFLICTO. El lenguaje ministerial
+  opera como O1b (separacion activa) + O6 (contraste parasitario).
+  Es un lenguaje de BANDOS.
+
+2.2 Lenguaje de ministros de Boric
+
+  d = 44.93 deg
+
+  Figuras dominantes:
+
+  O4a - RETICULA CENTRADA (dialogo)
+  =================================
+  Detectada en: TRABAJO (d=22.58), POLITICA (d=22.58), EDUCACION (d=0.00)
+  El lenguaje busca incluir actores en una mesa de dialogo.
+  "Gobierno de todas y todos", "dialogo social", "acuerdo".
+
+  O3b - VERTICAL DE CELEBRACION (sin tension)
+  ============================================
+  Detectada en: LENGUAJE (d=35.94)
+  Hay una mejora en el tejido discursivo. El lenguaje de Boric
+  no es beligerante, intenta construir verticalidad positiva.
+
+  O8 - VALVULA VERTICAL CON FUGA
+  ==============================
+  Detectada en: ETICA (d=65.59), RELIGION/CREDO (d=174.96)
+  El lenguaje promete apertura pero hay "fugas": los sectores
+  mas conservadores se sienten excluidos, el discurso de
+  derechos humanos choca con la seguridad publica.
+
+  O10 - MICRO-DERROTA (la belleza vence)
+  ======================================
+  Detectada en: TECNOLOGIA (d=10.39)
+  El lenguaje tecnico y dialogante de Boric logra algo que
+  Pinera no logro: hacer que la tecnologia hable el mismo
+  idioma que la sociedad. N_l sube de 4.2 (Pinera) a 6.5 (Boric).
+
+  Geometria general del periodo Boric:
+  PREDOMINIO DE VERTICALES DE DIALOGO CON FUGAS. El lenguaje
+  busca construir O4a (reticula de dialogo) pero con perdidas
+  en O8 (valvula con fuga en etica y credo).
+
+
+3. COMPARATIVA CRUZADA DE FIGURAS
+================================================================================
+
+  Figura           Pinera      Boric       Ganador
+  -------------------------------------------------------------------------
+  O1b (conflicto)  ALTO        BAJO        Boric (menos confrontacion)
+  O4a (dialogo)    BAJO        ALTO        Boric (mas inclusion)
+  O5 (entropia)    PRESENTE    BAJO        Boric (menos degradacion)
+  O6 (parasitaria) PRESENTE    AUSENTE     Boric (menos contraste)
+  O8 (fuga etica)  BAJO        PRESENTE    Pinera (menos hipocresia)
+  O10 (tecno)      AUSENTE     PRESENTE    Boric (tecnologia integrada)
+
+  Pinera predomina en figuras de CONFLICTO.
+  Boric predomina en figuras de DIALOGO.
+  Pinera tiene mejor coherencia etica (menos fuga).
+  Boric tiene mejor coherencia linguistica y tecnologica.
+
+
+4. ANALISIS DE RIESGO: FRAGMENTACION POR GOBIERNO
+================================================================================
+
+4.1 Nodos fragiles (>70 deg)
+
+  Pinera: 1/9 - RELIGION/CREDO (164.78)
+  Boric:  1/9 - RELIGION/CREDO (174.96)
+
+  Ambos gobiernos tienen el mismo nodo fragil: la dimension
+  religiosa/creencial del lenguaje. El discurso politico chileno,
+  de cualquier color, no logra integrar la dimension espiritual
+  de la sociedad.
+
+4.2 Nodos en alerta (>50 deg)
+
+  Pinera: LENGUAJE (61.72), TECNOLOGIA (65.59), ETICA (50.56)
+  Boric:  ETICA (65.59)
+
+  Pinera tiene 3 nodos en alerta. Boric solo 1.
+  La alerta de Boric es ETICA (d=65.59), que empeoro respecto
+  a Pinera (50.56) debido a la fuga entre discurso y accion.
+
+4.3 d promedio
+
+  Pinera: 54.62 deg - ALERTA (cerca del umbral de 70)
+  Boric:  44.93 deg - MODERADO
+
+  El lenguaje ministerial de Pinera estuvo a 15 grados del
+  umbral de fragilidad. El de Boric esta a 25 grados.
+
+
+5. CONCLUSION: DOS ESTILOS, DOS FRAGILIDADES
+================================================================================
+
+  Pinera:
+  - Lenguaje de CONFLICTO (O1b + O5 + O6)
+  - d=54.62 (a 15 deg del umbral)
+  - Fragmenta: LENGUAJE y TECNOLOGIA
+  - Riesgo: EXCLUSION - el lenguaje crea un "ellos" contra "nosotros"
+
+  Boric:
+  - Lenguaje de DIALOGO (O4a + O3b + O8)
+  - d=44.93 (a 25 deg del umbral)
+  - Fragmenta: ETICA y CONTINUIDAD
+  - Riesgo: FUGA - el lenguaje promete mas de lo que cumple
+
+  La paradoja: Pinera tenia mejor coherencia ETICA que Boric
+  (50.56 vs 65.59), pese a tener peor coherencia general.
+  La etica del "enemigo" es mas coherente que la etica del
+  "dialogo con fugas".
+
+  La prediccion del modelo analogico:
+
+  Si el lenguaje ministerial chileno mantiene su tendencia
+  actual (Boric: d=44.93 pero empeorando en etica), la
+  proxima crisis no vendra de una declaracion ofensiva
+  (como en Pinera), sino de una DECLARACION QUE PROMETA
+  Y NO CUMPLA. El riesgo de Boric no es la guerra, es la
+  decepcion.
+
+
+6. DATOS CRUDOS
+================================================================================
+
+  Pinera (2018-2022):
+
+  Nodo            N_m     N_l     N_s     d(deg)  Figura analogica
+  ECONOMIA        4.2     6.2     4.2     22.58   O3a (vertical devocional)
+  TRABAJO         3.2     6.2     4.2     38.49   O1b (separacion activa)
+  CONTINUIDAD     2.5     4.2     3.2     41.26   O5 (entropia historica)
+  POLITICA        4.2     4.2     6.5     24.76   O1b (separacion activa)
+  LENGUAJE        5.2     3.2     2.3     61.72   O1b (separacion activa)
+  ETICA/ESTETICA  3.2     4.2     2.3     50.56   O6 (orbital parasitario)
+  TECNOLOGIA      5.2     4.2     2.3     65.59   O1b (separacion activa)
+  EDUCACION       4.2     3.2     3.2     21.87   O5 (entropia)
+  RELIGION/CREDO  5.2     2.3     1.2    164.78   O6 (orbital parasitario)
+
+  M = (4.122, 4.211, 3.267)  d = 54.62 deg
+
+  Boric (2022-2026):
+
+  Nodo            N_m     N_l     N_s     d(deg)  Figura analogica
+  ECONOMIA        4.2     6.5     4.2     24.76   O4a (reticula centrada)
+  TRABAJO         4.2     6.2     6.2     22.58   O4a (reticula centrada)
+  CONTINUIDAD     2.5     4.2     4.2     47.59   O5 (entropia historica)
+  POLITICA        4.2     4.2     6.2     22.58   O4a (reticula centrada)
+  LENGUAJE        3.2     3.2     2.3     35.94   O3b (vertical celebracion)
+  ETICA/ESTETICA  4.2     5.2     2.3     65.59   O8 (valvula con fuga)
+  TECNOLOGIA      5.2     6.5     6.2     10.39   O10 (micro-derrota)
+  EDUCACION       4.2     4.2     4.2      0.00   O4a (reticula centrada)
+  RELIGION/CREDO  4.2     1.2     1.2    174.96   O8 (valvula con fuga)
+
+  M = (4.011, 4.600, 4.111)  d = 44.93 deg
+
+================================================================================
+FIN DEL ESTUDIO
+================================================================================

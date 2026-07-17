@@ -1,0 +1,38 @@
+[
+  {
+    "date": "2026-07-09",
+    "poet": "Jorge Isaacs",
+    "country": "Colombia",
+    "bookId": 47622,
+    "title": "Poema 386",
+    "lines": 6,
+    "file": "Jorge Isaacs - Poema 386.txt"
+  },
+  {
+    "date": "2026-07-10",
+    "poet": "Alfonsina Storni",
+    "country": "Argentina",
+    "bookId": 61422,
+    "title": "Poema 290",
+    "lines": 5,
+    "file": "Alfonsina Storni - Poema 290.txt"
+  },
+  {
+    "date": "2026-07-11",
+    "poet": "Sor Juana Inés de la Cruz",
+    "country": "México",
+    "bookId": 41517,
+    "title": "Poema 10",
+    "lines": 36,
+    "file": "Sor Juana Inés de la Cruz - Poema 10.txt"
+  },
+  {
+    "date": "2026-07-12",
+    "poet": "Sor Juana Inés de la Cruz",
+    "country": "México",
+    "bookId": 41517,
+    "title": "Poema 2",
+    "lines": 3,
+    "file": "Sor Juana Inés de la Cruz - Poema 2.txt"
+  }
+]

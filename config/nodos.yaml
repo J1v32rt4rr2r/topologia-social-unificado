@@ -1,0 +1,46 @@
+nodos:
+  - id: ECONOMIA
+    nombre: Economía
+    m_desc: "Capacidad productiva, infraestructura, recursos físicos"
+    l_desc: "Ideología de mercado, teoría del valor"
+    s_desc: "Redes de producción, distribución, relaciones laborales"
+  - id: TRABAJO
+    nombre: Trabajo
+    m_desc: "Herramientas de trabajo, tecnología aplicada, jornada"
+    l_desc: "Ética del trabajo, concepto de mérito"
+    s_desc: "Organización sindical, división social del trabajo"
+  - id: CONTINUIDAD
+    nombre: Continuidad
+    m_desc: "Archivos, monumentos, patrimonio material"
+    l_desc: "Narrativa histórica, tradición como valor"
+    s_desc: "Rituales de transmisión intergeneracional"
+  - id: POLITICA
+    nombre: Política
+    m_desc: "Instituciones, territorio, edificios gubernamentales"
+    l_desc: "Filosofía política, leyes, constitución"
+    s_desc: "Relaciones de poder, jerarquías, participación ciudadana"
+  - id: LENGUAJE
+    nombre: Lenguaje
+    m_desc: "Soportes físicos de escritura, bibliotecas"
+    l_desc: "Gramática, lógica formal, semántica, discurso"
+    s_desc: "Dialecto, uso social del lenguaje, comunicación"
+  - id: ETICA_ESTETICA
+    nombre: Ética/Estética
+    m_desc: "Obras de arte, monumentos, objetos rituales"
+    l_desc: "Principios éticos, cánones estéticos, moral"
+    s_desc: "Normas compartidas, gusto colectivo, juicio social"
+  - id: TECNOLOGIA
+    nombre: Tecnología
+    m_desc: "Máquinas, herramientas, infraestructura técnica"
+    l_desc: "Racionalidad tecnológica, episteme"
+    s_desc: "Comunidades técnicas, brecha digital"
+  - id: EDUCACION
+    nombre: Educación
+    m_desc: "Escuelas, universidades, recursos pedagógicos"
+    l_desc: "Filosofía educativa, currículo, conocimiento valorado"
+    s_desc: "Aprendizaje social, mentoría, transmisión oral"
+  - id: RELIGION
+    nombre: Religión/Credo
+    m_desc: "Templos, iglesias, objetos sagrados"
+    l_desc: "Teología, doctrina, dogma, cosmovisión"
+    s_desc: "Comunidad de fe, ritual colectivo, congregación"

@@ -1,0 +1,167 @@
+================================================================================
+ESTUDIO COMPLETO: SANTIAGO DE CHILE 2010-2026
+Con fuentes BCN, CIPER, Interferencia y prensa nacional
+================================================================================
+
+
+1. METODOLOGIA
+================================================================================
+
+  Este estudio integra dos tipos de datos:
+
+  a) 5 observaciones del sistema topologico (DeepSeek Chat):
+     2010, 2020, 2025, Presente, y 2026 con fuentes BCN
+
+  b) Fuentes documentales verificadas:
+     - BCN Asesorias Parlamentarias (7.530 documentos, 27 categorias)
+     - CIPER Chile (periodismo de investigacion)
+     - Interferencia (portadas historicas)
+     - Archivos locales de prensa
+
+
+2. SERIE TEMPORAL COMPLETA
+================================================================================
+
+  Periodo     M_m     M_l     M_s     d(prom)  Brecha M_l-M_m  Fuentes
+  -------------------------------------------------------------------------
+  2010        6.40    7.03    6.78     4.08    0.63             DeepSeek
+  2020        5.87    6.43    6.54     8.99    0.56             DeepSeek
+  2025        6.46    6.90    6.76     4.00    0.44             DeepSeek
+  Presente    6.47    6.94    6.90     3.73    0.47             DeepSeek
+  2026+BCN    3.74    5.90    5.34    33.14    2.16             DeepSeek+BCN
+
+  La observacion 2026+BCN muestra valores sistematicamente mas bajos.
+  Esto NO indica un deterioro real de Santiago, sino que las fuentes
+  BCN (documentos parlamentarios sobre problemas administrativos,
+  corruption, deficiencias) sesgan la evaluacion hacia abajo.
+
+  Esto es un EFECTO DEL CONTEXTO: cuando el LLM recibe documentos
+  de la BCN sobre "problemas en la administracion del Estado",
+  evalua la materialidad mas baja porque el contexto le muestra
+  los problemas, no los logros.
+
+
+3. ANALISIS POR NODO CON DATOS DE BCN
+================================================================================
+
+  Usando las categorias de la BCN (7.530 documentos) como proxy
+  de la atencion institucional a cada nodo:
+
+  Nodo Topologia       Docs BCN   Categoria BCN
+  -------------------------------------------------------------------------
+  1. ECONOMIA          613         Economia
+  2. TRABAJO            71         Trabajo
+  3. CONTINUIDAD        27         Historia
+  4. POLITICA         2.305        Defensa+Justicia+Seguridad+Adm.Estado+RR.II.
+  5. LENGUAJE           47         Expresiones Culturales
+  6. ETICA/ESTETICA    262         Genero+Expresiones Culturales
+  7. TECNOLOGIA        555         Ciencia y Tecnologia+Energia+Industria
+  8. EDUCACION         291         Educacion
+  9. RELIGION/CREDO    210         Grupos de Poblacion
+  (extras)           2.595         Salud+Medioambiente+Derecho+otros
+  TOTAL              7.530
+
+  Correlacion atencion documental vs estabilidad del nodo:
+
+  Nodo            Docs   Coherencia  Lectura
+  POLITICA        2.305  d=22.58     Mucha atencion documental, coherencia
+                                      media. La politica se estudia mucho
+                                      pero no mejora.
+  ECONOMIA          613  d=23.75     Segunda mas documentada, coherente.
+  TECNOLOGIA        555  d=27.23     Bien documentada, coherente.
+  EDUCACION         291  d=21.87     Coherente, poca documentacion.
+  TRABAJO            71  d=22.58     POCA documentacion (71 docs) pese a
+                                      ser nodo central. Baja prioridad
+                                      parlamentaria.
+  LENGUAJE           47  d=38.49     Poca documentacion, tension media.
+  CONTINUIDAD        27  d=83.59     FRAGIL. Solo 27 documentos de Historia
+                                      en la BCN. La memoria historica
+                                      recibe minima atencion institucional.
+  ETICA/ESTETICA    262  d=38.49     Documentacion moderada, tension media.
+
+  Hallazgo: CONTINUIDAD es el unico nodo FRAGIL con datos BCN (d=83.59).
+  Tiene la menor cantidad de documentos en la BCN (27). La memoria
+  historica recibe minima atencion parlamentaria.
+
+
+4. EVOLUCION COMPARADA SANTIAGO VS VALPARAISO
+================================================================================
+
+  Periodo     Stgo M     Valpo M     Stgo d    Valpo d    Brecha Stgo  Brecha V
+  2010        (6.40,7.03,6.78) (4.81,6.49,5.66)  4.08     14.93       0.63      1.68
+  2020        (5.87,6.43,6.54) (4.98,6.43,5.72)  8.99     14.74       0.56      1.45
+  2025        (6.46,6.90,6.76) (5.59,6.86,6.50)  4.00      9.36       0.44      1.27
+  Presente    (6.47,6.94,6.90) (5.44,6.84,6.43)  3.73     10.98       0.47      1.40
+
+  La brecha estructural M_l > M_m es CONSTANTE en ambas ciudades.
+  Valparaiso duplica la brecha de Santiago en todos los periodos.
+  Ambas se recuperan post-2020 pero ninguna cierra la brecha.
+
+
+5. ESTALLIDO SOCIAL - DATOS MICRO CON NUEVAS FUENTES
+================================================================================
+
+  Fuentes incorporadas:
+  - CIPER (2024): perfil de nuevos manifestantes: centro, educacion baja, no politizados
+  - Interferencia: portadas del 18 oct 2019 mostraban normalidad
+  - BCN: documentos sobre seguridad, orden publico y protesta social
+
+  Periodo                    M_m    M_l    M_s    d       Nodos fragiles
+  4 oct (2 sem antes)       4.93   5.62   4.83   61.88     7/9
+  11 oct (1 sem antes)      4.71   5.74   5.06   31.64     1/9
+  18 oct (estallido)        4.66   7.91   8.12   34.89     1/9
+  Estallido + BCN (2026)    3.74   5.90   5.34   33.14     1/9
+
+  La observacion con BCN confirma que los valores materiales de las
+  instituciones (evaluados via documentos parlamentarios) son
+  consistentemente mas bajos que la percepcion publica.
+
+
+6. CONCLUSIONES
+================================================================================
+
+  1. Santiago mantiene coherencia en 4 de 5 observaciones.
+     El unico nodo fragil con datos BCN es CONTINUIDAD (memoria
+     historica).
+
+  2. La brecha M_l > M_m es estructural, no ciclica. Ningun
+     periodo la cierra. La sociedad significa mas de lo que
+     produce.
+
+  3. Las fuentes BCN proveen 7.530 documentos categorizados
+     que correlacionan con los 9 nodos del modelo. La cantidad
+     de documentacion parlamentaria por nodo es un indicador
+     de prioridad institucional.
+
+  4. TRABAJO (71 docs) y CONTINUIDAD (27 docs) reciben minima
+     atencion documental pese a ser nodos centrales del modelo.
+
+  5. La integracion de fuentes BCN mejora la resolucion del
+     analisis pero introduce un sesgo hacia abajo en las
+     evaluaciones (los documentos parlamentarios documentan
+     problemas, no logros).
+
+
+7. DATOS CRUDOS
+================================================================================
+
+  Observacion 2026 con fuentes BCN:
+
+  Nodo            N_m     N_l     N_s     d(deg)  Estado
+  ECONOMIA        4.2     6.5     6.2     23.75   OK
+  TRABAJO         4.2     6.2     6.2     22.58   OK
+  CONTINUIDAD     2.1     6.2     4.2     83.59   FRAGIL
+  POLITICA        4.2     6.2     6.2     22.58   OK
+  LENGUAJE        3.2     6.2     4.2     38.49   OK
+  ETICA/ESTETICA  3.2     6.2     4.2     38.49   OK
+  TECNOLOGIA      4.2     7.2     6.5     27.23   OK
+  EDUCACION       4.2     3.2     4.2     21.87   OK
+  RELIGION/CREDO  4.2     5.2     6.2     19.67   OK
+
+  M = (3.744, 5.900, 5.344)
+  Items recolectados: 54 (vs ~25 sin BCN)
+  Fuentes activas: 15
+
+================================================================================
+FIN DEL ESTUDIO
+================================================================================
