@@ -115,9 +115,9 @@ def rss(limite: int = 5):
 
 @app.command()
 def trends(keyword: str):
-    """Analiza tendencias de Google para una palabra clave."""
-    from topologia.web.googtrends import AnalizadorTendencias
-    at = AnalizadorTendencias()
+    """Analiza semánticamente una palabra clave con el LLM."""
+    from topologia.web.analizador import AnalizadorSemantico
+    at = AnalizadorSemantico()
     resultado = at.analizar(keyword)
     print(f"Relevancia: {resultado.relevancia}")
     print(f"Análisis: {resultado.analisis}")

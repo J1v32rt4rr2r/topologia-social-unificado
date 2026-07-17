@@ -8,8 +8,8 @@ from typing import Any
 from topologia.models.llm import LLMClient
 
 
-PROMPT_ANALISIS = """Eres un analista de tendencias para el sistema Topología.
-Analiza la siguiente tendencia de Google: "{trend}"
+PROMPT_ANALISIS = """Eres un analista semántico para el sistema Topología.
+Analiza el siguiente concepto: "{trend}"
 Evalúa en orden:
 1. ¿Es relevante para el estudio topológico de la cultura?
 2. ¿Qué oportunidades de estudio topológico presenta?
@@ -29,7 +29,7 @@ class ResultadoTendencia:
         self.nodos = nodos
 
 
-class AnalizadorTendencias:
+class AnalizadorSemantico:
     def __init__(self):
         self.llm = LLMClient()
 
