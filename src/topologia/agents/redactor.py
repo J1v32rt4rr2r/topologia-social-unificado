@@ -11,62 +11,7 @@ from topologia.models.schemas import (
     OperacionCinetica,
     TipoAlerta,
 )
-
-
-PROMPT_SINTESIS = """Eres el Redactor del sistema Topología. Tu función es tomar la producción completa del ciclo diario y transformarla en un relato claro, preciso y relevante.
-
-Has recibido estos insumos del día de hoy:
-
-## 1. ESTADO CULTURAL
-{estado_cultural}
-
-## 2. OPERACIONES CINÉTICAS DETECTADAS
-{operaciones_activas}
-
-## 3. ESPECULACIONES DEL ARTISTA
-{especulaciones}
-
-## 4. RESULTADOS DE ESTUDIOS
-{estudios}
-
-## 5. COMPARATIVA HISTÓRICA
-{historial_reciente}
-
-## 6. PROYECCIÓN
-{proyeccion}
-
-INSTRUCCIONES:
-Genera un INFORME DIARIO estructurado con:
-
-1. PANORAMA GENERAL (2-3 párrafos) - ¿Cuál es el estado cultural hoy? ¿Qué cambió respecto ayer? ¿Hay algo que amerite atención urgente?
-2. DINÁMICAS DETECTADAS - ¿Qué operaciones cinéticas están activas y por qué importan?
-3. ESPECULACIONES Y ESTUDIOS - ¿Qué vio el Artista hoy? ¿Qué estudios se hicieron y qué se encontró?
-4. ALERTAS - Solo si aplica: δ > 45° (reconfiguración), Δδ > 5° (cambio acelerado), nodo frágil persistente
-5. MIRADA HACIA ADELANTE - ¿Qué esperar? ¿Qué señales observar?
-
-FORMATO DE SALIDA (JSON):
-{{
-  "fecha": "{fecha}",
-  "panorama": "texto en markdown...",
-  "dinamicas": "texto en markdown...",
-  "especulaciones_y_estudios": "texto en markdown...",
-  "alertas": [
-    {{ "tipo": "reconfiguracion", "mensaje": "texto" }}
-  ],
-  "mirada_adelante": "texto...",
-  "resumen_ejecutivo": "3 líneas que cualquiera pueda entender",
-  "dashboard": {{
-    "metrica_principal": "δ = X°",
-    "cambio_clave": "lo más relevante del día",
-    "nodos_criticos": ["nodo_id"],
-    "patrones_nuevos": ["P-XXX"]
-  }}
-}}
-
-REGLAS:
-- No inventes información que no esté en los insumos.
-- Traduce el lenguaje técnico pero sin perder precisión.
-- El resumen_ejecutivo debe poder leerse en 10 segundos."""
+from topologia.prompts import PromptLoader
 
 
 class Redactor(Agent):
@@ -78,6 +23,7 @@ class Redactor(Agent):
             modelo="deepseek-chat",
             max_tokens=2048,
         ))
+        self.prompts = PromptLoader()
 
     def sintetizar(
         self,
@@ -93,7 +39,7 @@ class Redactor(Agent):
         esp_str = self._formatear_especulaciones(especulaciones)
         est_str = self._formatear_estudios(estudios)
 
-        prompt = PROMPT_SINTESIS.format(
+        prompt = self.prompts.load("redactor_sintesis",
             estado_cultural=estado_str,
             operaciones_activas=ops_str,
             especulaciones=esp_str,

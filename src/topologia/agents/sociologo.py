@@ -1,56 +1,6 @@
 from topologia.agents.base import Agent
 from topologia.models.schemas import ConfigAgente, EvaluacionNodo, ItemInformativo, AnalisisDim
-
-
-PROMPT_EVALUAR = """Eres el Sociólogo, evaluador de la DIMENSIÓN SOCIAL Y ORGANIZATIVA en el sistema Topología.
-Mides: organización colectiva, redes, instituciones, acción social coordinada.
-
-Hoy evaluamos el nodo: {nodo}
-
-Pregunta guía: {pregunta_nodo}
-
-NOTICIAS RELEVANTES:
-{items_del_nodo}
-
-Puntuación anterior: {score_anterior}
-Justificación anterior: {justificacion_anterior}
-
-FORMATO DE RESPUESTA (JSON):
-{{
-  "nodo": "{nodo}",
-  "dimension": "M_s",
-  "puntuacion": 5.0,
-  "justificacion": "...",
-  "tendencia": "estable | mejora | deterioro",
-  "senal_temprana": "..."
-}}"""
-
-
-PROMPT_VALIDAR = """Eres el Sociólogo, especialista en la DIMENSIÓN SOCIAL Y ORGANIZATIVA.
-
-El Artista ha hecho una ESPECULACIÓN:
-
-ESPECULACIÓN:
-- Patrón sugerido: {patron_id} — {forma_patron}
-- Significado del patrón: {significado_patron}
-- Noticias donde se detectó: {items_originales}
-- Argumento del Artista: {argumento_artista}
-
-INVESTIGACIÓN ADICIONAL:
-{items_investigacion}
-
-Analiza desde tu dimensión: ¿la organización social, las redes y las instituciones presentes en los datos respaldan el patrón?
-
-FORMATO DE RESPUESTA (JSON):
-{{
-  "dimension": "M_s",
-  "patron_id": "{patron_id}",
-  "confirmado": true,
-  "confianza": 0.7,
-  "evidencia": "...",
-  "contraevidencia": "...",
-  "conclusion": "..."
-}}"""
+from topologia.prompts import PromptLoader
 
 
 NODOS_PREGUNTAS = {
@@ -75,11 +25,12 @@ class Sociologo(Agent):
             modelo="deepseek-chat",
             max_tokens=1024,
         ))
+        self.prompts = PromptLoader()
 
     def evaluar_nodo(self, nodo_id: str, items: list[ItemInformativo], score_anterior: float = 5.0, just_anterior: str = "") -> EvaluacionNodo:
         pregunta = NODOS_PREGUNTAS.get(nodo_id, "")
         items_str = self.formatear_items(items)
-        prompt = PROMPT_EVALUAR.format(
+        prompt = self.prompts.load("sociologo_evaluar",
             nodo=nodo_id,
             pregunta_nodo=pregunta,
             items_del_nodo=items_str,
@@ -108,7 +59,7 @@ class Sociologo(Agent):
         )
 
     def validar_estudio(self, items_investigacion: list[ItemInformativo], **kwargs) -> AnalisisDim:
-        prompt = PROMPT_VALIDAR.format(
+        prompt = self.prompts.load("sociologo_validar",
             patron_id=kwargs.get("patron_id", "P-???"),
             forma_patron=kwargs.get("forma_patron", ""),
             significado_patron=kwargs.get("significado_patron", ""),

@@ -11,13 +11,13 @@ rss:
     activo: false
 
 fuentes_locales:
-  - ruta: "C:/Users/Admin/Documents/opencode-analogic/noticias1.txt"
+  - ruta: "data/local/noticias.txt"
     activo: false
-  - ruta: "C:/Users/Admin/Documents/opencode-analogic/Noticias2.txt"
+  - ruta: "data/local/noticias2.txt"
     activo: false
 
 poesia:
-  directorio_poemas: "C:/Users/Admin/Documents/opencode-analogic/Poemas"
+  directorio_poemas: "data/poemas"
   autores_activos:
     - "César Vallejo"
     - "Rubén Darío"

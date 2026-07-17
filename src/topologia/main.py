@@ -31,6 +31,15 @@ def learn(ruta_poema: str):
 
 
 @app.command()
+def pipeline(ruta_texto: str):
+    """Ejecuta pipeline analógico completo (6 fases) sobre un texto."""
+    from topologia.pipeline import Pipeline
+    pipe = Pipeline()
+    resultado = pipe.ejecutar(ruta_texto)
+    print(resultado.resumen())
+
+
+@app.command()
 def daily(sociedad: str = "Chile"):
     """Ciclo completo: recolectar → observar → especular → estudiar → redactar."""
     from topologia.orchestrator import Orchestrator

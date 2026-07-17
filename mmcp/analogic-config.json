@@ -1,0 +1,61 @@
+{
+  "project": "topologia-social",
+  "version": "0.2.0",
+  "lod": {
+    "default": "LOD-1",
+    "levels": {
+      "LOD-1": { "desc": "Lectura superficial — estructura, tono, figuras retóricas", "temperatura": 0.5 },
+      "LOD-2": { "desc": "Lectura profunda — sistema de agentes, geometría emergente", "temperatura": 0.4 },
+      "LOD-3": { "desc": "Lectura crítica — ideología, poder, contexto histórico", "temperatura": 0.3 }
+    }
+  },
+  "fases": {
+    "inmersion": {
+      "label": "Fase 1 — Inmersión Textual",
+      "temperatura": 0.5,
+      "max_tokens": 2048,
+      "bloques_memoria": ["analogia-termica"],
+      "registrar_decisiones": true
+    },
+    "pictorica": {
+      "label": "Fase 2 — Traducción Pictórica",
+      "temperatura": 0.65,
+      "max_tokens": 2048,
+      "bloques_memoria": ["analogia-visual", "analogia-cinetica", "analogia-emergente"],
+      "registrar_decisiones": true
+    },
+    "analisis": {
+      "label": "Fase 3 — Análisis Pictórico",
+      "temperatura": 0.25,
+      "max_tokens": 2048,
+      "bloques_memoria": ["analogia-cinetica", "analogia-visual", "analogia-emergente"],
+      "registrar_decisiones": true
+    },
+    "reescritura": {
+      "label": "Fase 4 — Reescritura Enriquecida",
+      "temperatura": 0.5,
+      "max_tokens": 2048,
+      "bloques_memoria": ["analogia-emergente"],
+      "registrar_decisiones": true
+    },
+    "emergencias": {
+      "label": "Fase 5 — Detección de Emergencias",
+      "temperatura": 0.4,
+      "max_tokens": 2048,
+      "bloques_memoria": ["analogia-emergente"],
+      "registrar_decisiones": false
+    },
+    "formalizacion": {
+      "label": "Fase 6 — Formalización",
+      "temperatura": 0.3,
+      "max_tokens": 2048,
+      "bloques_memoria": ["analogia-visual", "analogia-cinetica", "analogia-emergente"],
+      "registrar_decisiones": true
+    }
+  },
+  "memoria": {
+    "bloques": ["analogia-termica", "analogia-visual", "analogia-cinetica", "analogia-emergente"],
+    "auto_resumen": true,
+    "limite_caracteres_bloque": 5000
+  }
+}
