@@ -99,6 +99,21 @@ def panel(sociedad: str = "Chile"):
 
 
 @app.command()
+def rss(limite: int = 5):
+    """Extrae y muestra noticias desde fuentes RSS configuradas."""
+    from topologia.web.rss import obtener_items
+    items = obtener_items(limite=limite)
+    if not items:
+        print("No se obtuvieron noticias.")
+        return
+    print(f"=== {len(items)} noticias obtenidas ===")
+    for it in items[:limite]:
+        print(f"\n[{it.id}] {it.titulo}")
+        print(f"    Fuente: {it.fuente}")
+        print(f"    {it.contenido[:200]}...")
+
+
+@app.command()
 def trends(keyword: str):
     """Analiza tendencias de Google para una palabra clave."""
     from topologia.web.googtrends import AnalizadorTendencias
