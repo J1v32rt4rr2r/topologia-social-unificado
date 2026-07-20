@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import time
 from datetime import datetime, timezone
 from typing import Any
 
@@ -13,9 +14,20 @@ SECCIONES = [
 ]
 
 URL_BASE = "https://resumen.cl"
-TIMEOUT_MS = 20000
+TIMEOUT_MS = 30000
+_DELAY_ENTRE_SECCIONES = 2.0
+_ultimo_acceso: float = 0.0
+
 _WS_RE = re.compile(r"\s+")
 _HTML_CLEAN_RE = re.compile(r"<[^>]+>")
+
+USER_AGENT = (
+    "TopologiaSocial/2.0 "
+    "(Proyecto de investigacion sociologica; "
+    "monitoreo de clima cultural chileno; "
+    "https://github.com/J1v32rt4rr2r/topologia-social-unificado; "
+    "contacto: j1v32rt4rr2r@proton.me)"
+)
 
 
 def _limpiar(texto: str) -> str:
@@ -24,11 +36,20 @@ def _limpiar(texto: str) -> str:
     return texto
 
 
+def _esperar() -> None:
+    global _ultimo_acceso
+    ahora = time.time()
+    diff = ahora - _ultimo_acceso
+    if diff < _DELAY_ENTRE_SECCIONES:
+        time.sleep(_DELAY_ENTRE_SECCIONES - diff)
+    _ultimo_acceso = time.time()
+
+
 def _scrapear_seccion(
-    browser: Any, seccion: str, timeout: int = TIMEOUT_MS
+    context: Any, seccion: str, timeout: int = TIMEOUT_MS
 ) -> list[dict[str, str]]:
     url = f"{URL_BASE}/seccion/{seccion}"
-    page = browser.new_page(viewport={"width": 1280, "height": 800})
+    page = context.new_page()
     articulos: list[dict[str, str]] = []
     try:
         page.goto(url, wait_until="networkidle", timeout=timeout)
@@ -67,7 +88,7 @@ def _scrapear_seccion(
     return articulos
 
 
-def _lanzar_browser():
+def _lanzar_navegador():
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -76,17 +97,27 @@ def _lanzar_browser():
     try:
         p = sync_playwright().start()
         browser = p.chromium.launch(headless=True)
-        return browser, p
+        context = browser.new_context(
+            user_agent=USER_AGENT,
+            viewport={"width": 1280, "height": 800},
+            locale="es-CL",
+            timezone_id="America/Santiago",
+        )
+        context.set_extra_http_headers({
+            "Accept-Language": "es-CL,es;q=0.9,en;q=0.8",
+            "From": "j1v32rt4rr2r@proton.me",
+        })
+        return browser, context, p
     except Exception as e:
         logger.error(f"Resumen.cl: no se pudo iniciar Chromium: {e}")
         return None
 
 
 def obtener_items(limite: int = 10) -> list[ItemInformativo]:
-    resultado = _lanzar_browser()
+    resultado = _lanzar_navegador()
     if resultado is None:
         return []
-    browser, playwright = resultado
+    browser, context, playwright = resultado
 
     items: list[ItemInformativo] = []
     vistos: set[str] = set()
@@ -94,7 +125,8 @@ def obtener_items(limite: int = 10) -> list[ItemInformativo]:
         for seccion in SECCIONES:
             if len(items) >= limite:
                 break
-            articulos = _scrapear_seccion(browser, seccion)
+            _esperar()
+            articulos = _scrapear_seccion(context, seccion)
             for a in articulos:
                 if len(items) >= limite:
                     break
@@ -112,6 +144,10 @@ def obtener_items(limite: int = 10) -> list[ItemInformativo]:
                     tags=["rss", "resumen.cl", seccion],
                 ))
     finally:
+        try:
+            context.close()
+        except Exception:
+            pass
         try:
             browser.close()
         except Exception:

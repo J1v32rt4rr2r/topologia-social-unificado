@@ -11,7 +11,15 @@ from topologia.models.schemas import ItemInformativo
 _cache: dict[str, tuple[float, list[ItemInformativo]]] = {}
 CACHE_DURACION = 600
 _ultima_llamada: float = 0.0
-_DELAY_ENTRE_LLAMADAS = 1.0
+_DELAY_ENTRE_LLAMADAS = 2.0
+
+USER_AGENT = (
+    "TopologiaSocial/2.0 "
+    "(Proyecto de investigacion sociologica; "
+    "monitoreo de clima cultural chileno; "
+    "https://github.com/J1v32rt4rr2r/topologia-social-unificado; "
+    "contacto: j1v32rt4rr2r@proton.me)"
+)
 
 
 def _esperar_rate_limit() -> None:
@@ -34,7 +42,7 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
     try:
         from duckduckgo_search import DDGS
         _esperar_rate_limit()
-        with DDGS() as ddgs:
+        with DDGS(headers={"User-Agent": USER_AGENT}) as ddgs:
             for r in ddgs.text(palabras_clave, max_results=max_resultados):
                 resultados.append(ItemInformativo(
                     id=f"search-{len(resultados)}",

@@ -19,7 +19,13 @@ _WS_RE = re.compile(r"\s+")
 _CACHE: dict[str, tuple[float, list[ItemInformativo]]] = {}
 CACHE_DURACION = 300
 TIMEOUT_SEG = 15
-USER_AGENT = "TopologiaSocial/1.0 (+https://github.com/anomalyco/topologia-social)"
+USER_AGENT = (
+    "TopologiaSocial/2.0 "
+    "(Proyecto de investigacion sociologica; "
+    "monitoreo de clima cultural chileno; "
+    "https://github.com/J1v32rt4rr2r/topologia-social-unificado; "
+    "contacto: j1v32rt4rr2r@proton.me)"
+)
 
 _FUENTES_CHILENAS = [
     "ciperchile", "elsiglo", "theclinic", "cambio21",
