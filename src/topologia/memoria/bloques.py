@@ -2,13 +2,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from topologia.paths import get_memoria_dir
+
 
 class BloquesMemoria:
     def __init__(self, ruta: str | None = None):
         if ruta:
             self.base = Path(ruta)
         else:
-            self.base = Path.home() / ".local" / "share" / "topologia-social" / "data" / "memoria" / "bloques"
+            self.base = get_memoria_dir() / "bloques"
         self.base.mkdir(parents=True, exist_ok=True)
 
     def _ruta(self, nombre: str) -> Path:

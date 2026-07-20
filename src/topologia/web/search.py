@@ -4,11 +4,23 @@ import time
 from datetime import datetime
 from typing import Any
 
+from topologia.logger import logger
 from topologia.models.schemas import ItemInformativo
 
 
 _cache: dict[str, tuple[float, list[ItemInformativo]]] = {}
 CACHE_DURACION = 600
+_ultima_llamada: float = 0.0
+_DELAY_ENTRE_LLAMADAS = 1.0
+
+
+def _esperar_rate_limit() -> None:
+    global _ultima_llamada
+    ahora = time.time()
+    diff = ahora - _ultima_llamada
+    if diff < _DELAY_ENTRE_LLAMADAS:
+        time.sleep(_DELAY_ENTRE_LLAMADAS - diff)
+    _ultima_llamada = time.time()
 
 
 def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativo]:
@@ -21,8 +33,9 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
     resultados: list[ItemInformativo] = []
     try:
         from duckduckgo_search import DDGS
+        _esperar_rate_limit()
         with DDGS() as ddgs:
-            for i, r in enumerate(ddgs.text(palabras_clave, max_results=max_resultados)):
+            for r in ddgs.text(palabras_clave, max_results=max_resultados):
                 resultados.append(ItemInformativo(
                     id=f"search-{len(resultados)}",
                     titulo=r.get("title", ""),
@@ -33,9 +46,9 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
                     tags=["search", palabras_clave],
                 ))
     except ImportError:
-        pass
-    except Exception:
-        pass
+        logger.warning("duckduckgo_search no instalado")
+    except Exception as e:
+        logger.debug(f"Error en búsqueda '{palabras_clave}': {e}")
 
     _cache[cache_key] = (time.time(), resultados)
     return resultados

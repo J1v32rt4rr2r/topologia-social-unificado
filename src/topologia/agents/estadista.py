@@ -12,7 +12,7 @@ NODOS_PREGUNTAS = {
     "ETICA_ESTETICA": "¿Qué obras de arte, monumentos y objetos rituales existen?",
     "TECNOLOGIA": "¿Qué máquinas, herramientas e infraestructura técnica existen?",
     "EDUCACION": "¿Qué escuelas, universidades y recursos pedagógicos existen?",
-    "RELIGION": "¿Qué templos, iglesias y objetos sagrados existen?",
+    "RELIGION": "¿Qué símbolos, textos dogmáticos, propaganda ideológica y objetos de culto existen?",
 }
 
 
@@ -78,6 +78,8 @@ class Estadista(Agent):
                 "confianza": 0.0,
                 "evidencia": f"Error: {e}",
                 "contraevidencia": "",
+                "posibilidad": "",
+                "realidad": "",
                 "conclusion": "Error en validación",
             }
 

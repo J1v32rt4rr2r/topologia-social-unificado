@@ -55,7 +55,6 @@ def daily(sociedad: str = "Chile"):
     print(f"\nInforme guardado en: {ruta}")
 
 
-@app.command()
 @app.command(name="server")
 def serve(host: str = "0.0.0.0", port: int = 8000):
     """Inicia servidor web con dashboard."""
@@ -75,19 +74,31 @@ def state(sociedad: str = "Chile"):
     print(f"Sociedad: {estado.sociedad}")
     print(f"Fecha: {estado.fecha}")
     print(f"M = ({estado.M_m:.1f}, {estado.M_l:.1f}, {estado.M_s:.1f})")
-    print(f"δ = {estado.delta_promedio:.1f}°")
+    print(f"delta = {estado.delta_promedio:.1f} deg")
     print(f"Coherente: {estado.coherente}")
     for nodo in estado.nodos:
-        frag = " ⚠" if nodo.fragil else ""
-        print(f"  {nodo.nodo_id}: M_m={nodo.dimension_m:.1f} M_l={nodo.dimension_l:.1f} M_s={nodo.dimension_s:.1f} δ={nodo.delta:.1f}{frag}")
+        frag = " [FRAGIL]" if nodo.fragil else ""
+        print(f"  {nodo.nodo_id}: M_m={nodo.dimension_m:.1f} M_l={nodo.dimension_l:.1f} M_s={nodo.dimension_s:.1f} delta={nodo.delta:.1f}{frag}")
+    if estado.m_m:
+        print(f"\nFormas complejas (e^(2pi*i / m)):")
+        print(f"  M_m: m={estado.m_m:.3f}  theta={estado.theta_m:.1f} deg")
+        print(f"  M_l: m={estado.m_l:.3f}  theta={estado.theta_l:.1f} deg")
+        print(f"  M_s: m={estado.m_s:.3f}  theta={estado.theta_s:.1f} deg")
+        print(f"  Coherencia interna: {estado.coherencia_interna:.1f} deg")
 
 
 @app.command()
 def report(sociedad: str = "Chile"):
-    """Genera informe markdown del último estado."""
-    from topologia.reportes.informe import generar_informe
-    ruta = generar_informe(sociedad)
-    print(f"Informe generado en: {ruta}")
+    """Genera informe HTML interactivo del último estado (modo standalone: sin especulaciones/estudios).
+    Ejecuta 'daily' primero para incluir análisis completo con LLM."""
+    from topologia.reportes.informe import generar_informe_html
+    ruta = generar_informe_html(sociedad)
+    if ruta:
+        print(f"Informe generado: {ruta}")
+        print("  Modo standalone (solo datos de estado + operaciones)")
+        print("  Para informe completo con especulaciones y estudios, ejecute 'daily' primero")
+    else:
+        print("No hay datos de estado. Ejecute 'observe' o 'daily' primero.")
 
 
 @app.command()
@@ -121,6 +132,26 @@ def trends(keyword: str):
     resultado = at.analizar(keyword)
     print(f"Relevancia: {resultado.relevancia}")
     print(f"Análisis: {resultado.analisis}")
+
+
+@app.command()
+def graficos(
+    sociedad: str = "Chile",
+    antes: str | None = None,
+    despues: str | None = None,
+    abrir: bool = False,
+):
+    """Genera 5 gráficos de análisis cultural (e^(2πi/m))."""
+    from scripts.analisis_graficos import generar_todos
+
+    archivos = generar_todos(sociedad, antes, despues)
+    print(f"\n{len(archivos)} gráficos generados en reportes/")
+    for a in archivos:
+        print(f"  {a.name}")
+    if abrir:
+        import os
+        for a in archivos:
+            os.startfile(str(a))
 
 
 @app.command()

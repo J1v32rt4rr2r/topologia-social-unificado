@@ -64,6 +64,19 @@ class EstadoCultural(BaseModel):
     coherente: bool = True
     nodos: list[EvaluacionNodo] = []
     nodos_fragiles: list[str] = []
+    era_k: int = 1
+    theta_cultura: float = 0.0
+    tension_total: float = 0.0
+    vuelco_detectado: bool = False
+
+    # Formas culturales complejas (e^(2πi / m), m = Σ(v/9.9))
+    m_m: float = 0.0
+    m_l: float = 0.0
+    m_s: float = 0.0
+    theta_m: float = 0.0  # grados
+    theta_l: float = 0.0  # grados
+    theta_s: float = 0.0  # grados
+    coherencia_interna: float = 0.0  # Δθ promedio entre las 3 formas (grados)
 
 
 # ─── Capa 2: CINÉTICA ──────────────────────────────────────
@@ -96,9 +109,11 @@ class AnalisisDim(BaseModel):
     dimension: str
     patron_id: str
     confirmado: bool = False
-    confianza: float = Field(ge=0.0, le=1.0)
+    confianza: float = Field(default=0.0, ge=0.0, le=1.0)
     evidencia: str = ""
     contraevidencia: str = ""
+    posibilidad: str = ""
+    realidad: str = ""
     conclusion: str = ""
 
 

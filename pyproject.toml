@@ -19,6 +19,9 @@ dependencies = [
     "requests>=2.31",
 ]
 
+[project.optional-dependencies]
+grafos = ["matplotlib>=3.8", "numpy>=1.26"]
+
 [project.scripts]
 topologia = "topologia.main:app"
 

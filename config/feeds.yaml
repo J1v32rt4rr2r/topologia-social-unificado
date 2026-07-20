@@ -1,9 +1,31 @@
 rss:
   # Fuentes activas (verificadas)
   - url: "https://news.google.com/rss?hl=es-419&gl=CL&ceid=CL:es-419"
-    activo: true
+    activo: false
   - url: "https://www.bbc.com/mundo/temas/america_latina/index.xml"
-    activo: false  # encoding issues con feedparser
+    activo: false
+  - url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america/portada"
+    activo: true
+  - url: "https://www.resumen.cl/feed/"
+    activo: false
+  - url: "https://www.ciperchile.cl/feed/"
+    activo: true
+  - url: "https://elsiglo.cl/feed/"
+    activo: true
+  - url: "https://theclinic.cl/feed"
+    activo: true
+  - url: "https://cambio21.cl/rss"
+    activo: true
+  - url: "https://www.elciudadano.com/feed/"
+    activo: true
+  - url: "https://radio.uchile.cl/feed/"
+    activo: true
+  - url: "https://www.trendtic.cl/feed"
+    activo: true
+  - url: "https://consejoctci.cl/feed"
+    activo: false
+  - url: "https://www.gerencia.cl/rss"
+    activo: true
   # Fuentes inactivas (no devuelven items actualmente)
   - url: "https://feeds.emol.com/emol/rss/portada"
     activo: false

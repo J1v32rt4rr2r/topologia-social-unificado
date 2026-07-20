@@ -1,0 +1,243 @@
+# Palabras clave extendidas por nodo cultural
+# Cada nodo tiene términos de búsqueda para clasificar ítems informativos
+# y términos para búsqueda dirigida en DuckDuckGo/scraping
+
+nodos:
+  ECONOMIA:
+    clasificacion:
+      - economia
+      - económico
+      - pib
+      - inflación
+      - mercado
+      - finanzas
+      - banco
+      - presupuesto
+      - deuda
+      - crisis económica
+      - recesión
+      - crecimiento
+      - impuesto
+      - comercio
+      - industria
+    busqueda_externa:
+      - "economía Chile"
+      - "indicadores económicos Chile"
+
+  TRABAJO:
+    clasificacion:
+      - trabajo
+      - laboral
+      - empleo
+      - desempleo
+      - sindicato
+      - huelga
+      - salario
+      - sueldo
+      - jornada laboral
+      - trabajador
+      - cesantía
+      - negociación colectiva
+      - contrato
+    busqueda_externa:
+      - "trabajo Chile sindicato"
+      - "empleo Chile"
+
+  CONTINUIDAD:
+    clasificacion:
+      - continuidad
+      - tradición
+      - patrimonio
+      - memoria histórica
+      - generación
+      - legado
+      - herencia cultural
+      - identidad
+      - costumbre
+      - raíces
+      - celebración tradicional
+      - folclor
+      - monumento
+      - archivo histórico
+      - efeméride
+    busqueda_externa:
+      - "patrimonio cultural Chile"
+      - "tradiciones chilenas"
+
+  POLITICA:
+    clasificacion:
+      - politica
+      - político
+      - gobierno
+      - congreso
+      - presidente
+      - ministro
+      - senador
+      - diputado
+      - ley
+      - constitución
+      - partido
+      - elección
+      - reforma
+      - estado
+      - municipal
+      - parlamento
+      - democracia
+    busqueda_externa:
+      - "política Chile"
+      - "gobierno Chile actualidad"
+
+  LENGUAJE:
+    clasificacion:
+      - lenguaje
+      - lengua
+      - idioma
+      - lingüística
+      - gramática
+      - semántica
+      - discurso
+      - dialecto
+      - habla
+      - vocabulario
+      - escritura
+      - comunicación
+      - palabra
+      - poesía
+      - literatura
+      - retórica
+      - traducción
+      - propaganda
+      - desinformación
+      - posverdad
+      - framing
+      - narrativa
+      - eslogan
+      - consigna
+      - censura
+      - libertad de expresión
+      - análisis del discurso
+      - discurso político
+      - debate público
+      - opinión pública
+      - noticias falsas
+      - manipulación mediática
+      - discurso de odio
+      - polarización
+      - retórica política
+    busqueda_externa:
+      - "lenguaje Chile"
+      - "lingüística Chile"
+      - "poesía chilena"
+      - "análisis discurso político Chile"
+      - "propaganda desinformación Chile"
+      - "libertad expresión censura Chile"
+
+  ETICA_ESTETICA:
+    clasificacion:
+      - ética
+      - estética
+      - arte
+      - cultura
+      - moral
+      - filosofía
+      - artista
+      - exposición
+      - museo
+      - pintura
+      - escultura
+      - teatro
+      - danza
+      - música
+      - cine chileno
+      - crítica cultural
+      - canon
+      - belleza
+      - obra
+    busqueda_externa:
+      - "arte Chile"
+      - "cultura Chile"
+      - "ética filosofía Chile"
+
+  TECNOLOGIA:
+    clasificacion:
+      - tecnología
+      - tecnológico
+      - innovación
+      - digital
+      - internet
+      - inteligencia artificial
+      - ia
+      - software
+      - hardware
+      - datos
+      - informática
+      - ciencia
+      - investigación
+      - startup
+      - programación
+      - robot
+      - automatización
+    busqueda_externa:
+      - "tecnología Chile"
+      - "innovación Chile"
+
+  EDUCACION:
+    clasificacion:
+      - educación
+      - educativo
+      - escuela
+      - colegio
+      - universidad
+      - estudiante
+      - profesor
+      - docente
+      - aprendizaje
+      - currículo
+      - reforma educativa
+      - beca
+      - academia
+      - pedagogía
+      - aula
+      - enseñanza
+    busqueda_externa:
+      - "educación Chile"
+      - "universidad Chile"
+
+  RELIGION:
+    clasificacion:
+      - dogma
+      - doctrina
+      - fanatismo
+      - extremismo
+      - fundamentalismo
+      - creencia
+      - secta
+      - conversión
+      - adoctrinamiento
+      - pensamiento único
+      - corrección política
+      - intolerancia
+      - radicalización
+      - espiritualidad
+      - misticismo
+      - conspiraciones
+      - profecía
+      - mesianismo
+      - culto
+      - ideología
+      - ultra
+      - populismo
+      - autoritarismo
+      - propaganda
+      - nacionalismo
+      - polarización
+      - violencia política
+      - justicia
+      - memoria histórica
+    busqueda_externa:
+      - "extremismo Chile"
+      - "polarización ideológica"
+      - "fanatismo política"
+      - "ideología populismo Chile"
+      - "autoritarismo nacionalismo Chile"
+      - "violencia política extremismo Chile"

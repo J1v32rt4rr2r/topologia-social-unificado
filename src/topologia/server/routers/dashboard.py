@@ -1,20 +1,28 @@
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
 
 from topologia.math.operations import detectar_operaciones
-from topologia.orchestrator import Orchestrator
 from topologia.storage.store import FileStore
 
 router = APIRouter()
 
 base = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(base / "frontend" / "templates"))
-orch = Orchestrator()
 store = FileStore()
+
+_SOCIEDAD_RE = re.compile(r"^[a-zA-Z\u00C0-\u024F][\w\- ]{0,48}[a-zA-Z\u00C0-\u024F\w]$")
+
+
+def _sanitizar_sociedad(s: str) -> str:
+    if not _SOCIEDAD_RE.match(s):
+        return "Chile"
+    return s.strip()
 
 
 @router.get("/dashboard", response_class=HTMLResponse)
@@ -24,6 +32,7 @@ async def dashboard_page(request: Request):
 
 @router.get("/api/dashboard/data")
 async def dashboard_data(sociedad: str = "Chile"):
+    sociedad = _sanitizar_sociedad(sociedad)
     estado = store.cargar_estado(sociedad)
     if estado is None:
         return {"error": "No hay datos"}
@@ -40,6 +49,17 @@ async def dashboard_data(sociedad: str = "Chile"):
                 "M_m": e.M_m,
                 "M_l": e.M_l,
                 "M_s": e.M_s,
+                "nodos": [
+                    {
+                        "id": n.nodo_id,
+                        "m": n.dimension_m,
+                        "l": n.dimension_l,
+                        "s": n.dimension_s,
+                        "delta": n.delta,
+                        "fragil": n.fragil,
+                    }
+                    for n in e.nodos
+                ],
             })
 
     return {

@@ -1,13 +1,19 @@
-"""Tests del módulo matemático (torus 3D y operaciones cinéticas)."""
+"""Tests del módulo matemático (orbital 2D, torus 3D y operaciones cinéticas)."""
 
 import math
 
 from topologia.math.operations import detectar_operaciones
 from topologia.math.torus import (
+    angulo_desde_valor,
+    arrastre_gravimetrico,
     calcular_angulos,
     calcular_delta,
     coherencia_global,
+    detectar_vuelco,
     mapear_a_toro_3d,
+    tension_sistema,
+    theta_cultura,
+    theta_nodo,
 )
 from topologia.models.schemas import EstadoCultural, EvaluacionNodo
 
@@ -97,6 +103,71 @@ def _nodo(nodo_id: str, m: float, l: float, s: float, delta: float = 0) -> Evalu
         delta=delta,
         fragil=delta >= 70,
     )
+
+
+# ─── Tests del nuevo modelo orbital ─────────────
+
+
+class TestAnguloDesdeValor:
+    def test_valor_10(self):
+        assert angulo_desde_valor(10) == 36.0
+
+    def test_valor_5(self):
+        assert angulo_desde_valor(5) == 72.0
+
+    def test_valor_4_punto_8(self):
+        assert round(angulo_desde_valor(4.8), 1) == 75.0
+
+    def test_valor_14_punto_4(self):
+        assert round(angulo_desde_valor(14.4), 1) == 25.0
+
+    def test_evita_cero(self):
+        assert angulo_desde_valor(0) == 3600.0
+
+
+class TestThetaNodo:
+    def test_desde_M_l(self):
+        assert theta_nodo(6) == 60.0
+
+
+class TestThetaCultura:
+    def test_promedio(self):
+        t = theta_cultura([5, 6, 7])
+        esperado = 360.0 / ((5 + 6 + 7) / 3)
+        assert t == esperado
+
+    def test_vacio(self):
+        assert theta_cultura([]) == 0.0
+
+
+class TestArrastreGravimetrico:
+    def test_arrastre_basico(self):
+        a = arrastre_gravimetrico(M_m=8, M_s=9, delta_theta=35)
+        assert a == 8 * 9 * 35
+
+    def test_sin_diferencia(self):
+        assert arrastre_gravimetrico(5, 5, 0) == 0
+
+
+class TestTensionSistema:
+    def test_tension_total(self):
+        nodos = [
+            {"dimension_l": 5, "dimension_m": 3},
+            {"dimension_l": 9, "dimension_m": 8},
+        ]
+        t = tension_sistema(nodos)
+        assert t > 0
+
+    def test_vacio(self):
+        assert tension_sistema([]) == 0.0
+
+
+class TestDetectarVuelco:
+    def test_supera_umbral(self):
+        assert detectar_vuelco(900, umbral=500) is True
+
+    def test_no_supera(self):
+        assert detectar_vuelco(100, umbral=500) is False
 
 
 class TestDetectarOperaciones:

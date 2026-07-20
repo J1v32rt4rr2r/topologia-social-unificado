@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter, Query
 
 from topologia.math.operations import detectar_operaciones
@@ -10,9 +12,18 @@ router = APIRouter()
 orch = Orchestrator()
 store = FileStore()
 
+_SOCIEDAD_RE = re.compile(r"^[a-zA-Z\u00C0-\u024F][\w\- ]{0,48}[a-zA-Z\u00C0-\u024F\w]$")
+
+
+def _sanitizar_sociedad(s: str) -> str:
+    if not _SOCIEDAD_RE.match(s):
+        return "Chile"
+    return s.strip()
+
 
 @router.get("/observe")
 async def api_observe(sociedad: str = Query("Chile")):
+    sociedad = _sanitizar_sociedad(sociedad)
     estado = orch.observar(sociedad)
     operaciones = detectar_operaciones(estado)
     return {
@@ -52,6 +63,7 @@ async def api_observe(sociedad: str = Query("Chile")):
 
 @router.get("/daily")
 async def api_daily(sociedad: str = Query("Chile")):
+    sociedad = _sanitizar_sociedad(sociedad)
     informe = orch.ciclo_diario(sociedad)
     return {
         "fecha": informe.fecha.isoformat(),
@@ -67,6 +79,7 @@ async def api_daily(sociedad: str = Query("Chile")):
 
 @router.get("/state")
 async def api_state(sociedad: str = Query("Chile")):
+    sociedad = _sanitizar_sociedad(sociedad)
     estado = store.cargar_estado(sociedad)
     if estado is None:
         return {"error": "No hay datos"}
@@ -75,6 +88,7 @@ async def api_state(sociedad: str = Query("Chile")):
 
 @router.get("/history")
 async def api_history(sociedad: str = Query("Chile")):
+    sociedad = _sanitizar_sociedad(sociedad)
     fechas = store.listar_estados(sociedad)
     estados = []
     for f in fechas[-14:]:

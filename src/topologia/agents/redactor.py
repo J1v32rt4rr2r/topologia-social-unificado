@@ -33,11 +33,15 @@ class Redactor(Agent):
         estudios: list[Estudio],
         historial: str = "",
         proyeccion: str = "",
+        analisis_formas: str = "",
+        graficos_generados: list[str] | None = None,
     ) -> InformeDiario:
         estado_str = self._formatear_estado(estado)
         ops_str = self._formatear_operaciones(operaciones)
         esp_str = self._formatear_especulaciones(especulaciones)
         est_str = self._formatear_estudios(estudios)
+        formas_str = analisis_formas or "Sin análisis de formas complejas disponible."
+        graf_str = self._formatear_graficos(graficos_generados)
 
         prompt = self.prompts.load("redactor_sintesis",
             estado_cultural=estado_str,
@@ -46,6 +50,8 @@ class Redactor(Agent):
             estudios=est_str,
             historial_reciente=historial or "Sin historial disponible.",
             proyeccion=proyeccion or "Sin proyección disponible.",
+            analisis_formas=formas_str,
+            graficos_generados=graf_str,
             fecha=estado.fecha.strftime("%Y-%m-%d"),
         )
 
@@ -68,6 +74,12 @@ class Redactor(Agent):
         for n in estado.nodos:
             frag = "⚠" if n.fragil else " "
             lineas.append(f"  [{frag}] {n.nodo_id}: M_m={n.dimension_m:.1f} M_l={n.dimension_l:.1f} M_s={n.dimension_s:.1f} δ={n.delta:.1f}°")
+        if estado.m_m:
+            lineas.append(f"\nFormas complejas (e^(2πi / m)):")
+            lineas.append(f"  M_m: m={estado.m_m:.3f} θ={estado.theta_m:.1f}°")
+            lineas.append(f"  M_l: m={estado.m_l:.3f} θ={estado.theta_l:.1f}°")
+            lineas.append(f"  M_s: m={estado.m_s:.3f} θ={estado.theta_s:.1f}°")
+            lineas.append(f"  Coherencia interna: {estado.coherencia_interna:.1f}°")
         return "\n".join(lineas)
 
     def _formatear_operaciones(self, ops: list[OperacionCinetica]) -> str:
@@ -101,6 +113,20 @@ class Redactor(Agent):
                 status = "✓" if analisis.confirmado else "✗"
                 lineas.append(f"  {dim}: {status} (confianza: {analisis.confianza:.2f})")
                 lineas.append(f"    {analisis.conclusion}")
+        return "\n".join(lineas)
+
+    def _formatear_graficos(self, graficos: list[str] | None = None) -> str:
+        GRAFICOS = {
+            "grafico_plano_complejo.png": "Vectores M_m, M_l, M_s en círculo unitario (coherencia estructural vs tensión transformadora)",
+            "grafico_rotacion_angular.png": "Δθ entre estado actual y anterior por dimensión",
+            "grafico_triangulo_coherencia.png": "Triángulo de coherencia entre las 3 formas complejas",
+            "grafico_radar_nodos.png": "Puntuaciones normalizadas de los 9 nodos por dimensión",
+            "grafico_mapa_calor_nodos.png": "Matriz 9×9: variación nodal por transversal (M_m, M_s, M_l) con antes/después/Δ",
+        }
+        if graficos:
+            lineas = [f"- {g}: {GRAFICOS.get(g, '')}" for g in graficos if g in GRAFICOS]
+        else:
+            lineas = [f"- {name}: {desc}" for name, desc in GRAFICOS.items()]
         return "\n".join(lineas)
 
     def _parsear_resultado(self, resultado: dict, estado: EstadoCultural, operaciones: list[OperacionCinetica]) -> InformeDiario:

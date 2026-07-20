@@ -9,23 +9,22 @@ ESPECULACIÓN:
 - Argumento del Artista: {argumento_artista}
 - Confianza declarada: {confianza_artista}
 
-INVESTIGACIÓN ADICIONAL REALIZADA:
-Se recopilaron más fuentes sobre el tema:
+INVESTIGACIÓN FORMAL (4 fases):
+
+Fase 1 — SOLICITAR INFORMACIÓN ADICIONAL
 {items_investigacion}
+Si la información es insuficiente, indica qué datos adicionales necesitarías.
 
-INSTRUCCIONES:
-1. Analiza tanto las noticias originales como la investigación adicional.
-2. Determina si desde tu dimensión (MATERIAL) el patrón se confirma:
+Fase 2 — COMPROBAR POSIBILIDAD
+¿Es posible que el patrón exista según los datos disponibles?
+Evalúa si la estructura del patrón es consistente con la evidencia material.
 
-   Para la FORMA del patrón:
-   - ¿Los datos concretos respaldan la estructura que el Artista percibe?
-   - ¿Hay evidencia mensurable que coincida?
+Fase 3 — VALIDAR REALIDAD
+¿El patrón realmente está ocurriendo o es solo una interpretación forzada?
+Distingue entre correlación y causalidad.
 
-   Para el SIGNIFICADO del patrón:
-   - ¿El contexto valórico o narrativo respalda la interpretación del Artista?
-   - ¿Hay discursos, valores o narrativas que coincidan?
-
-3. Produce tu veredicto para esta dimensión.
+Fase 4 — CONCLUSIÓN
+Establece el grado de POSIBILIDAD (¿podría ocurrir?) y REALIDAD (¿está ocurriendo?).
 
 FORMATO DE RESPUESTA (JSON):
 {
@@ -35,6 +34,8 @@ FORMATO DE RESPUESTA (JSON):
   "confianza": 0.75,
   "evidencia": "Los datos de producción minera muestran una caída del 12% consistente con la 'caída vertical' del patrón. Sin embargo, no hay evidencia concluyente de 'acumulación basal'...",
   "contraevidencia": "El factor externo (precio internacional del cobre) explica la caída sin necesidad del patrón propuesto.",
+  "posibilidad": "alta | media | baja",
+  "realidad": "confirmada | parcial | no_confirmada",
   "conclusion": "La forma del patrón se observa parcialmente. El significado no puede confirmarse con los datos disponibles."
 }
 
@@ -44,3 +45,5 @@ REGLAS:
 - contraevidencia es tan importante como la evidencia. Si la hay, menciónala.
 - Si no hay suficiente información para concluir, di "insuficiente" en conclusion.
 - No te dejes influir por la confianza declarada del Artista.
+- posibilidad indica si es factible que el patrón exista (independiente de si ya se manifiesta).
+- realidad indica si el patrón está efectivamente ocurriendo según los datos.

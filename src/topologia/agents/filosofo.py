@@ -12,7 +12,7 @@ NODOS_PREGUNTAS = {
     "ETICA_ESTETICA": "¿Qué principios éticos, cánones estéticos y moral?",
     "TECNOLOGIA": "¿Qué racionalidad tecnológica y episteme?",
     "EDUCACION": "¿Qué filosofía educativa, currículo y conocimiento valorado?",
-    "RELIGION": "¿Qué teología, doctrina, dogma y cosmovisión?",
+    "RELIGION": "¿Qué dogmas, ideologías, principios incuestionables y sistemas de creencias?",
 }
 
 
@@ -65,6 +65,7 @@ class Filosofo(Agent):
             significado_patron=kwargs.get("significado_patron", ""),
             items_originales=kwargs.get("items_originales", ""),
             argumento_artista=kwargs.get("argumento_artista", ""),
+            confianza_artista=kwargs.get("confianza_artista", "0.5"),
             items_investigacion=self.formatear_items(items_investigacion),
         )
         try:
@@ -77,6 +78,8 @@ class Filosofo(Agent):
                 "confianza": 0.0,
                 "evidencia": "Error en validación",
                 "contraevidencia": "",
+                "posibilidad": "",
+                "realidad": "",
                 "conclusion": "Error",
             }
         return AnalisisDim(**resultado)

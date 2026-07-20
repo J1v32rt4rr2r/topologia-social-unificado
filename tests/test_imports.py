@@ -10,7 +10,39 @@ from topologia.math.torus import mapear_a_toro_3d, coherencia_global
 from topologia.math.operations import detectar_operaciones
 from topologia.memoria.decisiones import DecisionDB
 from topologia.memoria.bloques import BloquesMemoria
+from topologia.paths import get_data_dir, get_memoria_dir, get_reportes_dir, get_estados_dir
 from topologia.storage.store import FileStore
+
+
+def test_sanitizar_sociedad():
+    from topologia.server.routers.dashboard import _sanitizar_sociedad as s
+    assert s("Chile") == "Chile"
+    assert s("  Chile  ") == "Chile"
+    assert s("") == "Chile"
+    assert s("../../../etc") == "Chile"
+    assert s("Costa Rica") == "Costa Rica"
+    print("[OK] Sanitizador de sociedad funciona")
+
+
+def test_orchestrator_imports():
+    from topologia.orchestrator import Orchestrator
+    o = Orchestrator()
+    assert o is not None
+    import topologia.models.schemas as s
+    assert hasattr(s, "InformeDiario")
+    print(f"[OK] Orchestrator instanciado, InformeDiario importable")
+
+
+def test_paths():
+    d = get_data_dir()
+    assert str(d).endswith("data") or str(d).endswith("data\\")
+    m = get_memoria_dir()
+    assert "memoria" in str(m)
+    r = get_reportes_dir()
+    assert "reportes" in str(r)
+    e = get_estados_dir()
+    assert "estados" in str(e)
+    print(f"[OK] Paths: data={d.parent.name}/{d.name}")
 
 
 def test_especulacion():

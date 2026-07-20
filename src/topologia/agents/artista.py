@@ -101,9 +101,18 @@ class Artista(Agent):
             return []
 
         patrones_nuevos = []
+        existentes = self.memoria.patrones()
+        max_id = 0
+        for p in existentes:
+            try:
+                num = int(p.id.split("-")[1])
+                if num > max_id:
+                    max_id = num
+            except (IndexError, ValueError):
+                pass
         for r in resultado:
             patron = PatronAnalogico(
-                id=f"P-{len(self.memoria.patrones()) + len(patrones_nuevos) + 1:04d}",
+                id=f"P-{max_id + len(patrones_nuevos) + 1:04d}",
                 forma=r.get("forma", ""),
                 significado=r.get("significado", ""),
                 origen_poetico=str(poema_path),

@@ -21,6 +21,12 @@ CACHE_DURACION = 300
 TIMEOUT_SEG = 15
 USER_AGENT = "TopologiaSocial/1.0 (+https://github.com/anomalyco/topologia-social)"
 
+_FUENTES_CHILENAS = [
+    "ciperchile", "elsiglo", "theclinic", "cambio21",
+    "elciudadano", "uchile", "trendtic", "gerencia",
+]
+_RE_CHILE = re.compile(r"\bchile\b|\bchilen[ao]s?\b", re.IGNORECASE)
+
 
 def _limpiar_html(texto: str) -> str:
     texto = _HTML_TAG_RE.sub(" ", texto)
@@ -162,7 +168,11 @@ def obtener_items(limite: int = 20, usar_cache: bool = True) -> list[ItemInforma
     for feed_cfg in _obtener_feeds_activos(config):
         items = _fetch_rss(feed_cfg["url"])
         logger.info(f"RSS {feed_cfg['url'].split('/')[2]}: {len(items)} items")
-        todos.extend(items)
+        for it in items:
+            if any(f in it.fuente for f in _FUENTES_CHILENAS):
+                todos.append(it)
+            elif _RE_CHILE.search(it.titulo + " " + (it.contenido or "")):
+                todos.append(it)
 
     for local_cfg in _obtener_fuentes_locales(config):
         items = _leer_fuente_local(local_cfg)

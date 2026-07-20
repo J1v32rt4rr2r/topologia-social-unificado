@@ -3,16 +3,33 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from typing import Any
 
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from topologia.logger import logger
+
 load_dotenv()
 
 
 class LLMClient:
+    _instance = None
+    _initialized = False
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self):
+        if not self._initialized:
+            self._init_client()
+            self._initialized = True
+
+    def _init_client(self):
         api_key = os.getenv("DEEPSEEK_API_KEY", os.getenv("OPENAI_API_KEY", ""))
         base_url = os.getenv("LLM_BASE_URL", "https://api.deepseek.com")
         self.modelo = os.getenv("LLM_MODELO", "deepseek-chat")
@@ -24,6 +41,7 @@ class LLMClient:
         temperatura: float = 0.2,
         max_tokens: int = 2048,
         formato_json: bool = False,
+        max_retries: int = 3,
     ) -> str:
         kwargs: dict[str, Any] = {
             "model": self.modelo,
@@ -33,8 +51,17 @@ class LLMClient:
         }
         if formato_json:
             kwargs["response_format"] = {"type": "json_object"}
-        respuesta = self.client.chat.completions.create(**kwargs)
-        return respuesta.choices[0].message.content or ""
+        for intento in range(max_retries):
+            try:
+                respuesta = self.client.chat.completions.create(**kwargs)
+                return respuesta.choices[0].message.content or ""
+            except Exception as e:
+                if intento < max_retries - 1:
+                    wait = 2 ** intento
+                    logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
+                    time.sleep(wait)
+                else:
+                    raise
 
     def generar_json(
         self,

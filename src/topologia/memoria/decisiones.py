@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from topologia.models.schemas import PatronAnalogico, EstadoPatron
+from topologia.paths import get_memoria_dir
 
 
 TIPOS_DECISION = ("preference", "decision", "pattern", "lesson", "observation")
@@ -16,7 +17,7 @@ class DecisionDB:
         if ruta:
             self.ruta = Path(ruta)
         else:
-            self.ruta = Path.home() / ".local" / "share" / "topologia-social" / "data" / "memoria"
+            self.ruta = get_memoria_dir()
         self.ruta.mkdir(parents=True, exist_ok=True)
         self._archivo = self.ruta / "decisions.json"
         self._patrones = self.ruta / "patrones.json"

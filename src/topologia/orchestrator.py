@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+import math
 
 from topologia.agents.artista import Artista
 from topologia.agents.estadista import Estadista
@@ -9,17 +9,38 @@ from topologia.agents.redactor import Redactor
 from topologia.agents.sociologo import Sociologo
 from topologia.logger import logger
 from topologia.math.operations import detectar_operaciones
-from topologia.math.torus import calcular_angulos, calcular_delta, coherencia_global
+from topologia.math.torus import (
+    calcular_angulos,
+    calcular_delta,
+    coherencia_formas,
+    coherencia_global,
+    detectar_vuelco,
+    diferencia_angular,
+    forma_cultural_compleja,
+    forma_transversal,
+    tension_sistema,
+    theta_cultura,
+    theta_nodo,
+)
 from topologia.memoria.decisiones import DecisionDB
 from topologia.models.schemas import (
     EstadoCultural,
     EstadoPatron,
     Estudio,
     EvaluacionNodo,
+    InformeDiario,
 )
 from topologia.storage.store import FileStore
-from topologia.web.rss import obtener_items
+from topologia.web.brechas import (
+    clasificar_items_por_nodo_semantico,
+    detectar_brechas,
+    resumen_brechas,
+    terminos_para_nodo,
+)
+from topologia.web.rss import obtener_items as obtener_items_rss
 from topologia.web.search import buscar_para_estudio
+from topologia.web.bcn import obtener_items as obtener_items_bcn
+from topologia.web.resumen import obtener_items as obtener_items_resumen
 
 
 NODOS_CULTURALES = [
@@ -38,9 +59,10 @@ class Orchestrator:
         self.memoria = DecisionDB()
         self.store = FileStore()
 
-    def observar(self, sociedad: str = "Chile") -> EstadoCultural:
+    def observar(self, sociedad: str = "Chile", items: list | None = None) -> EstadoCultural:
         logger.info(f"Iniciando observación: {sociedad}")
-        items = obtener_items(limite=30)
+        if items is None:
+            items = obtener_items_rss(limite=30)
 
         evaluaciones: list[EvaluacionNodo] = []
         ultimo_estado = self.store.cargar_estado(sociedad)
@@ -63,7 +85,11 @@ class Orchestrator:
                         just_anterior_l = n.justificacion_l
                         just_anterior_s = n.justificacion_s
 
-            items_filtrados = [it for it in items if nodo_id.lower() in (it.titulo + it.contenido).lower()]
+            terminos = terminos_para_nodo(nodo_id)
+            items_filtrados = [
+                it for it in items
+                if any(t in (it.titulo + it.contenido).lower() for t in terminos)
+            ]
             items_filtrados = items_filtrados or items[:5]
 
             eval_m = self.estadista.evaluar_nodo(nodo_id, items_filtrados, score_anterior_m, just_anterior_m)
@@ -86,13 +112,24 @@ class Orchestrator:
                 score_anterior_l=score_anterior_l,
                 score_anterior_s=score_anterior_s,
             )
-            angulos = calcular_angulos(eval_m.dimension_m, eval_l.dimension_l, eval_s.dimension_s)
-            evaluacion.delta = calcular_delta(angulos)
-            evaluacion.fragil = evaluacion.delta >= 70
             evaluaciones.append(evaluacion)
 
         vals = [(n.dimension_m, n.dimension_l, n.dimension_s) for n in evaluaciones]
         coh = coherencia_global(vals)
+
+        # Cálculo orbital (diagrama de fase)
+        nodos_ml = [n.dimension_l for n in evaluaciones]
+        t_cultura = theta_cultura(nodos_ml)
+        for n in evaluaciones:
+            n.delta = calcular_delta(calcular_angulos(n.dimension_m, n.dimension_l, n.dimension_s))
+            n.fragil = n.delta >= 70
+
+        tension = tension_sistema([
+            {"dimension_l": n.dimension_l, "dimension_m": n.dimension_m} for n in evaluaciones
+        ])
+        era_k = 1
+        if ultimo_estado:
+            era_k = ultimo_estado.era_k + (1 if detectar_vuelco(tension, umbral=800.0) else 0)
 
         estado = EstadoCultural(
             sociedad=sociedad,
@@ -103,23 +140,55 @@ class Orchestrator:
             coherente=coh["coherente"],
             nodos=evaluaciones,
             nodos_fragiles=[n.nodo_id for n in evaluaciones if n.fragil],
+            era_k=era_k,
+            theta_cultura=round(t_cultura, 1),
+            tension_total=round(tension, 1),
+            vuelco_detectado=era_k > (ultimo_estado.era_k if ultimo_estado else 0),
         )
 
+        # Formas culturales complejas (e^(2πi / m), m = Σ(v/9.9))
+        for dim_key, attr_m, attr_theta in [
+            ("m", "m_m", "theta_m"),
+            ("l", "m_l", "theta_l"),
+            ("s", "m_s", "theta_s"),
+        ]:
+            vals = [getattr(n, f"dimension_{dim_key}") / 9.9 for n in evaluaciones]
+            ft = forma_transversal(vals)
+            setattr(estado, attr_m, round(ft["M"], 3))
+            setattr(estado, attr_theta, round(math.degrees(ft["angulo"]), 1))
+        Fs = [
+            forma_cultural_compleja(getattr(estado, f"m_{d}"))
+            for d in ("m", "l", "s")
+        ]
+        estado.coherencia_interna = round(math.degrees(coherencia_formas(Fs)), 1)
+
         self.store.guardar_estado(estado)
-        self.memoria.registrar("observation", f"Observacion {sociedad}: M=({estado.M_m}, {estado.M_l}, {estado.M_s}), delta={estado.delta_promedio}")
+        self.memoria.registrar("observation", f"Observacion {sociedad}: M=({estado.M_m},{estado.M_l},{estado.M_s}) δ={estado.delta_promedio} m=({estado.m_m},{estado.m_l},{estado.m_s}) θ=({estado.theta_m}°,{estado.theta_l}°,{estado.theta_s}°)")
         logger.info(f"Observacion completada: delta={estado.delta_promedio:.1f}")
 
         return estado
 
     def ciclo_diario(self, sociedad: str = "Chile") -> InformeDiario:
-        from topologia.reportes.informe import generar_informe
+        from topologia.reportes.informe import generar_informe_html
 
         logger.info("=== CICLO DIARIO ===")
 
-        items = obtener_items(limite=20)
+        items_rss = obtener_items_rss(limite=20)
+        items_bcn = obtener_items_bcn(limite=3)
+        items_resumen = obtener_items_resumen(limite=10)
+        items = items_rss + items_bcn + items_resumen
         items_por_nodo = self._clasificar_items_por_nodo(items)
 
-        paso1 = self.observar(sociedad)
+        # Fase 3: scraping dirigido para nodos con déficit de datos
+        brechas_iniciales = detectar_brechas(estado=None, items_por_nodo=items_por_nodo)
+        from topologia.web.scraping import recolectar_para_brechas
+        items_scraping = recolectar_para_brechas(brechas_iniciales)
+        if items_scraping:
+            logger.info(f"Scraping dirigido: {len(items_scraping)} items adicionales")
+            items.extend(items_scraping)
+            items_por_nodo = self._clasificar_items_por_nodo(items)
+
+        paso1 = self.observar(sociedad, items=items)
         operaciones = detectar_operaciones(paso1)
 
         especulaciones = self.artista.especular(items)
@@ -127,9 +196,35 @@ class Orchestrator:
         estudios = self._ejecutar_estudios(especulaciones, paso1)
 
         historial = self._obtener_historial_reciente(sociedad)
-        informe = self.redactor.sintetizar(paso1, operaciones, especulaciones, estudios, historial)
+        analisis_formas = self._analizar_formas_complejas(paso1)
+        graficos = [
+            "grafico_plano_complejo.png",
+            "grafico_rotacion_angular.png",
+            "grafico_triangulo_coherencia.png",
+            "grafico_radar_nodos.png",
+            "grafico_mapa_calor_nodos.png",
+        ]
+        informe = self.redactor.sintetizar(
+            paso1, operaciones, especulaciones, estudios, historial,
+            analisis_formas=analisis_formas,
+            graficos_generados=graficos,
+        )
 
-        ruta_informe = generar_informe(
+        brechas = detectar_brechas(estado=paso1, items_por_nodo=items_por_nodo)
+        resumen = resumen_brechas(brechas)
+        logger.info(f"Cobertura de datos: {resumen}")
+        if items_scraping:
+            logger.info(f"Items de scraping: {len(items_scraping)} (incluidos en cobertura)")
+        informe.resumen_ejecutivo = (informe.resumen_ejecutivo or "") + f"\n\n[COBERTURA] {resumen}"
+
+        try:
+            from scripts.analisis_graficos import generar_todos
+            generar_todos(sociedad)
+            logger.info("Gráficos generados durante el ciclo diario")
+        except Exception as e:
+            logger.warning(f"No se pudieron generar gráficos: {e}")
+
+        ruta_informe = generar_informe_html(
             sociedad=sociedad,
             estado=paso1,
             operaciones=operaciones,
@@ -137,6 +232,7 @@ class Orchestrator:
             estudios=estudios,
             items_por_nodo=items_por_nodo,
             informe_redactor=informe,
+            brechas=brechas,
         )
         logger.info(f"Informe generado: {ruta_informe}")
         logger.info(f"Resumen: {informe.resumen_ejecutivo}")
@@ -144,11 +240,9 @@ class Orchestrator:
         return informe
 
     def _clasificar_items_por_nodo(self, items: list) -> dict[str, list]:
-        mapa: dict[str, list] = {}
-        for nodo_id in NODOS_CULTURALES:
-            filtrados = [it for it in items if nodo_id.lower() in (it.titulo + it.contenido).lower()]
-            mapa[nodo_id] = filtrados or items[:3]
-        return mapa
+        # Delega al módulo de brechas que usa palabras clave expandidas (config/palabras_clave.yaml)
+        # en vez de buscar solo el nombre exacto del nodo en el texto.
+        return clasificar_items_por_nodo_semantico(items)
 
     def _ejecutar_estudios(self, especulaciones: list, estado: EstadoCultural) -> list[Estudio]:
         estudios: list[Estudio] = []
@@ -178,6 +272,7 @@ class Orchestrator:
                     significado_patron=patron_info["significado"],
                     items_originales=", ".join(esp.items_relacionados),
                     argumento_artista=esp.argumento,
+                    confianza_artista=str(esp.confianza),
                 )
                 analisis_s = self.sociologo.validar_estudio(
                     items_busqueda,
@@ -186,6 +281,7 @@ class Orchestrator:
                     significado_patron=patron_info["significado"],
                     items_originales=", ".join(esp.items_relacionados),
                     argumento_artista=esp.argumento,
+                    confianza_artista=str(esp.confianza),
                 )
 
                 confirmados = [a.confirmado for a in [analisis_m, analisis_l, analisis_s]]
@@ -225,6 +321,50 @@ class Orchestrator:
                 logger.error(f"Error en estudio de {esp.patron_id}: {e}")
 
         return estudios
+
+    def _analizar_formas_complejas(self, estado_actual: EstadoCultural) -> str:
+        """Compara las formas complejas del estado actual vs el anterior."""
+        fechas = self.store.listar_estados(estado_actual.sociedad)
+        anterior = self.store.cargar_estado(
+            estado_actual.sociedad,
+            fecha=fechas[-2] if len(fechas) >= 2 else None,
+        )
+
+        lineas = ["=== ANÁLISIS DE FORMAS COMPLEJAS (e^(2πi / m)) ==="]
+
+        for dim, nombre in [("m", "M_m"), ("l", "M_l"), ("s", "M_s")]:
+            m_act = getattr(estado_actual, f"m_{dim}")
+            th_act = getattr(estado_actual, f"theta_{dim}")
+
+            if anterior:
+                m_ant = getattr(anterior, f"m_{dim}")
+                th_ant = getattr(anterior, f"theta_{dim}")
+                delta_th = abs(th_act - th_ant)
+                dir_str = {"m": "↻ horario", "l": "↺ antihorario", "s": "→ estable"}[
+                    "m" if th_act >= th_ant else "l"
+                ]
+                lineas.append(
+                    f"- {nombre}: M={m_ant:.3f}\u2192M\u2032={m_act:.3f}  "
+                    f"\u03b8 {th_ant:.1f}\u00b0\u2192{th_act:.1f}\u00b0  "
+                    f"\u0394\u03b8={delta_th:.1f}\u00b0 ({dir_str})"
+                )
+            else:
+                lineas.append(f"- {nombre}: M={m_act:.3f} \u03b8={th_act:.1f}\u00b0 (sin ref. anterior)")
+
+        lineas.append(
+            f"- Coherencia interna: {estado_actual.coherencia_interna:.1f}° "
+            f"entre las 3 formas (bajo = coherente)"
+        )
+
+        diffs = {
+            "M_m↔M_l": abs(estado_actual.theta_m - estado_actual.theta_l),
+            "M_l↔M_s": abs(estado_actual.theta_l - estado_actual.theta_s),
+            "M_s↔M_m": abs(estado_actual.theta_s - estado_actual.theta_m),
+        }
+        max_pair = max(diffs, key=diffs.get)
+        lineas.append(f"- Mayor divergencia: {max_pair} = {diffs[max_pair]:.1f}°")
+
+        return "\n".join(lineas)
 
     def _obtener_historial_reciente(self, sociedad: str) -> str:
         fechas = self.store.listar_estados(sociedad)

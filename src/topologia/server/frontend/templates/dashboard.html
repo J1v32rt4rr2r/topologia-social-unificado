@@ -63,7 +63,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f1a; c
 <div class="container">
   <div class="grid">
     <div class="card">
-      <h2>Toro Cultural</h2>
+      <h2>Diagrama Orbital Cultural</h2>
       <div class="toro-container">
         <canvas id="toro-canvas"></canvas>
       </div>
@@ -118,10 +118,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let scene, camera, renderer, controls;
-let nodoGrupos = [];
+let escenaGrupos = [];
 let animacionId = null;
+let lineaCultura = null;
+let trayectorias = [];
 
-function initToro() {
+function initEscena() {
   const canvas = document.getElementById('toro-canvas');
   const container = canvas.parentElement;
 
@@ -129,7 +131,7 @@ function initToro() {
   scene.background = new THREE.Color(0x0f0f1a);
 
   camera = new THREE.PerspectiveCamera(45, container.clientWidth / 500, 0.1, 100);
-  camera.position.set(6, 4, 6);
+  camera.position.set(6, 5, 6);
 
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, 500);
@@ -139,7 +141,7 @@ function initToro() {
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.autoRotate = true;
-  controls.autoRotateSpeed = 1.5;
+  controls.autoRotateSpeed = 1.0;
 
   const luzAmb = new THREE.AmbientLight(0x404060, 0.6);
   scene.add(luzAmb);
@@ -159,74 +161,118 @@ function initToro() {
     camera.updateProjectionMatrix();
   });
 
-  scene.add(new THREE.AxesHelper(4));
+  // Ejes rotulados
+  scene.add(new THREE.AxesHelper(5));
 }
 
-function dibujarToro(R = 2.5, r = 1.2) {
-  const torusGeo = new THREE.TorusGeometry(R, r, 32, 64);
-  const torusMat = new THREE.MeshPhongMaterial({
-    color: 0x4466aa,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.25,
-  });
-  const torus = new THREE.Mesh(torusGeo, torusMat);
-  scene.add(torus);
-
-  const torusSolid = new THREE.Mesh(
-    new THREE.TorusGeometry(R, r, 24, 48),
-    new THREE.MeshPhongMaterial({
-      color: 0x2244aa,
-      transparent: true,
-      opacity: 0.08,
-      side: THREE.DoubleSide,
-    })
-  );
-  scene.add(torusSolid);
+function limpiarEscena() {
+  escenaGrupos.forEach(g => scene.remove(g));
+  escenaGrupos = [];
+  trayectorias.forEach(t => scene.remove(t));
+  trayectorias = [];
+  if (lineaCultura) { scene.remove(lineaCultura); lineaCultura = null; }
 }
 
-function mapearAToro(m, l, s, R = 2.5, r = 1.2) {
-  const u = (m / 9.9) * Math.PI * 2;
-  const v = (l / 9.9) * Math.PI * 2;
-  const x = (R + r * Math.cos(u)) * Math.cos(v);
-  const y = (R + r * Math.cos(u)) * Math.sin(v);
-  const z = r * Math.sin(u);
-  return { x, y, z, intensidad: s / 9.9 };
+// Funciones orbitales del lado del cliente
+function thetaNodo(M_l) {
+  return 360 / Math.max(M_l, 0.1);
 }
 
-function dibujarNodos(nodos) {
-  nodoGrupos.forEach(g => scene.remove(g));
-  nodoGrupos = [];
+function thetaCultura(promedioMl) {
+  if (!promedioMl || promedioMl <= 0) return 0;
+  return 360 / promedioMl;
+}
 
-  const R = 2.5, r = 1.2;
+function posicionOrbital(thetaN, thetaC, z, M_s) {
+  const radio = 2.5;
+  const angX = (thetaN / 360) * Math.PI * 2;
+  const angY = (thetaN / 360) * Math.PI * 2;
+  const x = radio * Math.sin(angX);
+  const y = radio * Math.cos(angY) * 0.8 + 0.5;
+  const zPos = z * 1.0;
+  const grosor = 0.02 + (M_s / 9.9) * 0.15;
+  return { x, y, z: zPos, grosor };
+}
 
+function dibujarOrbital(data) {
+  limpiarEscena();
+
+  const nodos = data.nodos || [];
+  const historial = data.historial || [];
+  const tiempoActual = historial.length - 1;
+
+  // Calcular promedios actuales
+  const mlProm = nodos.reduce((s, n) => s + n.l, 0) / (nodos.length || 1);
+  const tc = thetaCultura(mlProm);
+
+  // Plano de referencia (θ_cultura como línea Y)
+  const geomLinea = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, tc / 90, -1),
+    new THREE.Vector3(0, tc / 90, nodos.length + 2),
+  ]);
+  lineaCultura = new THREE.Line(geomLinea, new THREE.LineBasicMaterial({
+    color: 0x4466aa, transparent: true, opacity: 0.2, dashSize: 0.1, gapSize: 0.1,
+  }));
+  scene.add(lineaCultura);
+
+  // Etiqueta θ_cultura
+  const lblCanvas = document.createElement('canvas');
+  lblCanvas.width = 256; lblCanvas.height = 48;
+  const lblCtx = lblCanvas.getContext('2d');
+  lblCtx.fillStyle = 'rgba(68,102,170,0.7)';
+  lblCtx.font = '16px system-ui';
+  lblCtx.fillText(`θ_cultura = ${tc.toFixed(1)}°`, 8, 28);
+  const lblTex = new THREE.CanvasTexture(lblCanvas);
+  const lblMat = new THREE.SpriteMaterial({ map: lblTex, transparent: true });
+  const lblSprite = new THREE.Sprite(lblMat);
+  lblSprite.position.set(-0.5, tc / 90 + 0.3, -0.8);
+  lblSprite.scale.set(1.8, 0.3, 1);
+  scene.add(lblSprite);
+  escenaGrupos.push(lblSprite);
+
+  // Nodos actuales (z = tiempoActual)
   nodos.forEach(n => {
-    const pos = mapearAToro(n.m, n.l, n.s, R, r);
+    const tn = thetaNodo(n.l);
+    const pos = posicionOrbital(tn, tc, tiempoActual, n.s);
     const grupo = new THREE.Group();
+    const radio = n.fragil ? 0.22 : 0.16;
 
-    const radio = n.fragil ? 0.25 : 0.18;
-    const color = new THREE.Color().setHSL(0.6 - pos.intensidad * 0.5, 0.9, 0.5);
+    // Color basado en arrastre gravimétrico (M_m * M_s * delta_theta)
+    const deltaTheta = Math.abs(tn - tc);
+    const arrastre = n.m * n.s * (deltaTheta / 360);
+    const hue = 0.55 - Math.min(arrastre, 1) * 0.4;
+    const color = new THREE.Color().setHSL(hue, 0.9, 0.5);
 
     const esfera = new THREE.Mesh(
       new THREE.SphereGeometry(radio, 16, 16),
       new THREE.MeshPhongMaterial({
         color: color,
         emissive: color,
-        emissiveIntensity: 0.3,
+        emissiveIntensity: 0.2 + (n.m / 9.9) * 0.4,
       })
     );
     esfera.position.set(pos.x, pos.y, pos.z);
     esfera.userData = { nodoId: n.id };
     grupo.add(esfera);
 
+    // Halo gravitacional (M_m como peso visual)
+    const halo = new THREE.Mesh(
+      new THREE.SphereGeometry(radio * (1 + n.m / 20), 16, 16),
+      new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.08 + (n.m / 9.9) * 0.15,
+      })
+    );
+    halo.position.set(pos.x, pos.y, pos.z);
+    grupo.add(halo);
+
+    // Anillo frágil
     if (n.fragil) {
       const anillo = new THREE.Mesh(
-        new THREE.RingGeometry(radio * 1.5, radio * 2, 24),
+        new THREE.RingGeometry(radio * 1.6, radio * 2.2, 24),
         new THREE.MeshBasicMaterial({
-          color: 0xe94560,
-          transparent: true,
-          opacity: 0.6,
-          side: THREE.DoubleSide,
+          color: 0xe94560, transparent: true, opacity: 0.6, side: THREE.DoubleSide,
         })
       );
       anillo.position.set(pos.x, pos.y, pos.z);
@@ -234,43 +280,63 @@ function dibujarNodos(nodos) {
       grupo.add(anillo);
     }
 
-    // Etiqueta con sprite
-    const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d');
+    // Etiqueta
+    const elCanvas = document.createElement('canvas');
+    elCanvas.width = 256; elCanvas.height = 64;
+    const ctx = elCanvas.getContext('2d');
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.roundRect(0, 0, 256, 64, 8);
-    ctx.fill();
+    ctx.roundRect(0, 0, 256, 64, 8); ctx.fill();
     ctx.fillStyle = n.fragil ? '#e94560' : '#ffffff';
-    ctx.font = 'bold 24px system-ui';
+    ctx.font = 'bold 22px system-ui';
     ctx.textAlign = 'center';
-    ctx.fillText(n.id, 128, 40);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
-    const sprite = new THREE.Sprite(spriteMat);
+    ctx.fillText(`${n.id}  δ=${n.delta.toFixed(0)}°`, 128, 40);
+    const tex = new THREE.CanvasTexture(elCanvas);
+    const sMat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+    const sprite = new THREE.Sprite(sMat);
     sprite.position.set(pos.x, pos.y - 0.4, pos.z);
-    sprite.scale.set(1.2, 0.3, 1);
+    sprite.scale.set(1.4, 0.35, 1);
     grupo.add(sprite);
 
-    // Línea al centro
-    const linea = new THREE.Mesh(
-      new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(pos.x, pos.y, pos.z),
-        new THREE.Vector3(0, 0, 0),
-      ]),
-      new THREE.LineBasicMaterial({
-        color: 0x4466aa,
-        transparent: true,
-        opacity: 0.15,
-      })
-    );
-    grupo.add(linea);
-
     scene.add(grupo);
-    nodoGrupos.push(grupo);
+    escenaGrupos.push(grupo);
   });
+
+  // Cintas orbitales (trayectoria histórica en Z)
+  if (historial.length >= 2) {
+    const nodosIds = [...new Set(nodos.map(n => n.id))];
+    nodosIds.forEach(id => {
+      const puntos = [];
+      const grosorPuntos = [];
+      historial.forEach((h, zi) => {
+        const hn = (h.nodos || []).find(nx => nx.id === id);
+        if (hn) {
+          const tn = thetaNodo(hn.l);
+          const pos = posicionOrbital(tn, tc, zi, hn.s);
+          puntos.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+          grosorPuntos.push(pos.grosor);
+        }
+      });
+      if (puntos.length < 2) return;
+
+      // Cinta como tubo de grosor variable
+      const curva = new THREE.CatmullRomCurve3(puntos);
+      const tubeGeo = new THREE.TubeGeometry(curva, puntos.length * 4, 0.04, 6, false);
+      const col = new THREE.Color().setHSL(0.55, 0.8, 0.4);
+      const tubeMat = new THREE.MeshPhongMaterial({
+        color: col, emissive: col, emissiveIntensity: 0.15,
+        transparent: true, opacity: 0.4, side: THREE.DoubleSide,
+      });
+      const tube = new THREE.Mesh(tubeGeo, tubeMat);
+      scene.add(tube);
+      trayectorias.push(tube);
+    });
+  }
+
+  // Grid horizontal de referencia
+  const gridHelper = new THREE.GridHelper(6, 10, 0x4466aa, 0x2a2a4a);
+  gridHelper.position.y = -0.5;
+  scene.add(gridHelper);
+  escenaGrupos.push(gridHelper);
 }
 
 function animar() {
@@ -294,8 +360,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
   };
 }
 
-initToro();
-dibujarToro();
+initEscena();
 animar();
 
 const raycaster = new THREE.Raycaster();
@@ -335,9 +400,9 @@ window.mostrarInfoNodo = function(nodoId) {
   document.getElementById('nodo-info-just').innerHTML = justHtml;
 };
 
-window.actualizarToro = function(nodos) {
-  nodosDataGlobal = nodos || [];
-  dibujarNodos(nodos || []);
+window.actualizarToro = function(data) {
+  nodosDataGlobal = (data && data.nodos) || [];
+  dibujarOrbital(data || { nodos: [], historial: [] });
 };
 </script>
 
@@ -365,7 +430,7 @@ async function cargarDatos() {
     document.getElementById('coherencia-valor').textContent = data.coherente ? 'Sí' : 'NO';
 
     // Toro
-    if (window.actualizarToro) window.actualizarToro(data.nodos);
+    if (window.actualizarToro) window.actualizarToro(data);
 
     // Alertas
     const alertasEl = document.getElementById('alertas-container');

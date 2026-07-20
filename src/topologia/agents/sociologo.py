@@ -12,7 +12,7 @@ NODOS_PREGUNTAS = {
     "ETICA_ESTETICA": "¿Cuáles son las normas compartidas, el gusto colectivo y el juicio social?",
     "TECNOLOGIA": "¿Cómo son las comunidades técnicas y la brecha digital?",
     "EDUCACION": "¿Cómo es el aprendizaje social, la mentoría y la transmisión oral?",
-    "RELIGION": "¿Cómo es la comunidad de fe, el ritual colectivo y la congregación?",
+    "RELIGION": "¿Cómo es la polarización ideológica, el sectarismo y la adhesión a dogmas?",
 }
 
 
@@ -65,6 +65,7 @@ class Sociologo(Agent):
             significado_patron=kwargs.get("significado_patron", ""),
             items_originales=kwargs.get("items_originales", ""),
             argumento_artista=kwargs.get("argumento_artista", ""),
+            confianza_artista=kwargs.get("confianza_artista", "0.5"),
             items_investigacion=self.formatear_items(items_investigacion),
         )
         try:
@@ -77,6 +78,8 @@ class Sociologo(Agent):
                 "confianza": 0.0,
                 "evidencia": "Error en validación",
                 "contraevidencia": "",
+                "posibilidad": "",
+                "realidad": "",
                 "conclusion": "Error",
             }
         return AnalisisDim(**resultado)

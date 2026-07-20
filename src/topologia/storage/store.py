@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 
 from topologia.models.schemas import EstadoCultural, PatronAnalogico
+from topologia.paths import get_data_dir
 
 
 class FileStore:
@@ -14,7 +15,7 @@ class FileStore:
         if data_dir:
             self.base = Path(data_dir)
         else:
-            self.base = Path.home() / ".local" / "share" / "topologia-social" / "data"
+            self.base = get_data_dir()
         self.base.mkdir(parents=True, exist_ok=True)
         (self.base / "estados").mkdir(exist_ok=True)
         (self.base / "estudios").mkdir(exist_ok=True)
