@@ -7,3 +7,5 @@ build/
 *.local
 data/cache/
 data/local/
+reportes/
+informe.html

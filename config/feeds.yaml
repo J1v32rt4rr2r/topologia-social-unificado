@@ -26,13 +26,55 @@ rss:
     activo: false
   - url: "https://www.gerencia.cl/rss"
     activo: true
-  # Fuentes inactivas (no devuelven items actualmente)
+  # Fuentes inactivas (RSS bloqueado; reemplazado por scraping Espectro B)
   - url: "https://feeds.emol.com/emol/rss/portada"
     activo: false
   - url: "https://www.latercera.com/feed/"
     activo: false
   - url: "https://www.biobiochile.cl/feed"
     activo: false
+
+# Fase 2 — Espectro B: scraping Playwright (RSS bloqueado en todos)
+espectro_b:
+  emol:
+    activo: true
+    etiqueta: "Espectro B/Emol"
+    url: "https://www.emol.com"
+  latercera:
+    activo: true
+    etiqueta: "Espectro B/La Tercera"
+    url: "https://www.latercera.com"
+  biobio:
+    activo: true
+    etiqueta: "Espectro B/BioBio"
+    url: "https://www.biobiochile.cl"
+  canal13:
+    activo: true
+    etiqueta: "Espectro B/Canal 13"
+    url: "https://www.canal13.cl"
+  tvn:
+    activo: true
+    etiqueta: "Espectro B/TVN"
+    url: "https://www.24horas.cl"
+  meganoticias:
+    activo: true
+    etiqueta: "Espectro B/Meganoticias"
+    url: "https://www.meganoticias.cl"
+
+# Fase 4 — Discursiva de masas
+discursiva_masas:
+  youtube:
+    activo: true
+    max_resultados: 10
+  reddit:
+    activo: false
+    subreddit: "chile"
+    seccion: "hot"
+    max_resultados: 15
+  google_trends:
+    activo: true
+    timeframe: "now 7-d"
+    max_items: 10
 
 fuentes_locales:
   - ruta: "data/local/noticias.txt"

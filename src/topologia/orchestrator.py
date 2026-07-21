@@ -41,6 +41,9 @@ from topologia.web.rss import obtener_items as obtener_items_rss
 from topologia.web.search import buscar_para_estudio
 from topologia.web.bcn import obtener_items as obtener_items_bcn
 from topologia.web.resumen import obtener_items as obtener_items_resumen
+from topologia.web.youtube import buscar as buscar_youtube
+from topologia.web.espectro_b import obtener_items as obtener_items_espectro_b
+from topologia.web.tendencias import obtener_tendencias
 
 
 NODOS_CULTURALES = [
@@ -177,6 +180,24 @@ class Orchestrator:
         items_bcn = obtener_items_bcn(limite=3)
         items_resumen = obtener_items_resumen(limite=10)
         items = items_rss + items_bcn + items_resumen
+
+        # Fase 2 (Espectro B): medios mainstream via Playwright
+        items_espectro_b = obtener_items_espectro_b(limite_por_medio=3)
+        if items_espectro_b:
+            logger.info(f"Espectro B: {len(items_espectro_b)} items agregados")
+            items.extend(items_espectro_b)
+
+        # Fase 4: discursiva de masas
+        items_youtube = buscar_youtube(query="Chile", max_resultados=10)
+        if items_youtube:
+            logger.info(f"YouTube: {len(items_youtube)} videos")
+            items.extend(items_youtube)
+
+        items_tendencias = obtener_tendencias(max_items=10)
+        if items_tendencias:
+            logger.info(f"Google Trends: {len(items_tendencias)} términos")
+            items.extend(items_tendencias)
+
         items_por_nodo = self._clasificar_items_por_nodo(items)
 
         # Fase 3: scraping dirigido para nodos con déficit de datos
