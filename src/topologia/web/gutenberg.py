@@ -9,7 +9,13 @@ from topologia.models.schemas import ItemInformativo
 
 
 GUTENDEX_API = "https://gutendex.com/books"
-USER_AGENT = "TopologiaSocial/1.0 (+https://github.com/anomalyco/topologia-social)"
+USER_AGENT = (
+    "TopologiaSocial/2.0 "
+    "(Proyecto de investigacion sociologica; "
+    "monitoreo de clima cultural chileno; "
+    "https://github.com/J1v32rt4rr2r/topologia-social-unificado; "
+    "contacto: j1v32rt4rr2r@proton.me)"
+)
 TIMEOUT = 15
 
 

@@ -1,18 +1,18 @@
 bcn:
   items_por_nodo:
-    POLITICA: 4
+    POLITICA: 5
   proporcion_relevantes: 1.0
-  total_items: 4
+  total_items: 5
 cambio21.cl:
   items_por_nodo:
     ETICA_ESTETICA: 2
     LENGUAJE: 2
-    POLITICA: 8
-    RELIGION: 2
-    SEXUALIDAD: 3
-    TECNOLOGIA: 10
+    POLITICA: 11
+    RELIGION: 3
+    SEXUALIDAD: 5
+    TECNOLOGIA: 14
   proporcion_relevantes: 1.0
-  total_items: 27
+  total_items: 37
 duckduckgo:
   items_por_nodo:
     ECONOMIA: 4
@@ -24,25 +24,25 @@ duckduckgo:
   total_items: 16
 elsiglo.cl:
   items_por_nodo:
-    LENGUAJE: 2
-    POLITICA: 4
-    RELIGION: 2
-    TECNOLOGIA: 4
-    TRABAJO: 2
+    LENGUAJE: 3
+    POLITICA: 6
+    RELIGION: 3
+    TECNOLOGIA: 6
+    TRABAJO: 3
   proporcion_relevantes: 1.0
-  total_items: 14
+  total_items: 21
 espectro b/tvn:
-  items_por_nodo:
-    POLITICA: 1
-    TECNOLOGIA: 1
-  proporcion_relevantes: 1.0
-  total_items: 2
-feeds.elpais.com:
   items_por_nodo:
     POLITICA: 2
     TECNOLOGIA: 2
   proporcion_relevantes: 1.0
   total_items: 4
+feeds.elpais.com:
+  items_por_nodo:
+    POLITICA: 3
+    TECNOLOGIA: 3
+  proporcion_relevantes: 1.0
+  total_items: 6
 google_trends:
   items_por_nodo:
     EDUCACION: 1
@@ -64,14 +64,14 @@ radio.uchile.cl:
   total_items: 36
 resumen.cl:
   items_por_nodo:
-    ECONOMIA: 4
-    EDUCACION: 4
-    LENGUAJE: 1
-    POLITICA: 4
-    RELIGION: 4
-    TECNOLOGIA: 12
+    ECONOMIA: 5
+    EDUCACION: 5
+    LENGUAJE: 2
+    POLITICA: 5
+    RELIGION: 5
+    TECNOLOGIA: 15
   proporcion_relevantes: 1.0
-  total_items: 29
+  total_items: 37
 scraping:educacion:
   items_por_nodo:
     POLITICA: 1
@@ -96,59 +96,60 @@ scraping:trabajo:
   total_items: 20
 theclinic.cl:
   items_por_nodo:
-    ECONOMIA: 2
+    ECONOMIA: 3
     LENGUAJE: 2
-    POLITICA: 8
-    RELIGION: 9
-    TECNOLOGIA: 11
+    POLITICA: 10
+    RELIGION: 10
+    TECNOLOGIA: 12
     TRABAJO: 1
   proporcion_relevantes: 1.0
-  total_items: 33
+  total_items: 38
 www.ciperchile.cl:
   items_por_nodo:
-    POLITICA: 2
-    TECNOLOGIA: 2
+    POLITICA: 3
+    TECNOLOGIA: 3
   proporcion_relevantes: 1.0
-  total_items: 4
+  total_items: 6
 www.elciudadano.com:
   items_por_nodo:
-    ECONOMIA: 12
+    ECONOMIA: 15
     LENGUAJE: 3
-    POLITICA: 22
-    RELIGION: 6
-    TECNOLOGIA: 32
+    POLITICA: 28
+    RELIGION: 7
+    SEXUALIDAD: 1
+    TECNOLOGIA: 39
   proporcion_relevantes: 1.0
-  total_items: 75
+  total_items: 93
 youtube/dnews:
   items_por_nodo:
-    TECNOLOGIA: 2
+    TECNOLOGIA: 3
   proporcion_relevantes: 1.0
-  total_items: 2
+  total_items: 3
 youtube/dw español:
   items_por_nodo:
     POLITICA: 2
-    RELIGION: 2
-    TECNOLOGIA: 2
+    RELIGION: 3
+    TECNOLOGIA: 3
   proporcion_relevantes: 1.0
-  total_items: 6
+  total_items: 8
 youtube/el comercio:
   items_por_nodo:
-    ECONOMIA: 4
-    TECNOLOGIA: 4
+    ECONOMIA: 5
+    TECNOLOGIA: 5
   proporcion_relevantes: 1.0
-  total_items: 8
+  total_items: 10
 youtube/el país:
   items_por_nodo:
-    POLITICA: 2
-    RELIGION: 2
+    POLITICA: 3
+    RELIGION: 3
   proporcion_relevantes: 1.0
-  total_items: 4
+  total_items: 6
 youtube/latina noticias:
   items_por_nodo:
-    POLITICA: 4
-    TECNOLOGIA: 4
+    POLITICA: 5
+    TECNOLOGIA: 5
   proporcion_relevantes: 1.0
-  total_items: 8
+  total_items: 10
 youtube/multiplicatex0:
   items_por_nodo:
     POLITICA: 4
@@ -161,16 +162,16 @@ youtube/qué dice chile:
   total_items: 2
 youtube/radio riquelme:
   items_por_nodo:
-    TECNOLOGIA: 2
+    TECNOLOGIA: 3
   proporcion_relevantes: 1.0
-  total_items: 2
+  total_items: 3
 youtube/rtve noticias:
   items_por_nodo:
-    POLITICA: 4
-    RELIGION: 4
-    TECNOLOGIA: 4
+    POLITICA: 5
+    RELIGION: 5
+    TECNOLOGIA: 5
   proporcion_relevantes: 1.0
-  total_items: 12
+  total_items: 15
 youtube/sala de prensa:
   items_por_nodo:
     RELIGION: 2
@@ -178,7 +179,8 @@ youtube/sala de prensa:
   total_items: 2
 youtube/un topo por el mundo:
   items_por_nodo:
-    ETICA_ESTETICA: 4
-    TECNOLOGIA: 4
+    ETICA_ESTETICA: 5
+    LENGUAJE: 1
+    TECNOLOGIA: 5
   proporcion_relevantes: 1.0
-  total_items: 8
+  total_items: 11
