@@ -44,11 +44,16 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
         _esperar_rate_limit()
         with DDGS(headers={"User-Agent": USER_AGENT}) as ddgs:
             for r in ddgs.text(palabras_clave, max_results=max_resultados):
+                titulo = r.get("title", "")
+                cuerpo = r.get("body", "")
+                from topologia.web.rss import _RE_CHILE
+                if not _RE_CHILE.search(titulo + " " + (cuerpo or "")):
+                    continue
                 resultados.append(ItemInformativo(
                     id=f"search-{len(resultados)}",
-                    titulo=r.get("title", ""),
+                    titulo=titulo,
                     fuente="duckduckgo",
-                    contenido=r.get("body", ""),
+                    contenido=cuerpo,
                     url=r.get("href", ""),
                     fecha=datetime.now(),
                     tags=["search", palabras_clave],
@@ -56,7 +61,7 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
     except ImportError:
         logger.warning("duckduckgo_search no instalado")
     except Exception as e:
-        logger.debug(f"Error en búsqueda '{palabras_clave}': {e}")
+        logger.warning(f"Error en búsqueda '{palabras_clave}': {e}")
 
     _cache[cache_key] = (time.time(), resultados)
     return resultados

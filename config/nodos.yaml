@@ -9,11 +9,11 @@ nodos:
     m_desc: "Herramientas de trabajo, tecnología aplicada, jornada"
     l_desc: "Ética del trabajo, concepto de mérito"
     s_desc: "Organización sindical, división social del trabajo"
-  - id: CONTINUIDAD
-    nombre: Continuidad
-    m_desc: "Archivos, monumentos, patrimonio material"
-    l_desc: "Narrativa histórica, tradición como valor"
-    s_desc: "Rituales de transmisión intergeneracional"
+  - id: SEXUALIDAD
+    nombre: Sexualidad/Reproducción
+    m_desc: "Educación sexual, anticoncepción, salud reproductiva, regulación del cuerpo"
+    l_desc: "Cosmovisión de la sexualidad, tabúes, moral sexual, bioética"
+    s_desc: "Roles de género, diversidad sexual, familia, relaciones de pareja, disidencia"
   - id: POLITICA
     nombre: Política
     m_desc: "Instituciones, territorio, edificios gubernamentales"

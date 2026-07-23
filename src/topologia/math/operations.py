@@ -14,7 +14,7 @@ def detectar_operaciones(estado: EstadoCultural) -> list[OperacionCinetica]:
     educacion = nodos_map.get("EDUCACION")
     etica = nodos_map.get("ETICA_ESTETICA")
     tecnologia = nodos_map.get("TECNOLOGIA")
-    continuidad = nodos_map.get("CONTINUIDAD")
+    sexualidad = nodos_map.get("SEXUALIDAD")
 
     # O4a: Polarización (diferencias altas entre M_m y M_l en POLITICA)
     if politico and abs(politico.dimension_m - politico.dimension_l) > 3.0:
@@ -65,17 +65,19 @@ def detectar_operaciones(estado: EstadoCultural) -> list[OperacionCinetica]:
                 evidencia=f"Religión M_l={religion.dimension_l:.1f}, Educación M_l={educacion.dimension_l:.1f}",
             ))
 
-    # O9: Escape horizontal (TECNOLOGÍA y LENGUAJE altos, CONTINUIDAD bajo)
-    if tecnologia and lenguaje and continuidad:
+    # O9: Escape horizontal (TECNOLOGÍA y LENGUAJE altos, SEXUALIDAD bajo)
+    # La sociedad se refugia en lo digital y el discurso, mientras la sexualidad/
+    # reproducción se repliega: desconexión entre cuerpo y tecnología.
+    if tecnologia and lenguaje and sexualidad:
         promedio_escape = (tecnologia.dimension_m + lenguaje.dimension_l) / 2
-        if promedio_escape > 6.0 and continuidad.dimension_m < 3.0:
+        if promedio_escape > 6.0 and sexualidad.dimension_m < 3.0:
             operaciones.append(OperacionCinetica(
                 codigo="O9",
                 nombre=OPERACIONES_CINETICAS["O9"]["nombre"],
-                intensidad=min((promedio_escape - continuidad.dimension_m) / 10.0, 1.0),
-                nodos_implicados=["TECNOLOGIA", "LENGUAJE", "CONTINUIDAD"],
-                descripcion="Fuga hacia tecnología y nuevas narrativas, abandono de la memoria.",
-                evidencia=f"Tecnología M_m={tecnologia.dimension_m:.1f}, Continuidad M_m={continuidad.dimension_m:.1f}",
+                intensidad=min((promedio_escape - sexualidad.dimension_m) / 10.0, 1.0),
+                nodos_implicados=["TECNOLOGIA", "LENGUAJE", "SEXUALIDAD"],
+                descripcion="Fuga hacia lo digital y el discurso, repliegue de la corporalidad y la reproducción.",
+                evidencia=f"Tecnología M_m={tecnologia.dimension_m:.1f}, Sexualidad M_m={sexualidad.dimension_m:.1f}",
             ))
 
     # O11: Círculo expansivo (ETICA y EDUCACIÓN altas, delta bajo)

@@ -20,6 +20,9 @@ nodos:
       - impuesto
       - comercio
       - industria
+      - cobre
+      - tipo de cambio
+      - dólar
     busqueda_externa:
       - "economía Chile"
       - "indicadores económicos Chile"
@@ -39,30 +42,65 @@ nodos:
       - cesantía
       - negociación colectiva
       - contrato
+      - seguro de cesantía
+      - afp
+      - previsión
+      - pensiones
+      - reforma laboral
+      - subcontratación
+      - informalidad
+      - sueldo mínimo
+      - ingreso mínimo
+      - cotización
     busqueda_externa:
       - "trabajo Chile sindicato"
       - "empleo Chile"
+      - "reforma laboral Chile"
+      - "pensiones AFP Chile"
+      - "sueldo mínimo Chile"
 
-  CONTINUIDAD:
+  SEXUALIDAD:
     clasificacion:
-      - continuidad
-      - tradición
-      - patrimonio
-      - memoria histórica
-      - generación
-      - legado
-      - herencia cultural
-      - identidad
-      - costumbre
-      - raíces
-      - celebración tradicional
-      - folclor
-      - monumento
-      - archivo histórico
-      - efeméride
+      - sexualidad
+      - reproducción
+      - género
+      - diversidad sexual
+      - aborto
+      - anticoncepción
+      - educación sexual
+      - identidad de género
+      - orientación sexual
+      - lgbt
+      - feminismo
+      - violencia de género
+      - acoso sexual
+      - consentimiento
+      - planificación familiar
+      - embarazo
+      - parto
+      - crianza
+      - infertilidad
+      - salud sexual
+      - derechos reproductivos
+      - disidencia sexual
+      - rol de género
+      - familia homoparental
+      - gestación subrogada
+      - menstruación
+      - climaterio
+      - vih
+      - masculinidades
     busqueda_externa:
-      - "patrimonio cultural Chile"
-      - "tradiciones chilenas"
+      - "educación sexual Chile"
+      - "aborto Chile ley"
+      - "diversidad sexual Chile"
+      - "género feminismo Chile"
+      - "salud reproductiva Chile"
+      - "violencia de género Chile"
+      - "identidad de género Chile"
+      - "LGBT derechos Chile"
+      - "feminismo Chile actualidad"
+      - "roles de género Chile"
 
   POLITICA:
     clasificacion:
@@ -83,9 +121,20 @@ nodos:
       - municipal
       - parlamento
       - democracia
+      - autoritarismo
+      - populismo
+      - nacionalismo
+      - polarización
+      - violencia política
+      - justicia
+      - accountability
+      - transparencia
+      - corrupción
     busqueda_externa:
       - "política Chile"
       - "gobierno Chile actualidad"
+      - "corrupción Chile"
+      - "crisis política Chile"
 
   LENGUAJE:
     clasificacion:
@@ -122,7 +171,6 @@ nodos:
       - noticias falsas
       - manipulación mediática
       - discurso de odio
-      - polarización
       - retórica política
     busqueda_externa:
       - "lenguaje Chile"
@@ -153,10 +201,14 @@ nodos:
       - canon
       - belleza
       - obra
+      - festival
+      - carnaval
+      - mural
     busqueda_externa:
       - "arte Chile"
       - "cultura Chile"
       - "ética filosofía Chile"
+      - "cine chileno estreno"
 
   TECNOLOGIA:
     clasificacion:
@@ -177,9 +229,14 @@ nodos:
       - programación
       - robot
       - automatización
+      - blockchain
+      - criptomoneda
+      - litio
+      - hidrógeno verde
     busqueda_externa:
       - "tecnología Chile"
       - "innovación Chile"
+      - "litio Chile tecnología"
 
   EDUCACION:
     clasificacion:
@@ -199,45 +256,43 @@ nodos:
       - pedagogía
       - aula
       - enseñanza
+      - simce
+      - psu
+      - paes
+      - gratuidad
+      - deuda educativa
     busqueda_externa:
       - "educación Chile"
       - "universidad Chile"
+      - "reforma educacional Chile"
 
   RELIGION:
     clasificacion:
+      - religión
+      - iglesia
+      - católico
+      - evangélico
+      - pastor
+      - sacerdote
+      - fe
       - dogma
       - doctrina
-      - fanatismo
-      - extremismo
-      - fundamentalismo
       - creencia
       - secta
       - conversión
       - adoctrinamiento
-      - pensamiento único
-      - corrección política
-      - intolerancia
-      - radicalización
       - espiritualidad
       - misticismo
-      - conspiraciones
+      - culto
       - profecía
       - mesianismo
-      - culto
-      - ideología
-      - ultra
-      - populismo
-      - autoritarismo
-      - propaganda
-      - nacionalismo
-      - polarización
-      - violencia política
-      - justicia
-      - memoria histórica
+      - teología
+      - rito
+      - oración
+      - templo
+      - devoción
+      - herejía
     busqueda_externa:
-      - "extremismo Chile"
-      - "polarización ideológica"
-      - "fanatismo política"
-      - "ideología populismo Chile"
-      - "autoritarismo nacionalismo Chile"
-      - "violencia política extremismo Chile"
+      - "iglesia Chile actualidad"
+      - "religión Chile evangélico"
+      - "espiritualidad Chile"

@@ -44,10 +44,16 @@ from topologia.web.resumen import obtener_items as obtener_items_resumen
 from topologia.web.youtube import buscar as buscar_youtube
 from topologia.web.espectro_b import obtener_items as obtener_items_espectro_b
 from topologia.web.tendencias import obtener_tendencias
+from topologia.web.analisis_historico import diagnosticar
+from topologia.web.relevancia import (
+    generar_queries,
+    puntuar_relevancia,
+    recolectar_por_queries,
+)
 
 
 NODOS_CULTURALES = [
-    "ECONOMIA", "TRABAJO", "CONTINUIDAD", "POLITICA",
+    "ECONOMIA", "TRABAJO", "SEXUALIDAD", "POLITICA",
     "LENGUAJE", "ETICA_ESTETICA", "TECNOLOGIA", "EDUCACION", "RELIGION",
 ]
 
@@ -176,18 +182,25 @@ class Orchestrator:
 
         logger.info("=== CICLO DIARIO ===")
 
+        # PASO 0: Diagnóstico histórico → estrategia de recolección
+        estrategia = diagnosticar(sociedad)
+        logger.info(
+            f"Estrategia: {len(estrategia.nodos_prioritarios)} prioritarios, "
+            f"{len(estrategia.nodos_con_brecha)} con brecha, "
+            f"umbral de relevancia={estrategia.umbral_relevancia}"
+        )
+
+        # PASO 1: Recolección clásica
         items_rss = obtener_items_rss(limite=20)
         items_bcn = obtener_items_bcn(limite=3)
         items_resumen = obtener_items_resumen(limite=10)
         items = items_rss + items_bcn + items_resumen
 
-        # Fase 2 (Espectro B): medios mainstream via Playwright
         items_espectro_b = obtener_items_espectro_b(limite_por_medio=3)
         if items_espectro_b:
-            logger.info(f"Espectro B: {len(items_espectro_b)} items agregados")
+            logger.info(f"Espectro B: {len(items_espectro_b)} items")
             items.extend(items_espectro_b)
 
-        # Fase 4: discursiva de masas
         items_youtube = buscar_youtube(query="Chile", max_resultados=10)
         if items_youtube:
             logger.info(f"YouTube: {len(items_youtube)} videos")
@@ -198,15 +211,30 @@ class Orchestrator:
             logger.info(f"Google Trends: {len(items_tendencias)} términos")
             items.extend(items_tendencias)
 
+        # PASO 2: Recolección dirigida por estrategia
+        queries = generar_queries(estrategia, max_por_nodo=3)
+        items_dirigidos = recolectar_por_queries(queries, estrategia)
+        if items_dirigidos:
+            logger.info(f"Recolección dirigida: {len(items_dirigidos)} items")
+            items.extend(items_dirigidos)
+
+        from topologia.web.rss import filtrar_relevancia_chile
+        items = filtrar_relevancia_chile(items)
+
+        # PASO 3: Filtro adaptativo de relevancia (15-20 items finales)
+        items = puntuar_relevancia(items, estrategia)
+        logger.info(f"Items tras filtro de relevancia: {len(items)}")
+
         items_por_nodo = self._clasificar_items_por_nodo(items)
 
-        # Fase 3: scraping dirigido para nodos con déficit de datos
+        # PASO 4: Scraping dirigido para nodos con déficit persistente
         brechas_iniciales = detectar_brechas(estado=None, items_por_nodo=items_por_nodo)
         from topologia.web.scraping import recolectar_para_brechas
         items_scraping = recolectar_para_brechas(brechas_iniciales)
         if items_scraping:
             logger.info(f"Scraping dirigido: {len(items_scraping)} items adicionales")
             items.extend(items_scraping)
+            items = puntuar_relevancia(items, estrategia)
             items_por_nodo = self._clasificar_items_por_nodo(items)
 
         paso1 = self.observar(sociedad, items=items)
@@ -240,10 +268,20 @@ class Orchestrator:
 
         try:
             from scripts.analisis_graficos import generar_todos
-            generar_todos(sociedad)
-            logger.info("Gráficos generados durante el ciclo diario")
+            generar_todos(sociedad, items_por_nodo=items_por_nodo)
+            logger.info("Gráficos diarios generados")
         except Exception as e:
-            logger.warning(f"No se pudieron generar gráficos: {e}")
+            logger.warning(f"No se pudieron generar gráficos diarios: {e}")
+
+        # Timeline: actualizar data y regenerar gráficos de evolución
+        try:
+            from scripts.barrido_timeline import actualizar_timeline
+            actualizar_timeline(sociedad)
+            from scripts.graficos_timeline import generar_todos as generar_timeline
+            generar_timeline(items_por_nodo=items_por_nodo)
+            logger.info("Timeline y gráficos de evolución actualizados")
+        except Exception as e:
+            logger.warning(f"No se pudo actualizar timeline: {e}")
 
         ruta_informe = generar_informe_html(
             sociedad=sociedad,
@@ -258,12 +296,53 @@ class Orchestrator:
         logger.info(f"Informe generado: {ruta_informe}")
         logger.info(f"Resumen: {informe.resumen_ejecutivo}")
 
+        # Aprendizaje persistente: rendimiento de fuentes
+        try:
+            self._actualizar_rendimiento_fuentes(items_por_nodo)
+        except Exception as e:
+            logger.warning(f"No se pudo actualizar rendimiento de fuentes: {e}")
+
         return informe
 
     def _clasificar_items_por_nodo(self, items: list) -> dict[str, list]:
-        # Delega al módulo de brechas que usa palabras clave expandidas (config/palabras_clave.yaml)
-        # en vez de buscar solo el nombre exacto del nodo en el texto.
         return clasificar_items_por_nodo_semantico(items)
+
+    def _actualizar_rendimiento_fuentes(self, items_por_nodo: dict[str, list]):
+        import yaml
+        from pathlib import Path
+        from collections import Counter
+
+        ruta = Path(__file__).resolve().parent.parent.parent / "data" / "rendimiento_fuentes.yaml"
+        rendimiento: dict = {}
+        if ruta.exists():
+            with open(ruta, encoding="utf-8") as f:
+                rendimiento = yaml.safe_load(f) or {}
+
+        fuente_nodos: dict[str, Counter] = {}
+        for nodo_id, nodo_items in items_por_nodo.items():
+            for it in nodo_items:
+                fuente = (it.fuente or "desconocida").lower()
+                if fuente not in fuente_nodos:
+                    fuente_nodos[fuente] = Counter()
+                fuente_nodos[fuente][nodo_id] += 1
+
+        for fuente, nodos in fuente_nodos.items():
+            if fuente not in rendimiento:
+                rendimiento[fuente] = {"total_items": 0, "items_por_nodo": {}}
+            rendimiento[fuente]["total_items"] += sum(nodos.values())
+            for nid, count in nodos.items():
+                prev = rendimiento[fuente]["items_por_nodo"].get(nid, 0)
+                rendimiento[fuente]["items_por_nodo"][nid] = prev + count
+
+        for fuente, data in rendimiento.items():
+            total = data.get("total_items", 0) or 1
+            relevantes = sum(data.get("items_por_nodo", {}).values())
+            data["proporcion_relevantes"] = round(relevantes / total, 2)
+
+        ruta.parent.mkdir(parents=True, exist_ok=True)
+        with open(ruta, "w", encoding="utf-8") as f:
+            yaml.dump(rendimiento, f, default_flow_style=False, allow_unicode=True)
+        logger.debug(f"Rendimiento de fuentes actualizado en {ruta}")
 
     def _ejecutar_estudios(self, especulaciones: list, estado: EstadoCultural) -> list[Estudio]:
         estudios: list[Estudio] = []

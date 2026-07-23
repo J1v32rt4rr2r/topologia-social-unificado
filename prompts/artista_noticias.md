@@ -32,6 +32,6 @@ REGLAS:
 - confianza debe reflejar cuánto resuena el patrón (0.0 = nada, 1.0 = certeza).
 - Puedes vincular múltiples noticias a un mismo patrón si ves el patrón manifestándose en varios frentes.
 - Si una noticia no conecta con ningún patrón, simplemente omítela.
-- Los nodos_sugeridos son opcionales pero ayudan a los técnicos a enfocar su estudio. Usa los nombres exactos: ECONOMIA, TRABAJO, CONTINUIDAD, POLITICA, LENGUAJE, ETICA_ESTETICA, TECNOLOGIA, EDUCACION, RELIGION.
+- Los nodos_sugeridos son opcionales pero ayudan a los técnicos a enfocar su estudio. Usa los nombres exactos: ECONOMIA, TRABAJO, SEXUALIDAD, POLITICA, LENGUAJE, ETICA_ESTETICA, TECNOLOGIA, EDUCACION, RELIGION.
 - pregunta_abierta es una línea de investigación que los técnicos podrían seguir.
 - No fuerces conexiones. Es mejor especular poco y bien que mucho y mal.

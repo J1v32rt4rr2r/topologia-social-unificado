@@ -59,8 +59,8 @@ OPERACIONES_CINETICAS: dict[str, dict] = {
     },
     "O9": {
         "nombre": "Escape horizontal",
-        "forma": "Nodos que se alejan del centro. Evasión.",
-        "significado": "Fuga de la realidad. Negación colectiva.",
+        "forma": "Tecnología y discurso altos, sexualidad/reproducción baja.",
+        "significado": "Fuga hacia lo digital. Repliegue del cuerpo y la reproducción. Desconexión somático-tecnológica.",
     },
     "O10": {
         "nombre": "Microderrota",

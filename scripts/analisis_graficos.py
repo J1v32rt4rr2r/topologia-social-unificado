@@ -23,9 +23,10 @@ from topologia.math.torus import (
 )
 from topologia.paths import get_reportes_dir
 from topologia.storage.store import FileStore
+from topologia.web.brechas import resumir_contexto_noticioso
 
 NODOS_IDS = [
-    "ECONOMIA", "TRABAJO", "CONTINUIDAD", "POLITICA",
+    "ECONOMIA", "TRABAJO", "SEXUALIDAD", "POLITICA",
     "LENGUAJE", "ETICA_ESTETICA", "TECNOLOGIA", "EDUCACION", "RELIGION",
 ]
 
@@ -65,10 +66,12 @@ def cargar_datos(
 
     def extraer(estado):
         vals = {"m": {}, "l": {}, "s": {}}
+        compat = {"CONTINUIDAD": "SEXUALIDAD"}
         for n in estado.nodos:
-            vals["m"][n.nodo_id] = n.dimension_m / 9.9
-            vals["l"][n.nodo_id] = n.dimension_l / 9.9
-            vals["s"][n.nodo_id] = n.dimension_s / 9.9
+            nid = compat.get(n.nodo_id, n.nodo_id)
+            vals["m"][nid] = n.dimension_m / 9.9
+            vals["l"][nid] = n.dimension_l / 9.9
+            vals["s"][nid] = n.dimension_s / 9.9
         return vals
 
     return extraer(e_antes), extraer(e_despues), fecha_antes, fecha_despues
@@ -83,7 +86,7 @@ def calcular_formas(vals: dict) -> dict:
     return formas
 
 
-def grafico_plano_complejo(f_antes: dict, f_despues: dict, fechas: tuple[str, str], salida: Path):
+def grafico_plano_complejo(f_antes: dict, f_despues: dict, fechas: tuple[str, str], salida: Path, contexto: dict | None = None):
     fig, axes = plt.subplots(1, 2, figsize=(16, 8))
     fig.suptitle(
         "FORMA CULTURAL: e^(2\u03c0i / M)",
@@ -120,6 +123,15 @@ def grafico_plano_complejo(f_antes: dict, f_despues: dict, fechas: tuple[str, st
                 color=COLORES[key], lw=2, alpha=0.6,
             ))
 
+        context_global = (contexto or {}).get("_global", {})
+        keywords = context_global.get("keywords", [])
+        if keywords:
+            ax.text(1.3, -1.2, "\n".join(keywords[:4]),
+                    fontsize=7, color="#ffd700", alpha=0.6, ha="right",
+                    bbox=dict(boxstyle="round", facecolor="#111", edgecolor="#ffd700", alpha=0.5))
+            ax.annotate("Términos clave del período", xy=(0.9, -1.1),
+                        fontsize=6, color="#666", style="italic")
+
         ax.set_xlim(-1.3, 1.3)
         ax.set_ylim(-1.3, 1.3)
         ax.set_aspect("equal")
@@ -134,7 +146,7 @@ def grafico_plano_complejo(f_antes: dict, f_despues: dict, fechas: tuple[str, st
     plt.close()
 
 
-def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, str], salida: Path):
+def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, str], salida: Path, contexto: dict | None = None):
     fig, ax = plt.subplots(figsize=(14, 14))
     ax.set_facecolor("#0a0a0a")
 
@@ -198,6 +210,13 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
                   edgecolor="#ff4444", alpha=0.9),
     )
 
+    context_global = (contexto or {}).get("_global", {})
+    keywords = context_global.get("keywords", [])
+    if keywords:
+        ax.text(1.3, -1.0, "\n".join(keywords[:4]),
+                fontsize=7, color="#ffd700", alpha=0.6, ha="right",
+                bbox=dict(boxstyle="round", facecolor="#111", edgecolor="#ffd700", alpha=0.5))
+
     legend_elements = [
         plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=COLORES["m"],
                    markersize=10, label="M_m (Material)", ls="None"),
@@ -230,12 +249,15 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
     plt.close()
 
 
-def grafico_triangulo_coherencia(f_antes: dict, f_despues: dict, fechas: tuple[str, str], salida: Path):
+def grafico_triangulo_coherencia(f_antes: dict, f_despues: dict, fechas: tuple[str, str], salida: Path, contexto: dict | None = None):
     fig, axes = plt.subplots(1, 2, figsize=(18, 9))
     fig.suptitle(
         "TRI\u00c1NGULO DE COHERENCIA CULTURAL  |  e^(2\u03c0i / M)",
         fontsize=16, fontweight="bold", color="#e0e0e0", y=0.98,
     )
+
+    context_global = (contexto or {}).get("_global", {})
+    keywords = context_global.get("keywords", [])
 
     for ax, datos, titulo, es_despues in [
         (axes[0], f_antes, fechas[0], False),
@@ -297,6 +319,11 @@ def grafico_triangulo_coherencia(f_antes: dict, f_despues: dict, fechas: tuple[s
             color=color_tri, fontsize=10, fontweight="bold",
         )
 
+        if keywords and es_despues:
+            ax.text(1.1, -1.1, "\n".join(keywords[:4]),
+                    fontsize=7, color="#ffd700", alpha=0.6, ha="right",
+                    bbox=dict(boxstyle="round", facecolor="#111", edgecolor="#ffd700", alpha=0.5))
+
         ax.set_xlim(-1.3, 1.3)
         ax.set_ylim(-1.3, 1.3)
         ax.set_aspect("equal")
@@ -311,7 +338,7 @@ def grafico_triangulo_coherencia(f_antes: dict, f_despues: dict, fechas: tuple[s
     plt.close()
 
 
-def grafico_radar(antes_vals: dict, despues_vals: dict, fechas: tuple[str, str], salida: Path):
+def grafico_radar(antes_vals: dict, despues_vals: dict, fechas: tuple[str, str], salida: Path, contexto: dict | None = None):
     fig, axes = plt.subplots(1, 3, figsize=(18, 6), subplot_kw=dict(projection="polar"))
     fig.suptitle(
         "RADAR DE NODOS CULTURALES  |  Chile 2026",
@@ -345,13 +372,19 @@ def grafico_radar(antes_vals: dict, despues_vals: dict, fechas: tuple[str, str],
                   facecolor="#1a1a1a", edgecolor="#444444", labelcolor="#e0e0e0")
         ax.grid(True, alpha=0.3, color="#444444")
 
+    context_global = (contexto or {}).get("_global", {})
+    keywords = context_global.get("keywords", [])
+    if keywords:
+        fig.text(0.02, 0.02, "Términos: " + ", ".join(keywords[:5]),
+                 fontsize=8, color="#ffd700", alpha=0.6)
+
     plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.savefig(str(salida / "grafico_radar_nodos.png"), dpi=150,
                 bbox_inches="tight", facecolor="#0a0a0a", edgecolor="none")
     plt.close()
 
 
-def grafico_mapa_calor(antes_vals: dict, despues_vals: dict, fechas: tuple[str, str], salida: Path):
+def grafico_mapa_calor(antes_vals: dict, despues_vals: dict, fechas: tuple[str, str], salida: Path, contexto: dict | None = None):
     fig, ax = plt.subplots(figsize=(14, 10))
     ax.set_facecolor("#0a0a0a")
 
@@ -391,6 +424,12 @@ def grafico_mapa_calor(antes_vals: dict, despues_vals: dict, fechas: tuple[str, 
     cbar.ax.yaxis.set_tick_params(color="white")
     plt.setp(plt.getp(cbar.ax.axes, "yticklabels"), color="white")
 
+    context_global = (contexto or {}).get("_global", {})
+    keywords = context_global.get("keywords", [])
+    if keywords:
+        ax.text(10.3, -0.5, "Términos: " + ", ".join(keywords[:4]),
+                fontsize=8, color="#ffd700", alpha=0.6, transform=ax.get_xaxis_transform())
+
     ax.set_title(
         f"MAPA DE CALOR: VARIACI\u00d3N NODAL POR TRANSVERSAL\n"
         f"{fechas[0]} \u2192 {fechas[1]}",
@@ -403,15 +442,37 @@ def grafico_mapa_calor(antes_vals: dict, despues_vals: dict, fechas: tuple[str, 
     plt.close()
 
 
+def calcular_deltas_theta(sociedad: str = "Chile") -> dict | None:
+    """Calcula Δθ para cada dimensión entre el último y penúltimo estado."""
+    try:
+        antes_vals, despues_vals, f_antes, f_despues = cargar_datos(sociedad)
+        f_a = calcular_formas(antes_vals)
+        f_d = calcular_formas(despues_vals)
+        deltas = {}
+        for key in TRANSVERSALES:
+            delta = diferencia_angular(f_a[key]["F"], f_d[key]["F"])
+            deltas[key] = round(np.degrees(delta), 1)
+        return {
+            "deltas_theta": deltas,
+            "f_a": {k: {"M": v["M"], "theta": np.degrees(v["ang"])} for k, v in f_a.items()},
+            "f_d": {k: {"M": v["M"], "theta": np.degrees(v["ang"])} for k, v in f_d.items()},
+        }
+    except Exception:
+        return None
+
+
 def generar_todos(
     sociedad: str = "Chile",
     fecha_antes: str | None = None,
     fecha_despues: str | None = None,
     salida: Path | None = None,
+    items_por_nodo: dict | None = None,
 ) -> list[Path]:
     if salida is None:
         salida = get_reportes_dir()
     salida.mkdir(parents=True, exist_ok=True)
+
+    contexto = resumir_contexto_noticioso(items_por_nodo) if items_por_nodo else None
 
     antes_vals, despues_vals, f_antes, f_despues = cargar_datos(sociedad, fecha_antes, fecha_despues)
     fechas = (f_antes, f_despues)
@@ -438,11 +499,11 @@ def generar_todos(
     for a in archivos:
         a.unlink(missing_ok=True)
 
-    grafico_plano_complejo(f_a, f_d, fechas, salida)
-    grafico_rotacion_angular(f_a, f_d, fechas, salida)
-    grafico_triangulo_coherencia(f_a, f_d, fechas, salida)
-    grafico_radar(antes_vals, despues_vals, fechas, salida)
-    grafico_mapa_calor(antes_vals, despues_vals, fechas, salida)
+    grafico_plano_complejo(f_a, f_d, fechas, salida, contexto)
+    grafico_rotacion_angular(f_a, f_d, fechas, salida, contexto)
+    grafico_triangulo_coherencia(f_a, f_d, fechas, salida, contexto)
+    grafico_radar(antes_vals, despues_vals, fechas, salida, contexto)
+    grafico_mapa_calor(antes_vals, despues_vals, fechas, salida, contexto)
 
     return archivos
 

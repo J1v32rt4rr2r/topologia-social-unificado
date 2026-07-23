@@ -6,7 +6,7 @@ from topologia.prompts import PromptLoader
 NODOS_PREGUNTAS = {
     "ECONOMIA": "¿Qué recursos materiales existen y cómo están distribuidos?",
     "TRABAJO": "¿Qué herramientas y tecnología productiva existen?",
-    "CONTINUIDAD": "¿Qué archivos, monumentos y patrimonio material se conservan?",
+    "SEXUALIDAD": "¿Qué recursos de salud sexual, anticoncepción, educación sexual y regulación reproductiva existen?",
     "POLITICA": "¿Qué instituciones y edificios gubernamentales existen?",
     "LENGUAJE": "¿Qué soportes físicos de escritura y bibliotecas existen?",
     "ETICA_ESTETICA": "¿Qué obras de arte, monumentos y objetos rituales existen?",
@@ -21,7 +21,7 @@ class Estadista(Agent):
         super().__init__(ConfigAgente(
             nombre="Estadista",
             prompt="",
-            temperatura=0.2,
+            temperatura=0.4,
             modelo="deepseek-chat",
             max_tokens=1024,
         ))
@@ -39,7 +39,7 @@ class Estadista(Agent):
         )
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)
-            punt = float(resultado.get("puntuacion", 5.0))
+            punt = max(0.1, min(9.9, float(resultado.get("puntuacion", 5.0))))
             just = resultado.get("justificacion", "")
             tend = resultado.get("tendencia", "estable")
         except Exception:

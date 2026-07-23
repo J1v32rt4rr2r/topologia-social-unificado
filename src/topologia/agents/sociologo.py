@@ -6,7 +6,7 @@ from topologia.prompts import PromptLoader
 NODOS_PREGUNTAS = {
     "ECONOMIA": "¿Cómo se organizan las redes de producción, distribución y relaciones laborales?",
     "TRABAJO": "¿Cómo es la organización sindical y la división social del trabajo?",
-    "CONTINUIDAD": "¿Cómo se transmiten los rituales intergeneracionales?",
+    "SEXUALIDAD": "¿Cómo se organizan las relaciones de género, diversidad sexual, familias y roles reproductivos?",
     "POLITICA": "¿Cómo son las relaciones de poder, jerarquías y participación ciudadana?",
     "LENGUAJE": "¿Cómo se usa el lenguaje en la sociedad, dialectos y comunicación?",
     "ETICA_ESTETICA": "¿Cuáles son las normas compartidas, el gusto colectivo y el juicio social?",
@@ -21,7 +21,7 @@ class Sociologo(Agent):
         super().__init__(ConfigAgente(
             nombre="Sociólogo",
             prompt="",
-            temperatura=0.2,
+            temperatura=0.4,
             modelo="deepseek-chat",
             max_tokens=1024,
         ))
@@ -39,7 +39,7 @@ class Sociologo(Agent):
         )
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)
-            punt = float(resultado.get("puntuacion", 5.0))
+            punt = max(0.1, min(9.9, float(resultado.get("puntuacion", 5.0))))
             just = resultado.get("justificacion", "")
             tend = resultado.get("tendencia", "estable")
         except Exception:

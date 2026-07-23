@@ -65,7 +65,10 @@ class Redactor(Agent):
 
     def _formatear_estado(self, estado: EstadoCultural) -> str:
         lineas = [f"Sociedad: {estado.sociedad}"]
-        lineas.append(f"M = ({estado.M_m:.1f}, {estado.M_l:.1f}, {estado.M_s:.1f})")
+        lineas.append("Dimensiones culturales:")
+        lineas.append(f"  M_m (Matriz Material): {estado.M_m:.1f}")
+        lineas.append(f"  M_l (Matriz Lógico-Valórica): {estado.M_l:.1f}")
+        lineas.append(f"  M_s (Matriz Social): {estado.M_s:.1f}")
         lineas.append(f"δ = {estado.delta_promedio:.1f}°")
         lineas.append(f"Coherente: {estado.coherente}")
         if estado.nodos_fragiles:
@@ -76,9 +79,9 @@ class Redactor(Agent):
             lineas.append(f"  [{frag}] {n.nodo_id}: M_m={n.dimension_m:.1f} M_l={n.dimension_l:.1f} M_s={n.dimension_s:.1f} δ={n.delta:.1f}°")
         if estado.m_m:
             lineas.append(f"\nFormas complejas (e^(2πi / m)):")
-            lineas.append(f"  M_m: m={estado.m_m:.3f} θ={estado.theta_m:.1f}°")
-            lineas.append(f"  M_l: m={estado.m_l:.3f} θ={estado.theta_l:.1f}°")
-            lineas.append(f"  M_s: m={estado.m_s:.3f} θ={estado.theta_s:.1f}°")
+            lineas.append(f"  M_m (Matriz Material): m={estado.m_m:.3f} θ={estado.theta_m:.1f}°")
+            lineas.append(f"  M_l (Matriz Lógico-Valórica): m={estado.m_l:.3f} θ={estado.theta_l:.1f}°")
+            lineas.append(f"  M_s (Matriz Social): m={estado.m_s:.3f} θ={estado.theta_s:.1f}°")
             lineas.append(f"  Coherencia interna: {estado.coherencia_interna:.1f}°")
         return "\n".join(lineas)
 

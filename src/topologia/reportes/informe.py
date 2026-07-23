@@ -657,8 +657,11 @@ def _build_dos_columnas(especulaciones: list[Especulacion] | None,
 
 import base64
 
-def _build_graficos() -> str:
+def _build_graficos(contexto: dict | None = None,
+                    estado: EstadoCultural | None = None,
+                    metricas: dict | None = None) -> str:
     from topologia.paths import get_reportes_dir
+    from topologia.web.brechas import NODOS_CULTURALES
     reportes_dir = get_reportes_dir()
     nombres = [
         ("grafico_plano_complejo.png", "Plano Complejo"),
@@ -681,11 +684,172 @@ def _build_graficos() -> str:
       </a>
       <div class="nombre">{label}{" (no disponible)" if not src else ""}</div>
     </div>"""
+
+    interp_blocks = ""
+
+    # Bloque principal: análisis situacional del día
+    if estado:
+        coh_str = "Coherente" if estado.coherente else "Incoherente"
+        frag_str = ", ".join(estado.nodos_fragiles) if estado.nodos_fragiles else "ninguno"
+        dt_m = metricas["deltas_theta"]["m"] if metricas and metricas.get("deltas_theta") else "—"
+        dt_l = metricas["deltas_theta"]["l"] if metricas and metricas.get("deltas_theta") else "—"
+        dt_s = metricas["deltas_theta"]["s"] if metricas and metricas.get("deltas_theta") else "—"
+
+        linea_rotacion = ""
+        if metricas and metricas.get("deltas_theta"):
+            prom = (dt_m + dt_l + dt_s) / 3
+            linea_rotacion = f"Rotaci&oacute;n media: {prom:.1f}° ({'significativa' if prom > 90 else 'moderada'}). "
+
+        vuelco_str = "S&iacute; — el sistema cambi&oacute; de era" if estado.vuelco_detectado else "No"
+
+        situacion = f"""
+      <div class="interpretacion" style="padding:12px 16px;background:#fef9e7;border-left:4px solid #f39c12;border-radius:4px;font-size:14px;color:#856404;">
+        <strong>An&aacute;lisis del d&iacute;a:</strong><br>
+        δ = <strong>{estado.delta_promedio:.1f}°</strong> ({coh_str}) &mdash;
+        umbral coherencia: &lt;30° · umbral fragilidad: &gt;70°.<br>
+        M_m = {estado.M_m:.1f} &middot; M_l = {estado.M_l:.1f} &middot; M_s = {estado.M_s:.1f} &middot;
+        θ cultura = {estado.theta_cultura:.0f}° &middot; Tensión = {estado.tension_total:.0f}<br>
+        Δθ_m = {dt_m}° &middot; Δθ_l = {dt_l}° &middot; Δθ_s = {dt_s}°. {linea_rotacion}
+        Nodos fr&aacute;giles: {frag_str}. Era k = {estado.era_k}. Vuelco de fase: {vuelco_str}.
+      </div>"""
+        interp_blocks += situacion
+
+    # Bloque por nodo: conectar headlines con valores
+    if contexto and estado:
+        nodos_html = ""
+        for nid in NODOS_CULTURALES:
+            node_ctx = contexto.get(nid, {})
+            headlines = node_ctx.get("top_headlines", [])
+            head_str = escape(headlines[0][:80]) if headlines else ""
+            if not head_str:
+                continue
+            # Buscar el nodo en el estado
+            nd = None
+            for n in estado.nodos:
+                if n.nodo_id == nid:
+                    nd = n
+                    break
+            if nd:
+                delta_nodo = nd.delta
+                frag_tag = "<strong>⚠ fr&aacute;gil</strong>" if nd.fragil else ""
+                nodos_html += f"""
+        <div style="margin:4px 0;font-size:13px;color:#333;">
+          <strong>{nid}</strong> δ={delta_nodo:.0f}° M=({nd.dimension_m:.1f},{nd.dimension_l:.1f},{nd.dimension_s:.1f}) {frag_tag}
+          <br><span style="color:#666;font-size:12px;">📰 {head_str}</span>
+        </div>"""
+        if nodos_html:
+            interp_blocks += f"""
+      <div class="interpretacion" style="padding:12px 16px;background:#f0f8ff;border-left:4px solid #3498db;border-radius:4px;font-size:13px;color:#1a5276;">
+        <strong>Nodos con actividad noticiosa hoy:</strong>
+        {nodos_html}
+      </div>"""
+
+    # Keywords
+    if contexto:
+        global_ctx = contexto.get("_global", {})
+        keywords = global_ctx.get("keywords", [])
+        if keywords:
+            kw_str = ", ".join(keywords[:6])
+            interp_blocks += f"""
+      <div class="interpretacion" style="padding:10px 14px;background:#e8f5e9;border-left:4px solid #43a047;border-radius:4px;font-size:13px;color:#1b5e20;">
+        <strong>T&eacute;rminos dominantes del d&iacute;a:</strong> {escape(kw_str)}
+      </div>"""
+
     return f"""<div class="graficos-seccion">
     <h3>Gr&aacute;ficos del D&iacute;a</h3>
     <div class="graficos-grid">
       {thumbs}
     </div>
+    {interp_blocks}
+  </div>"""
+
+
+def _build_graficos_timeline(contexto: dict | None = None,
+                              estado: EstadoCultural | None = None) -> str:
+    from topologia.paths import get_reportes_dir
+    reportes_dir = get_reportes_dir()
+    nombres = [
+        ("grafico_orbita.png", "Órbita Temporal"),
+        ("grafico_triada.png", "Tríada Evolutiva"),
+        ("grafico_delta.png", "Evolución de δ"),
+        ("grafico_fase.png", "Diagrama de Fase"),
+        ("grafico_heatmap.png", "Mapa de Calor"),
+        ("grafico_radar.png", "Radar por Era"),
+    ]
+    thumbs = ""
+    for name, label in nombres:
+        ruta = reportes_dir / name
+        if ruta.exists():
+            b64 = base64.b64encode(ruta.read_bytes()).decode()
+            src = f"data:image/png;base64,{b64}"
+        else:
+            src = ""
+        thumbs += f"""<div class="grafico-thumb">
+      <a href="{src if not src else name}" target="_blank">
+        <img src="{src}" alt="{label}" loading="lazy" style="{"opacity:0.4;" if not src else ""}">
+      </a>
+      <div class="nombre">{label}{" (no disponible)" if not src else ""}</div>
+    </div>"""
+
+    interp_blocks = ""
+
+    # Cargar datos del timeline para estadísticas del período
+    try:
+        import json
+        from pathlib import Path as _Path
+        tl_path = _Path(__file__).resolve().parent.parent.parent.parent / "data" / "barrido" / "timeline.json"
+        if tl_path.exists():
+            with open(tl_path, encoding="utf-8") as f:
+                tl_data = json.load(f)
+        else:
+            tl_data = []
+    except Exception:
+        tl_data = []
+
+    if tl_data:
+        n = len(tl_data)
+        deltas_list = [r["delta"] for r in tl_data]
+        tensions_list = [r["tension"] for r in tl_data]
+        thetas_list = [r["theta_cultura"] for r in tl_data]
+        eras = sorted(set(r["era_k"] for r in tl_data))
+        coh_count = sum(1 for r in tl_data if r["coherente"] == "OK")
+
+        idx_max = deltas_list.index(max(deltas_list))
+        fecha_max = tl_data[idx_max]["fecha"]
+        tension_max = max(tensions_list)
+        delta_actual = deltas_list[-1]
+
+        vuelco_str = "s&iacute; — el sistema cambi&oacute; de era" if len(eras) > 1 else "no"
+
+        interp_blocks = f"""
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
+      <div class="interpretacion" style="padding:12px 16px;background:#f0f8ff;border-left:4px solid #3498db;border-radius:4px;font-size:14px;color:#1a5276;">
+        <strong>Resumen del per&iacute;odo:</strong><br>
+        {n} estados analizados desde {tl_data[0]["fecha"]} hasta {tl_data[-1]["fecha"]}.<br>
+        δ m&aacute;ximo: <strong>{max(deltas_list):.0f}°</strong> el {fecha_max}. δ m&iacute;nimo: {min(deltas_list):.0f}°. δ actual: {delta_actual:.0f}°.<br>
+        Eras atravesadas: {len(eras)} ({', '.join(str(k) for k in eras)}). Vuelco de fase: {vuelco_str}.<br>
+        Tensión m&aacute;xima: {tension_max:.0f} (umbral de vuelco: 800). θ cultura actual: {thetas_list[-1]:.0f}°.<br>
+        Estados coherentes: {coh_count}/{n}.
+      </div>"""
+
+    if contexto:
+        global_ctx = contexto.get("_global", {})
+        keywords = global_ctx.get("keywords", [])
+
+        # Contexto noticioso del período
+        if keywords:
+            kw_str = ", ".join(keywords[:4])
+            interp_blocks += f"""
+      <div class="interpretacion" style="padding:10px 14px;background:#fef9e7;border-left:4px solid #f39c12;border-radius:4px;font-size:13px;color:#856404;">
+        <strong>T&eacute;rminos clave del per&iacute;odo:</strong> {escape(kw_str)}
+      </div>"""
+
+    return f"""<div class="graficos-seccion">
+    <h3>Evoluci&oacute;n Temporal (Timeline)</h3>
+    <div class="graficos-grid">
+      {thumbs}
+    </div>
+    {interp_blocks}
   </div>"""
 
 
@@ -827,6 +991,7 @@ TEMPLATE_PAGE = """<!DOCTYPE html>
 {formas_complejas}
 {dos_columnas}
 {graficos}
+{graficos_timeline}
 {historial}
 {alertas}
 {mirada}
@@ -858,13 +1023,24 @@ def generar_informe_html(
     if operaciones is None:
         operaciones = detectar_operaciones(estado)
 
+    from topologia.web.brechas import resumir_contexto_noticioso
+
     if items_por_nodo:
         items_por_nodo = {k: _filtrar_fuentes(v) for k, v in items_por_nodo.items()}
+
+    contexto = resumir_contexto_noticioso(items_por_nodo) if items_por_nodo else None
 
     if brechas is None:
         brechas = detectar_brechas(estado=estado, items_por_nodo=items_por_nodo)
 
     fecha = estado.fecha.strftime("%Y-%m-%d %H:%M")
+
+    # Calcular métricas de rotación para interpretación situacional
+    try:
+        from scripts.analisis_graficos import calcular_deltas_theta
+        metricas = calcular_deltas_theta(sociedad)
+    except Exception:
+        metricas = None
 
     html = TEMPLATE_PAGE \
         .replace("{css}", CSS) \
@@ -874,7 +1050,8 @@ def generar_informe_html(
         .replace("{tres_columnas}", _build_tres_columnas(estado, informe_redactor, items_por_nodo)) \
         .replace("{formas_complejas}", _build_formas_complejas(estado)) \
         .replace("{dos_columnas}", _build_dos_columnas(especulaciones, estudios, operaciones)) \
-        .replace("{graficos}", _build_graficos()) \
+        .replace("{graficos}", _build_graficos(contexto, estado, metricas)) \
+        .replace("{graficos_timeline}", _build_graficos_timeline(contexto, estado)) \
         .replace("{historial}", _build_historial(sociedad)) \
         .replace("{alertas}", _build_alertas(informe_redactor)) \
         .replace("{mirada}", _build_mirada(informe_redactor)) \

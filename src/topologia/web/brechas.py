@@ -7,7 +7,7 @@ import yaml
 from topologia.models.schemas import EstadoCultural, ItemInformativo
 
 NODOS_CULTURALES = [
-    "ECONOMIA", "TRABAJO", "CONTINUIDAD", "POLITICA",
+    "ECONOMIA", "TRABAJO", "SEXUALIDAD", "POLITICA",
     "LENGUAJE", "ETICA_ESTETICA", "TECNOLOGIA", "EDUCACION", "RELIGION",
 ]
 
@@ -44,19 +44,44 @@ def terminos_para_nodo(nodo_id: str) -> list[str]:
     return info.get("clasificacion", [nodo_id.lower()])
 
 
+def _match_parcial(texto: str, terminos: list[str]) -> bool:
+    """Coincidencia exacta o parcial (prefijo de 4+ caracteres)."""
+    lower = texto.lower()
+    for t in terminos:
+        if t in lower:
+            return True
+    for t in terminos:
+        if len(t) >= 4 and t[:4] in lower:
+            return True
+    return False
+
+
 def clasificar_items_por_nodo_semantico(
     items: list[ItemInformativo],
 ) -> dict[str, list[ItemInformativo]]:
     mapa: dict[str, list[ItemInformativo]] = {}
+    todos_asignados: set[int] = set()
     for nodo_id in NODOS_CULTURALES:
         terminos = terminos_para_nodo(nodo_id)
         encontrados: list[ItemInformativo] = []
-        for it in items:
+        for idx, it in enumerate(items):
             texto = (it.titulo + " " + it.contenido).lower()
             if any(t in texto for t in terminos):
                 encontrados.append(it)
+                todos_asignados.add(idx)
         umbral = UMBRAL_POR_NODO.get(nodo_id, UMBRAL_ITEMS_MINIMOS)
-        mapa[nodo_id] = encontrados or items[:umbral]
+        if encontrados:
+            mapa[nodo_id] = encontrados
+        else:
+            # Fallback: asignar items no usados por otros nodos
+            no_asignados = [it for idx, it in enumerate(items) if idx not in todos_asignados]
+            if no_asignados:
+                mapa[nodo_id] = no_asignados[:umbral]
+                for idx, it in enumerate(items):
+                    if it in no_asignados[:umbral]:
+                        todos_asignados.add(idx)
+            else:
+                mapa[nodo_id] = items[:umbral]
     return mapa
 
 
@@ -100,7 +125,68 @@ def detectar_brechas(
 def _es_item_relevante(item: ItemInformativo, nodo_id: str) -> bool:
     terminos = terminos_para_nodo(nodo_id)
     texto = (item.titulo + " " + item.contenido).lower()
-    return any(t in texto for t in terminos)
+    return _match_parcial(texto, terminos)
+
+
+def resumir_contexto_noticioso(items_por_nodo: dict[str, list[ItemInformativo]]) -> dict[str, dict]:
+    """
+    Extrae palabras clave y titulares principales por nodo para anotar gráficos.
+
+    Returns:
+        dict[nodo_id] = {
+            "keywords": [str, ...],        # 5 términos más frecuentes
+            "top_headlines": [str, ...],   # 3 titulares más representativos
+            "resumen": str,                # texto corto para interpretación
+        }
+    """
+    from collections import Counter
+    import re
+
+    contexto: dict[str, dict] = {}
+    for nid, items in items_por_nodo.items():
+        if not items:
+            continue
+        textos = [f"{it.titulo} {it.contenido}" for it in items]
+        palabras = re.findall(r'\w{4,}', " ".join(textos).lower())
+        comunes = [p for p in palabras if p not in (
+            "para", "como", "entre", "sobre", "tiene", "parte", "tras", "este",
+            "esta", "esto", "más", "pero", "todo", "cada", "sido", "hace",
+            "solo", "gran", "tres", "dos", "una", "con", "del", "que",
+        )]
+        keywords = [w for w, _ in Counter(comunes).most_common(6)]
+
+        top = items[:3]
+        headlines = [it.titulo[:80] for it in top if it.titulo]
+
+        resumen = ""
+        if headlines:
+            resumen = f"{nid.lower()}: {' · '.join(h for h in headlines[:2])}"
+
+        contexto[nid] = {
+            "keywords": keywords,
+            "top_headlines": headlines,
+            "resumen": resumen,
+        }
+
+    # Contexto global: cruce entre nodos con más items
+    all_items = []
+    for lst in items_por_nodo.values():
+        all_items.extend(lst)
+    global_keywords = []
+    if all_items:
+        textos = [f"{it.titulo} {it.contenido}" for it in all_items]
+        palabras = re.findall(r'\w{4,}', " ".join(textos).lower())
+        comunes = [p for p in palabras if p not in (
+            "para", "como", "entre", "sobre", "tiene", "parte", "tras",
+        )]
+        global_keywords = [w for w, _ in Counter(comunes).most_common(8)]
+
+    contexto["_global"] = {
+        "total_items": len(all_items),
+        "keywords": global_keywords,
+        "resumen": " · ".join(global_keywords[:5]) if global_keywords else "",
+    }
+    return contexto
 
 
 def resumen_brechas(brechas: dict[str, dict]) -> str:

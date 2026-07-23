@@ -1,0 +1,914 @@
+[
+  {
+    "fecha": "2026-07-06",
+    "era_k": 1,
+    "M_m": 3.4,
+    "M_l": 6.0,
+    "M_s": 4.9,
+    "delta": 30.6,
+    "coherente": "OK",
+    "theta_cultura": 60.0,
+    "tension": 454.1,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 2.5,
+      "l": 4.8,
+      "s": 3.0,
+      "delta": 28.6,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 6.8,
+      "s": 5.3,
+      "delta": 66.1,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.5,
+      "l": 5.5,
+      "s": 5.3,
+      "delta": 17.1,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 2.5,
+      "l": 6.2,
+      "s": 7.0,
+      "delta": 42.2,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 4.5,
+      "l": 3.5,
+      "s": 1.8,
+      "delta": 52.0,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 5.5,
+      "l": 8.8,
+      "s": 5.2,
+      "delta": 12.6,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 3.8,
+      "l": 6.2,
+      "s": 5.5,
+      "delta": 15.8,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 7.2,
+      "s": 6.2,
+      "delta": 24.7,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-07",
+    "era_k": 1,
+    "M_m": 3.5,
+    "M_l": 6.1,
+    "M_s": 5.2,
+    "delta": 29.3,
+    "coherente": "OK",
+    "theta_cultura": 58.9,
+    "tension": 460.6,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 3.0,
+      "l": 5.2,
+      "s": 4.0,
+      "delta": 20.8,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.0,
+      "s": 5.3,
+      "delta": 66.5,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.2,
+      "l": 5.5,
+      "s": 5.5,
+      "delta": 22.2,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 2.8,
+      "l": 7.0,
+      "s": 7.5,
+      "delta": 37.2,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 4.5,
+      "l": 3.5,
+      "s": 2.0,
+      "delta": 42.8,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.0,
+      "l": 8.5,
+      "s": 5.0,
+      "delta": 12.2,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 3.5,
+      "l": 6.5,
+      "s": 6.0,
+      "delta": 21.4,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.8,
+      "s": 6.5,
+      "delta": 24.4,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-09",
+    "era_k": 1,
+    "M_m": 3.7,
+    "M_l": 6.3,
+    "M_s": 5.5,
+    "delta": 25.4,
+    "coherente": "OK",
+    "theta_cultura": 57.3,
+    "tension": 464.7,
+    "fragiles": "",
+    "gap": 48,
+    "ECONOMIA": {
+      "m": 3.5,
+      "l": 5.4,
+      "s": 4.5,
+      "delta": 14.9,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.2,
+      "s": 5.3,
+      "delta": 66.9,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 4.0,
+      "l": 6.0,
+      "s": 5.5,
+      "delta": 13.0,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.5,
+      "l": 7.5,
+      "s": 7.8,
+      "delta": 26.3,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 4.5,
+      "l": 3.5,
+      "s": 2.5,
+      "delta": 26.5,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.5,
+      "l": 8.5,
+      "s": 5.5,
+      "delta": 9.5,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 3.0,
+      "l": 6.5,
+      "s": 6.5,
+      "delta": 30.5,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.9,
+      "s": 6.8,
+      "delta": 25.1,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-13",
+    "era_k": 1,
+    "M_m": 3.6,
+    "M_l": 6.5,
+    "M_s": 5.6,
+    "delta": 27.8,
+    "coherente": "OK",
+    "theta_cultura": 55.7,
+    "tension": 405.5,
+    "fragiles": "",
+    "gap": 96,
+    "ECONOMIA": {
+      "m": 3.5,
+      "l": 5.6,
+      "s": 4.5,
+      "delta": 15.8,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.4,
+      "s": 5.3,
+      "delta": 67.3,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.5,
+      "l": 6.5,
+      "s": 5.5,
+      "delta": 20.4,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.0,
+      "l": 7.8,
+      "s": 8.0,
+      "delta": 35.1,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.2,
+      "l": 4.0,
+      "s": 3.0,
+      "delta": 20.8,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.5,
+      "l": 8.5,
+      "s": 5.8,
+      "delta": 8.2,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 2.5,
+      "l": 6.5,
+      "s": 7.0,
+      "delta": 42.7,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.9,
+      "s": 6.2,
+      "delta": 24.1,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-14",
+    "era_k": 1,
+    "M_m": 3.9,
+    "M_l": 6.5,
+    "M_s": 5.7,
+    "delta": 24.2,
+    "coherente": "OK",
+    "theta_cultura": 55.2,
+    "tension": 427.9,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 4.2,
+      "l": 5.6,
+      "s": 4.0,
+      "delta": 11.2,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.6,
+      "s": 5.3,
+      "delta": 67.6,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.2,
+      "l": 7.0,
+      "s": 5.8,
+      "delta": 26.6,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.8,
+      "l": 7.8,
+      "s": 8.2,
+      "delta": 23.5,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.2,
+      "l": 4.0,
+      "s": 3.5,
+      "delta": 13.9,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.5,
+      "l": 8.7,
+      "s": 6.2,
+      "delta": 7.3,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 3.2,
+      "l": 6.5,
+      "s": 7.1,
+      "delta": 28.1,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.5,
+      "s": 6.5,
+      "delta": 23.8,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-15",
+    "era_k": 1,
+    "M_m": 3.8,
+    "M_l": 6.5,
+    "M_s": 5.9,
+    "delta": 25.4,
+    "coherente": "OK",
+    "theta_cultura": 55.2,
+    "tension": 463.6,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 4.8,
+      "l": 5.8,
+      "s": 4.0,
+      "delta": 11.4,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.8,
+      "s": 5.3,
+      "delta": 68.0,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 2.8,
+      "l": 7.5,
+      "s": 6.2,
+      "delta": 35.8,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.5,
+      "l": 7.8,
+      "s": 8.6,
+      "delta": 27.8,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.4,
+      "l": 4.0,
+      "s": 4.0,
+      "delta": 11.0,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.0,
+      "l": 8.8,
+      "s": 6.3,
+      "delta": 8.4,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 3.2,
+      "l": 6.0,
+      "s": 7.3,
+      "delta": 27.6,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.0,
+      "s": 6.5,
+      "delta": 22.8,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-18",
+    "era_k": 1,
+    "M_m": 3.9,
+    "M_l": 6.4,
+    "M_s": 5.9,
+    "delta": 24.3,
+    "coherente": "OK",
+    "theta_cultura": 56.2,
+    "tension": 460.0,
+    "fragiles": "",
+    "gap": 72,
+    "ECONOMIA": {
+      "m": 4.2,
+      "l": 6.0,
+      "s": 4.5,
+      "delta": 11.0,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.8,
+      "s": 5.3,
+      "delta": 68.0,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 4.0,
+      "l": 7.0,
+      "s": 5.5,
+      "delta": 15.9,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.5,
+      "l": 7.5,
+      "s": 7.8,
+      "delta": 26.3,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.5,
+      "l": 4.0,
+      "s": 4.5,
+      "delta": 10.1,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.5,
+      "l": 8.9,
+      "s": 6.5,
+      "delta": 7.0,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 2.5,
+      "l": 5.5,
+      "s": 7.5,
+      "delta": 41.8,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.0,
+      "s": 6.5,
+      "delta": 22.8,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-19",
+    "era_k": 1,
+    "M_m": 3.8,
+    "M_l": 6.7,
+    "M_s": 6.0,
+    "delta": 25.1,
+    "coherente": "OK",
+    "theta_cultura": 54.1,
+    "tension": 324.1,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 4.8,
+      "l": 6.5,
+      "s": 4.5,
+      "delta": 10.6,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.8,
+      "s": 5.3,
+      "delta": 68.0,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.5,
+      "l": 6.5,
+      "s": 5.7,
+      "delta": 20.8,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.2,
+      "l": 7.8,
+      "s": 7.8,
+      "delta": 31.3,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.5,
+      "l": 5.0,
+      "s": 4.8,
+      "delta": 4.0,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.0,
+      "l": 9.1,
+      "s": 6.7,
+      "delta": 8.5,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 2.5,
+      "l": 5.7,
+      "s": 7.7,
+      "delta": 42.5,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 6.5,
+      "s": 6.8,
+      "delta": 24.4,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-20",
+    "era_k": 1,
+    "M_m": 3.7,
+    "M_l": 6.5,
+    "M_s": 5.8,
+    "delta": 29.1,
+    "coherente": "OK",
+    "theta_cultura": 55.0,
+    "tension": 373.6,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 5.2,
+      "l": 6.0,
+      "s": 4.0,
+      "delta": 12.5,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 1.8,
+      "l": 7.8,
+      "s": 5.3,
+      "delta": 68.0,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.5,
+      "l": 6.5,
+      "s": 5.7,
+      "delta": 20.8,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 2.5,
+      "l": 8.0,
+      "s": 7.8,
+      "delta": 46.4,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 16.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.5,
+      "l": 5.0,
+      "s": 4.8,
+      "delta": 4.0,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.5,
+      "l": 9.3,
+      "s": 6.7,
+      "delta": 7.5,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 1.8,
+      "l": 5.8,
+      "s": 7.5,
+      "delta": 68.6,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 3.4,
+      "l": 5.5,
+      "s": 5.0,
+      "delta": 17.7,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-21",
+    "era_k": 1,
+    "M_m": 4.3,
+    "M_l": 6.3,
+    "M_s": 6.2,
+    "delta": 22.2,
+    "coherente": "OK",
+    "theta_cultura": 57.5,
+    "tension": 336.6,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 6.0,
+      "l": 6.8,
+      "s": 5.5,
+      "delta": 5.1,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 3.5,
+      "l": 6.2,
+      "s": 6.5,
+      "delta": 21.8,
+      "fragil": ""
+    },
+    "CONTINUIDAD": {
+      "m": 3.5,
+      "l": 7.0,
+      "s": 6.5,
+      "delta": 23.4,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 5.5,
+      "l": 7.6,
+      "s": 7.2,
+      "delta": 8.0,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.0,
+      "s": 6.5,
+      "delta": 21.0,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 5.8,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 4.7,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 7.0,
+      "l": 7.5,
+      "s": 6.0,
+      "delta": 5.0,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 2.0,
+      "l": 6.2,
+      "s": 7.2,
+      "delta": 59.5,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 2.0,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 50.9,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-22",
+    "era_k": 1,
+    "M_m": 4.3,
+    "M_l": 5.7,
+    "M_s": 5.4,
+    "delta": 22.8,
+    "coherente": "OK",
+    "theta_cultura": 62.9,
+    "tension": 326.3,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 5.8,
+      "l": 6.0,
+      "s": 5.5,
+      "delta": 2.2,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 5.5,
+      "l": 6.0,
+      "s": 5.5,
+      "delta": 2.6,
+      "fragil": ""
+    },
+    "SEXUALIDAD": {
+      "m": 3.5,
+      "l": 7.0,
+      "s": 6.5,
+      "delta": 23.4,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.0,
+      "l": 7.2,
+      "s": 7.2,
+      "delta": 33.0,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.4,
+      "l": 5.8,
+      "s": 5.0,
+      "delta": 18.8,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 6.5,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 7.8,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.8,
+      "l": 4.5,
+      "s": 4.0,
+      "delta": 15.7,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 2.0,
+      "l": 5.0,
+      "s": 4.5,
+      "delta": 49.1,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 2.0,
+      "l": 5.0,
+      "s": 5.5,
+      "delta": 52.5,
+      "fragil": ""
+    }
+  },
+  {
+    "fecha": "2026-07-23",
+    "era_k": 1,
+    "M_m": 4.5,
+    "M_l": 5.3,
+    "M_s": 5.2,
+    "delta": 21.7,
+    "coherente": "OK",
+    "theta_cultura": 67.6,
+    "tension": 395.4,
+    "fragiles": "",
+    "gap": null,
+    "ECONOMIA": {
+      "m": 7.5,
+      "l": 7.0,
+      "s": 6.5,
+      "delta": 3.0,
+      "fragil": ""
+    },
+    "TRABAJO": {
+      "m": 5.5,
+      "l": 5.5,
+      "s": 5.5,
+      "delta": 0.0,
+      "fragil": ""
+    },
+    "SEXUALIDAD": {
+      "m": 3.5,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 14.5,
+      "fragil": ""
+    },
+    "POLITICA": {
+      "m": 3.8,
+      "l": 7.2,
+      "s": 7.2,
+      "delta": 21.1,
+      "fragil": ""
+    },
+    "LENGUAJE": {
+      "m": 3.5,
+      "l": 5.2,
+      "s": 5.0,
+      "delta": 15.2,
+      "fragil": ""
+    },
+    "ETICA_ESTETICA": {
+      "m": 6.5,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 7.8,
+      "fragil": ""
+    },
+    "TECNOLOGIA": {
+      "m": 6.8,
+      "l": 4.5,
+      "s": 4.0,
+      "delta": 15.7,
+      "fragil": ""
+    },
+    "EDUCACION": {
+      "m": 1.5,
+      "l": 3.5,
+      "s": 3.8,
+      "delta": 66.6,
+      "fragil": ""
+    },
+    "RELIGION": {
+      "m": 2.0,
+      "l": 5.0,
+      "s": 5.0,
+      "delta": 50.9,
+      "fragil": ""
+    }
+  }
+]

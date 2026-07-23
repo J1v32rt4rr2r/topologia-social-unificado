@@ -1,29 +1,34 @@
 from __future__ import annotations
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from topologia.storage.store import FileStore
 
 
 NODOS = [
-    "ECONOMIA", "TRABAJO", "CONTINUIDAD", "POLITICA",
+    "ECONOMIA", "TRABAJO", "SEXUALIDAD", "POLITICA",
     "LENGUAJE", "ETICA_ESTETICA", "TECNOLOGIA", "EDUCACION", "RELIGION",
 ]
 
 
-def main():
+def actualizar_timeline(sociedad: str = "Chile") -> list[dict]:
+    """
+    Reconstruye timeline.json y timeline.csv desde los estados guardados.
+    Retorna las filas para que el llamante pueda usarlas.
+    """
     store = FileStore()
-    fechas = store.listar_estados("Chile")
+    fechas = store.listar_estados(sociedad)
     if not fechas:
-        print("No hay estados guardados")
-        return
+        return []
 
     rows = []
-
     for i, fecha_str in enumerate(fechas):
-        estado = store.cargar_estado("Chile", fecha_str)
+        estado = store.cargar_estado(sociedad, fecha_str)
         if not estado:
             continue
 
@@ -61,7 +66,29 @@ def main():
         row.update(nodos_data)
         rows.append(row)
 
-    # Console output
+    script_dir = Path(__file__).resolve().parent.parent
+    out_dir = script_dir / "data" / "barrido"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    csv = ["fecha,era_k,delta,M_m,M_l,M_s,theta,tension,coherente,gap_horas,fragiles"]
+    for r in rows:
+        csv.append(
+            f"{r['fecha']},{r['era_k']},{r['delta']},{r['M_m']},{r['M_l']},{r['M_s']},"
+            f"{r['theta_cultura']},{r['tension']},{r['coherente']},{r['gap'] or ''},\"{r['fragiles']}\""
+        )
+    (out_dir / "timeline.csv").write_text("\n".join(csv), encoding="utf-8")
+    (out_dir / "timeline.json").write_text(json.dumps(rows, indent=2, default=str), encoding="utf-8")
+
+    return rows
+
+
+def main():
+    rows = actualizar_timeline("Chile")
+    if not rows:
+        print("No hay estados guardados")
+        return
+
+    fechas = [r["fecha"] for r in rows]
     SEP = "=" * 110
     print()
     print(SEP)
@@ -89,12 +116,10 @@ def main():
             f"{frag}"
         )
 
-    # Per-node matrix
     print()
     print(SEP)
     print("MATRIZ POR NODO (M_m / M_l / M_s)")
     print(SEP)
-
     for nid in NODOS:
         parts = []
         for r in rows:
@@ -111,7 +136,6 @@ def main():
             print(f"\n  {nid}:")
             print(f"    {'  |  '.join(parts)}")
 
-    # Gaps
     gaps = [(r["fecha"], r["gap"]) for r in rows if r["gap"]]
     if gaps:
         print()
@@ -121,20 +145,8 @@ def main():
             dias = h / 24
             print(f"  Antes de {f}: {h}h ({dias:.1f} dias) sin datos")
 
-    # Save
     script_dir = Path(__file__).resolve().parent.parent
     out_dir = script_dir / "data" / "barrido"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    csv = ["fecha,era_k,delta,M_m,M_l,M_s,theta,tension,coherente,gap_horas,fragiles"]
-    for r in rows:
-        csv.append(
-            f"{r['fecha']},{r['era_k']},{r['delta']},{r['M_m']},{r['M_l']},{r['M_s']},"
-            f"{r['theta_cultura']},{r['tension']},{r['coherente']},{r['gap'] or ''},\"{r['fragiles']}\""
-        )
-    (out_dir / "timeline.csv").write_text("\n".join(csv), encoding="utf-8")
-    (out_dir / "timeline.json").write_text(json.dumps(rows, indent=2, default=str), encoding="utf-8")
-
     print()
     print(SEP)
     print(f"Datos guardados en: {out_dir / 'timeline.csv'}")

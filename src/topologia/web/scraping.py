@@ -52,7 +52,7 @@ def recolectar_para_brechas(brechas: dict) -> list[ItemInformativo]:
         tiene_brecha = info.get("tiene_brecha", True)
         if score_plano or not tiene_items or tiene_brecha:
             if i > 0:
-                time.sleep(0.5)
+                time.sleep(3)
             max_items = 10 if score_plano else 5
             nuevos = recolectar_para_nodo(nid, max_items=max_items)
             if nuevos:

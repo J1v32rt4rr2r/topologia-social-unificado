@@ -4,7 +4,7 @@ rss:
     activo: false
   - url: "https://www.bbc.com/mundo/temas/america_latina/index.xml"
     activo: false
-  - url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america/portada"
+  - url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/chile/portada"
     activo: true
   - url: "https://www.resumen.cl/feed/"
     activo: false

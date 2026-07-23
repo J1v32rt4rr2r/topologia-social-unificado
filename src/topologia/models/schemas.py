@@ -171,6 +171,39 @@ class InformeDiario(BaseModel):
     dashboard: DashboardData = Field(default_factory=DashboardData)
 
 
+# ─── APRENDIZAJE ───────────────────────────────────────────
+
+
+class RendimientoFuente(BaseModel):
+    total_items: int = 0
+    items_por_nodo: dict[str, int] = {}
+    proporcion_relevantes: float = 0.0
+
+
+class EstrategiaRecoleccion(BaseModel):
+    sociedad: str = "Chile"
+    generada_en: datetime = Field(default_factory=datetime.now)
+
+    nodos_prioritarios: list[str] = []
+    nodos_con_brecha: list[str] = []
+    dimensiones_inestables: dict[str, str] = {}
+
+    queries_generadas: dict[str, list[str]] = {}
+
+    fuentes_activas: list[str] = []
+    fuentes_ruidosas: list[str] = []
+    peso_por_fuente: dict[str, float] = {}
+
+    umbral_relevancia: float = 0.5
+    max_items_por_nodo: int = 10
+
+
+class ItemScored(BaseModel):
+    item: ItemInformativo
+    score: float = 0.0
+    nodo_asignado: str = ""
+
+
 # ─── UTILIDAD ──────────────────────────────────────────────
 
 
@@ -182,6 +215,7 @@ class ItemInformativo(BaseModel):
     url: str = ""
     fecha: datetime = Field(default_factory=datetime.now)
     tags: list[str] = []
+    nodo_sugerido: str = ""
 
 
 class ConfigAgente(BaseModel):

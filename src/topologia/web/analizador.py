@@ -13,7 +13,7 @@ Analiza el siguiente concepto: "{trend}"
 Evalúa en orden:
 1. ¿Es relevante para el estudio topológico de la cultura?
 2. ¿Qué oportunidades de estudio topológico presenta?
-3. ¿Puede mapearse a los 9 nodos culturales? (ECONOMIA, TRABAJO, CONTINUIDAD, POLITICA, LENGUAJE, ETICA_ESTETICA, TECNOLOGIA, EDUCACION, RELIGION)
+3. ¿Puede mapearse a los 9 nodos culturales? (ECONOMIA, TRABAJO, SEXUALIDAD, POLITICA, LENGUAJE, ETICA_ESTETICA, TECNOLOGIA, EDUCACION, RELIGION)
 
 Responde ÚNICAMENTE con:
 RELEVANCIA: <0.1-9.9>

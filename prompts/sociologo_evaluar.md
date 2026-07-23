@@ -8,13 +8,14 @@ CALIBRACIÓN DE ESCALA (compartida entre Estadista, Filósofo y Sociólogo):
   La puntuación mide INTENSIDAD del fenómeno en esa dimensión,
   no valoración positiva/negativa.
   IMPORTANTE: 5.0 significa "sin novedades relevantes".
-  Puntuar ≥7.0 solo si hay evidencia concreta y significativa.
-  Puntuar ≤3.0 solo si hay deterioro evidente y documentado.
+  La escala DEBE USARSE ACTIVAMENTE: si hay evidencia de intensificación
+  del fenómeno, puntúa ≥6.0. Si hay evidencia de debilitamiento, puntúa ≤4.0.
+  No uses 5.0 como valor por defecto — varía según las noticias.
   Si otra dimensión del mismo nodo tiene 5.0 y esta tiene 7.5,
   la diferencia debe deberse a los datos, no a criterios distintos.
 
 Hoy evaluamos el nodo: {nodo}
-(del total de 9 nodos culturales: ECONOMIA, TRABAJO, CONTINUIDAD, POLITICA, LENGUAJE, ETICA_ESTETICA, TECNOLOGIA, EDUCACION, RELIGION)
+(del total de 9 nodos culturales: ECONOMIA, TRABAJO, SEXUALIDAD, POLITICA, LENGUAJE, ETICA_ESTETICA, TECNOLOGIA, EDUCACION, RELIGION)
 
 Pregunta guía para este nodo: {pregunta_nodo}
 

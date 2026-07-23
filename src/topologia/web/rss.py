@@ -30,8 +30,20 @@ USER_AGENT = (
 _FUENTES_CHILENAS = [
     "ciperchile", "elsiglo", "theclinic", "cambio21",
     "elciudadano", "uchile", "trendtic", "gerencia",
+    "emol", "latercera", "biobio", "meganoticias",
+    "tvn", "canal13", "24horas",
 ]
-_RE_CHILE = re.compile(r"\bchile\b|\bchilen[ao]s?\b", re.IGNORECASE)
+_RE_CHILE = re.compile(
+    r"\bchile\b|\bchilen[ao]s?\b|"
+    r"\bsantiago\b|\bvalpara[ií]so\b|\bconcepci[oó]n\b|"
+    r"\bboric\b|\bkast\b|\bmatthei\b|\bprovoste\b|"
+    r"\blamoneda\b|\bcongreso\b|\bplebiscito\b|"
+    r"\bestallido\b|\bantofagasta\b|\btemuco\b|"
+    r"\baraucan[ií]a\b|\bcoquimbo\b|\bmaip[uú]\b|"
+    r"\bpudahuel\b|\bvi[ñn]a\b|\biquique\b|"
+    r"\bpuntaarenas\b|\bpuertomontt\b|\bconstitucion\b",
+    re.IGNORECASE,
+)
 
 
 def _limpiar_html(texto: str) -> str:
@@ -177,7 +189,7 @@ def obtener_items(limite: int = 20, usar_cache: bool = True) -> list[ItemInforma
         for it in items:
             if any(f in it.fuente for f in _FUENTES_CHILENAS):
                 todos.append(it)
-            elif _RE_CHILE.search(it.titulo + " " + (it.contenido or "")):
+            elif _RE_CHILE.search(it.titulo):
                 todos.append(it)
 
     for local_cfg in _obtener_fuentes_locales(config):
@@ -205,3 +217,22 @@ def obtener_items(limite: int = 20, usar_cache: bool = True) -> list[ItemInforma
     _CACHE[cache_key] = (time.time(), resultado)
     logger.info(f"RSS total: {len(resultado)} items únicos de {len(todos)} brutos")
     return resultado
+
+
+def filtrar_relevancia_chile(items: list[ItemInformativo]) -> list[ItemInformativo]:
+    """Filtra items reteniendo solo aquellos relevantes para Chile.
+    Las fuentes chilenas conocidas pasan automáticamente.
+    Para fuentes externas, se exige que el título contenga términos chilenos.
+    """
+    salida: list[ItemInformativo] = []
+    descartados = 0
+    for it in items:
+        if any(f in it.fuente for f in _FUENTES_CHILENAS):
+            salida.append(it)
+        elif _RE_CHILE.search(it.titulo):
+            salida.append(it)
+        else:
+            descartados += 1
+    if descartados:
+        logger.info(f"Filtro Chile: {descartados} items descartados por falta de relevancia nacional")
+    return salida

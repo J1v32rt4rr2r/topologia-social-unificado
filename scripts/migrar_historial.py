@@ -17,7 +17,7 @@ from topologia.models.schemas import EstadoCultural, EvaluacionNodo
 from topologia.storage.store import FileStore
 
 NODOS_CULTURALES = [
-    "ECONOMIA", "TRABAJO", "CONTINUIDAD", "POLITICA",
+    "ECONOMIA", "TRABAJO", "SEXUALIDAD", "POLITICA",
     "LENGUAJE", "ETICA_ESTETICA", "TECNOLOGIA", "EDUCACION", "RELIGION",
 ]
 

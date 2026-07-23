@@ -6,7 +6,7 @@ from topologia.prompts import PromptLoader
 NODOS_PREGUNTAS = {
     "ECONOMIA": "¿Qué ideología de mercado y teoría del valor predominan?",
     "TRABAJO": "¿Qué ética del trabajo y concepto de mérito existen?",
-    "CONTINUIDAD": "¿Qué narrativa histórica y tradición como valor?",
+    "SEXUALIDAD": "¿Qué cosmovisiones, tabúes, morales sexuales y bioéticas predominan?",
     "POLITICA": "¿Qué filosofía política, leyes y constitución?",
     "LENGUAJE": "¿Qué gramática, lógica formal, semántica y discurso?",
     "ETICA_ESTETICA": "¿Qué principios éticos, cánones estéticos y moral?",
@@ -21,7 +21,7 @@ class Filosofo(Agent):
         super().__init__(ConfigAgente(
             nombre="Filósofo",
             prompt="",
-            temperatura=0.2,
+            temperatura=0.4,
             modelo="deepseek-chat",
             max_tokens=1024,
         ))
@@ -39,7 +39,7 @@ class Filosofo(Agent):
         )
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)
-            punt = float(resultado.get("puntuacion", 5.0))
+            punt = max(0.1, min(9.9, float(resultado.get("puntuacion", 5.0))))
             just = resultado.get("justificacion", "")
             tend = resultado.get("tendencia", "estable")
         except Exception:
