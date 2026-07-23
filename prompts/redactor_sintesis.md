@@ -16,6 +16,16 @@ Has recibido estos insumos del día de hoy (incluyendo análisis de formas cultu
 ## 4. RESULTADOS DE ESTUDIOS
 {estudios}
 
+## 4b. PATRONES ESTRUCTURALES DEL SISTEMA
+Clasificación de cada nodo según su configuración vectorial (M_m, M_l, M_s):
+
+- **Estructura ideológica consolidada** (M_l ≈ M_s): el dogma y la práctica social están alineados. Describe orgánicas con base doctrinal sólida, comportamiento cuasi-sectario. La materialidad puede ser alta o baja, pero el núcleo es ideológico.
+- **Anhelo insatisfecho** (M_l > M_m y/o M_s > M_m, con M_l ≠ M_s): las aspiraciones valóricas y/o la acción social superan a la base material. El sistema "quiere" pero "no puede". Tensión estructural entre proyecto y realidad.
+- **Materialidad dominante** (M_m > M_l y M_m > M_s): la lógica de recursos, infraestructura o mercado prevalece sobre valores y organización social.
+
+## 4c. TENSIONES LATENTES (del Artista)
+{tensiones_latentes}
+
 ## 5. COMPARATIVA HISTÓRICA
 {historial_reciente}
 

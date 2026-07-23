@@ -838,48 +838,48 @@
   {
     "fecha": "2026-07-23",
     "era_k": 1,
-    "M_m": 4.4,
-    "M_l": 5.4,
-    "M_s": 5.2,
-    "delta": 21.9,
+    "M_m": 3.9,
+    "M_l": 5.1,
+    "M_s": 5.1,
+    "delta": 23.2,
     "coherente": "OK",
-    "theta_cultura": 66.3,
-    "tension": 479.9,
+    "theta_cultura": 70.4,
+    "tension": 347.6,
     "fragiles": "",
     "gap": null,
     "ECONOMIA": {
-      "m": 6.5,
-      "l": 5.0,
-      "s": 4.5,
-      "delta": 10.3,
+      "m": 4.5,
+      "l": 4.5,
+      "s": 4.0,
+      "delta": 4.7,
       "fragil": ""
     },
     "TRABAJO": {
-      "m": 5.5,
+      "m": 5.0,
       "l": 4.5,
       "s": 5.0,
-      "delta": 5.9,
+      "delta": 3.8,
       "fragil": ""
     },
     "SEXUALIDAD": {
       "m": 3.5,
-      "l": 5.0,
-      "s": 5.0,
-      "delta": 14.5,
+      "l": 6.0,
+      "s": 6.0,
+      "delta": 20.2,
       "fragil": ""
     },
     "POLITICA": {
-      "m": 2.5,
-      "l": 7.5,
-      "s": 6.5,
-      "delta": 43.6,
+      "m": 2.0,
+      "l": 7.2,
+      "s": 7.0,
+      "delta": 60.9,
       "fragil": ""
     },
     "LENGUAJE": {
       "m": 3.5,
-      "l": 6.5,
+      "l": 5.5,
       "s": 5.0,
-      "delta": 19.7,
+      "delta": 16.3,
       "fragil": ""
     },
     "ETICA_ESTETICA": {
@@ -890,17 +890,17 @@
       "fragil": ""
     },
     "TECNOLOGIA": {
-      "m": 7.5,
-      "l": 7.2,
-      "s": 6.5,
-      "delta": 3.1,
+      "m": 6.5,
+      "l": 5.5,
+      "s": 5.0,
+      "delta": 6.8,
       "fragil": ""
     },
     "EDUCACION": {
       "m": 2.0,
-      "l": 3.2,
-      "s": 4.5,
-      "delta": 41.6,
+      "l": 2.8,
+      "s": 4.0,
+      "delta": 36.9,
       "fragil": ""
     },
     "RELIGION": {

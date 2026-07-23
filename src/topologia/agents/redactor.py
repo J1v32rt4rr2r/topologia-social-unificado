@@ -42,12 +42,14 @@ class Redactor(Agent):
         est_str = self._formatear_estudios(estudios)
         formas_str = analisis_formas or "Sin análisis de formas complejas disponible."
         graf_str = self._formatear_graficos(graficos_generados)
+        tens_str = self._formatear_tensiones_latentes(estudios)
 
         prompt = self.prompts.load("redactor_sintesis",
             estado_cultural=estado_str,
             operaciones_activas=ops_str,
             especulaciones=esp_str,
             estudios=est_str,
+            tensiones_latentes=tens_str,
             historial_reciente=historial or "Sin historial disponible.",
             proyeccion=proyeccion or "Sin proyección disponible.",
             analisis_formas=formas_str,
@@ -76,7 +78,16 @@ class Redactor(Agent):
         lineas.append("")
         for n in estado.nodos:
             frag = "⚠" if n.fragil else " "
-            lineas.append(f"  [{frag}] {n.nodo_id}: M_m={n.dimension_m:.1f} M_l={n.dimension_l:.1f} M_s={n.dimension_s:.1f} δ={n.delta:.1f}°")
+            m, l, s = n.dimension_m, n.dimension_l, n.dimension_s
+            if abs(l - s) <= 0.5:
+                pat = "EIC"  # estructura ideológica consolidada
+            elif l > m and s > m:
+                pat = "ANH"  # anhelo insatisfecho
+            elif m > l and m > s:
+                pat = "MAT"  # materialidad dominante
+            else:
+                pat = ""
+            lineas.append(f"  [{frag}] {n.nodo_id}: M_m={m:.1f} M_l={l:.1f} M_s={s:.1f} δ={n.delta:.1f}° [{pat}]")
         if estado.m_m:
             lineas.append(f"\nFormas complejas (e^(2πi / m)):")
             lineas.append(f"  M_m (Matriz Material): m={estado.m_m:.3f} θ={estado.theta_m:.1f}°")
@@ -106,16 +117,28 @@ class Redactor(Agent):
                 lineas.append(f"  Nodos sugeridos: {', '.join(e.nodos_sugeridos)}")
         return "\n".join(lineas)
 
+    def _formatear_tensiones_latentes(self, estudios: list[Estudio]) -> str:
+        tensiones = [e for e in estudios if e.tension_latente]
+        if not tensiones:
+            return "No se identificaron tensiones latentes."
+        lineas = []
+        for e in tensiones:
+            lineas.append(f"- Pregunta: {e.pregunta_investigada}")
+            lineas.append(f"  Hallazgo: {e.respuesta[:200]}")
+        return "\n".join(lineas)
+
     def _formatear_estudios(self, estudios: list[Estudio]) -> str:
         if not estudios:
             return "No se realizaron estudios hoy."
         lineas = []
         for e in estudios:
-            lineas.append(f"- {e.id}: patrón {e.patron_id} → {e.estado.value}")
+            tag = "🔮 TENSIÓN LATENTE" if e.tension_latente else "investigado"
+            lineas.append(f"- {e.id}: patrón {e.patron_id} → {tag}")
+            if e.pregunta_investigada:
+                lineas.append(f"  Pregunta: {e.pregunta_investigada}")
+            lineas.append(f"  Respuesta: {e.respuesta[:200]}")
             for dim, analisis in e.analisis.items():
-                status = "✓" if analisis.confirmado else "✗"
-                lineas.append(f"  {dim}: {status} (confianza: {analisis.confianza:.2f})")
-                lineas.append(f"    {analisis.conclusion}")
+                lineas.append(f"  {dim}: hallazgo={analisis.hallazgo[:100]} (confianza: {analisis.confianza:.2f})")
         return "\n".join(lineas)
 
     def _formatear_graficos(self, graficos: list[str] | None = None) -> str:

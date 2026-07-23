@@ -107,25 +107,23 @@ class Especulacion(BaseModel):
 
 class AnalisisDim(BaseModel):
     dimension: str
-    patron_id: str
-    confirmado: bool = False
+    patron_id: str = ""
     confianza: float = Field(default=0.0, ge=0.0, le=1.0)
     evidencia: str = ""
-    contraevidencia: str = ""
-    posibilidad: str = ""
-    realidad: str = ""
+    hallazgo: str = ""
     conclusion: str = ""
 
 
 class Estudio(BaseModel):
     id: str = ""
     especulacion_id: str
-    patron_id: str
-    estado: EstadoPatron = EstadoPatron.en_estudio
+    patron_id: str = ""
+    pregunta_investigada: str = ""
+    respuesta: str = ""
+    tension_latente: bool = False
     items_originales: list[str] = []
     items_investigacion: list[str] = []
     analisis: dict[str, AnalisisDim] = {}
-    veredicto: str = ""
     informe_path: str = ""
     timestamp: datetime = Field(default_factory=datetime.now)
 

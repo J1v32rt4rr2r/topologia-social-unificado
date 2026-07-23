@@ -608,23 +608,23 @@ def _build_dos_columnas(especulaciones: list[Especulacion] | None,
     est_html = ""
     if estudios:
         for est in estudios:
-            v_lbl = est.veredicto.upper() if est.veredicto else "PENDIENTE"
+            lbl = "🔮 Tensión latente" if est.tension_latente else "Investigado"
+            cls = "refutado" if est.tension_latente else "parcial"
+            pregunta = f'<div class="card-meta">💬 {escape(est.pregunta_investigada)}</div>' if est.pregunta_investigada else ""
             dims_html = ""
             for dk, dim in est.analisis.items():
-                status = "✓ Confirmado" if dim.confirmado else "✗ No confirmado"
-                cls = "ok" if dim.confirmado else "fail"
-                poss = f" posible:{dim.posibilidad}" if dim.posibilidad else ""
-                real = f" real:{dim.realidad}" if dim.realidad else ""
                 dims_html += f"""<div class="analisis-dim">
-          <strong>{escape(dk)}</strong>: <span class="{cls}">{status}</span>
-          (confianza: {dim.confianza:.0%}{poss}{real})
-          <br><span style="font-size:13px;">{escape(dim.conclusion)}</span>
+          <strong>{escape(dk)}</strong> (confianza: {dim.confianza:.0%})
+          <br><span style="font-size:13px;">{escape(dim.hallazgo or dim.conclusion)}</span>
         </div>"""
+            resp_short = (est.respuesta[:300] + "...") if len(est.respuesta) > 300 else est.respuesta
             est_html += f"""<div class="card">
         <div class="card-header">
           <h4>{escape(est.id)}: {escape(est.patron_id)}</h4>
-          <span class="veredicto {est.veredicto or 'pendiente'}">{v_lbl}</span>
+          <span class="veredicto {cls}">{lbl}</span>
         </div>
+        {pregunta}
+        <div class="card-texto" style="font-size:13px;">{escape(resp_short)}</div>
         {dims_html}
       </div>"""
     if not est_html:

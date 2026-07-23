@@ -27,7 +27,6 @@ from topologia.math.torus import (
 from topologia.memoria.decisiones import DecisionDB
 from topologia.models.schemas import (
     EstadoCultural,
-    EstadoPatron,
     Estudio,
     EvaluacionNodo,
     InformeDiario,
@@ -256,9 +255,9 @@ class Orchestrator:
         paso1 = self.observar(sociedad, items=items)
         operaciones = detectar_operaciones(paso1)
 
-        especulaciones = self.artista.especular(items)
+        especulaciones = self.artista.especular(items, estado=paso1)
 
-        estudios = self._ejecutar_estudios(especulaciones, paso1)
+        estudios = self._investigar_preguntas(especulaciones, paso1)
 
         historial = self._obtener_historial_reciente(sociedad)
         analisis_formas = self._analizar_formas_complejas(paso1)
@@ -366,7 +365,7 @@ class Orchestrator:
             yaml.dump(rendimiento, f, default_flow_style=False, allow_unicode=True)
         logger.debug(f"Rendimiento de fuentes actualizado en {ruta}")
 
-    def _ejecutar_estudios(self, especulaciones: list, estado: EstadoCultural) -> list[Estudio]:
+    def _investigar_preguntas(self, especulaciones: list, estado: EstadoCultural) -> list[Estudio]:
         estudios: list[Estudio] = []
         for esp in especulaciones:
             try:
@@ -376,57 +375,51 @@ class Orchestrator:
                 else:
                     patron_info = {"forma": patron.forma, "significado": patron.significado}
 
-                items_busqueda = buscar_para_estudio(esp.patron_id, esp.argumento[:100])
+                query = esp.pregunta_abierta or esp.argumento[:100]
+                items_busqueda = buscar_para_estudio(esp.patron_id, query)
 
                 analisis_m = self.estadista.validar_estudio(
                     items_busqueda,
                     patron_id=esp.patron_id,
                     forma_patron=patron_info["forma"],
                     significado_patron=patron_info["significado"],
-                    items_originales=", ".join(esp.items_relacionados),
                     argumento_artista=esp.argumento,
-                    confianza_artista=str(esp.confianza),
+                    pregunta_abierta=esp.pregunta_abierta,
                 )
                 analisis_l = self.filosofo.validar_estudio(
                     items_busqueda,
                     patron_id=esp.patron_id,
                     forma_patron=patron_info["forma"],
                     significado_patron=patron_info["significado"],
-                    items_originales=", ".join(esp.items_relacionados),
                     argumento_artista=esp.argumento,
-                    confianza_artista=str(esp.confianza),
+                    pregunta_abierta=esp.pregunta_abierta,
                 )
                 analisis_s = self.sociologo.validar_estudio(
                     items_busqueda,
                     patron_id=esp.patron_id,
                     forma_patron=patron_info["forma"],
                     significado_patron=patron_info["significado"],
-                    items_originales=", ".join(esp.items_relacionados),
                     argumento_artista=esp.argumento,
-                    confianza_artista=str(esp.confianza),
+                    pregunta_abierta=esp.pregunta_abierta,
                 )
 
-                confirmados = [a.confirmado for a in [analisis_m, analisis_l, analisis_s]]
-                todos_ok = all(confirmados)
-                ninguno_ok = not any(confirmados)
-                if todos_ok:
-                    veredicto = "validado"
-                    estado_patron = EstadoPatron.validado
-                elif ninguno_ok:
-                    veredicto = "refutado"
-                    estado_patron = EstadoPatron.refutado
-                else:
-                    veredicto = "parcial"
-                    estado_patron = EstadoPatron.parcial
+                hallazgos = [a.hallazgo for a in [analisis_m, analisis_l, analisis_s] if a.hallazgo]
+                respuesta = " | ".join(hallazgos) if hallazgos else "Sin hallazgos concluyentes"
+                confianzas = [a.confianza for a in [analisis_m, analisis_l, analisis_s]]
+                tension_latente = all(c < 0.5 for c in confianzas) and bool(esp.pregunta_abierta)
 
-                self.memoria.validar_patron(esp.patron_id, estado_patron)
-                self.memoria.registrar("pattern", f"Estudio {esp.patron_id}: {veredicto}", tags=[esp.patron_id])
+                if tension_latente:
+                    self.memoria.registrar("pattern",
+                        f"Tensión latente: {esp.pregunta_abierta}",
+                        tags=[esp.patron_id])
 
                 estudio = Estudio(
                     id=f"EST-{len(estudios)+1:04d}",
                     especulacion_id=esp.id,
                     patron_id=esp.patron_id,
-                    estado=estado_patron,
+                    pregunta_investigada=esp.pregunta_abierta,
+                    respuesta=respuesta,
+                    tension_latente=tension_latente,
                     items_originales=esp.items_relacionados,
                     items_investigacion=[it.id for it in items_busqueda],
                     analisis={
@@ -434,10 +427,10 @@ class Orchestrator:
                         "M_l": analisis_l,
                         "M_s": analisis_s,
                     },
-                    veredicto=veredicto,
                 )
                 estudios.append(estudio)
-                logger.info(f"Estudio {estudio.id}: {esp.patron_id} → {veredicto}")
+                tag = "TENSIÓN LATENTE" if tension_latente else "investigado"
+                logger.info(f"Estudio {estudio.id}: {esp.patron_id} → {tag}")
 
             except Exception as e:
                 logger.error(f"Error en estudio de {esp.patron_id}: {e}")

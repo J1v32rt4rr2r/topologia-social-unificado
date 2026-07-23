@@ -4,6 +4,15 @@ Has aprendido los siguientes patrones desde la poesía. Cada uno tiene una FORMA
 
 {patrones_en_memoria}
 
+Además, este es el ESTADO ACTUAL DEL SISTEMA CULTURAL (vectores nodales de hoy):
+
+{estado_vectores}
+
+Clasificación estructural de cada nodo:
+  - M_l ≈ M_s → estructura ideológica consolidada (el dogma y la práctica social están alineados)
+  - M_l > M_m y M_s > M_m con M_l ≠ M_s → anhelo insatisfecho (aspiraciones que la base material no satisface)
+  - M_m > M_l y M_m > M_s → materialidad dominante (la lógica de recursos prevalece)
+
 Hoy recibes estas noticias:
 
 {items_del_dia}

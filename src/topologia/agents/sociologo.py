@@ -63,9 +63,8 @@ class Sociologo(Agent):
             patron_id=kwargs.get("patron_id", "P-???"),
             forma_patron=kwargs.get("forma_patron", ""),
             significado_patron=kwargs.get("significado_patron", ""),
-            items_originales=kwargs.get("items_originales", ""),
             argumento_artista=kwargs.get("argumento_artista", ""),
-            confianza_artista=kwargs.get("confianza_artista", "0.5"),
+            pregunta_abierta=kwargs.get("pregunta_abierta", ""),
             items_investigacion=self.formatear_items(items_investigacion),
         )
         try:
@@ -74,12 +73,9 @@ class Sociologo(Agent):
             resultado = {
                 "dimension": "M_s",
                 "patron_id": kwargs.get("patron_id", "P-???"),
-                "confirmado": False,
                 "confianza": 0.0,
-                "evidencia": "Error en validación",
-                "contraevidencia": "",
-                "posibilidad": "",
-                "realidad": "",
+                "evidencia": "Error en investigación",
+                "hallazgo": "",
                 "conclusion": "Error",
             }
         return AnalisisDim(**resultado)

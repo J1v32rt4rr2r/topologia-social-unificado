@@ -9,6 +9,7 @@ from topologia.logger import logger
 from topologia.models.schemas import (
     ConfigAgente,
     Especulacion,
+    EstadoCultural,
     ItemInformativo,
     PatronAnalogico,
 )
@@ -40,11 +41,31 @@ class Artista(Agent):
             partes.append(f"{p.id} {estado}: {p.forma}\n   Significado: {p.significado}")
         return "\n\n".join(partes)
 
-    def especular(self, items: list[ItemInformativo]) -> list[Especulacion]:
+    def _formatear_estado_vectores(self, estado: EstadoCultural | None) -> str:
+        if not estado:
+            return ""
+        lineas = [f"  M_m={estado.M_m}  M_l={estado.M_l}  M_s={estado.M_s}  delta={estado.delta_promedio}°"]
+        for n in estado.nodos:
+            m, l, s = n.dimension_m, n.dimension_l, n.dimension_s
+            d = n.delta
+            if abs(l - s) <= 0.5:
+                clasif = "estructura ideologica consolidada"
+            elif l > m and s > m:
+                clasif = "anhelo insatisfecho"
+            elif m > l and m > s:
+                clasif = "materialidad dominante"
+            else:
+                clasif = ""
+            lineas.append(f"  {n.nodo_id:15s} M_m={m}  M_l={l}  M_s={s}  delta={d:5.1f}°  [{clasif}]")
+        return "\n".join(lineas)
+
+    def especular(self, items: list[ItemInformativo], estado: EstadoCultural | None = None) -> list[Especulacion]:
         patrones_str = self._formatear_patrones_memoria()
         items_str = self.formatear_items(items)
+        vectores_str = self._formatear_estado_vectores(estado)
         prompt = self.prompts.load("artista_noticias",
             patrones_en_memoria=patrones_str,
+            estado_vectores=vectores_str,
             items_del_dia=items_str,
         )
         try:
