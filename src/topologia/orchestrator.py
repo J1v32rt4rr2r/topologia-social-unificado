@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import math
+import shutil
+from pathlib import Path
 
 from topologia.agents.artista import Artista
 from topologia.agents.estadista import Estadista
@@ -295,6 +297,12 @@ class Orchestrator:
         )
         logger.info(f"Informe generado: {ruta_informe}")
         logger.info(f"Resumen: {informe.resumen_ejecutivo}")
+        try:
+            destino = Path.home() / "Desktop" / "informe_topologia.html"
+            shutil.copy2(ruta_informe, destino)
+            logger.info(f"Copia en escritorio: {destino}")
+        except Exception as e:
+            logger.warning(f"No se pudo copiar informe al escritorio: {e}")
 
         # Aprendizaje persistente: rendimiento de fuentes
         try:

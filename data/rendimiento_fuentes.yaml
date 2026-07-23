@@ -1,48 +1,48 @@
 bcn:
   items_por_nodo:
-    POLITICA: 5
+    POLITICA: 6
   proporcion_relevantes: 1.0
-  total_items: 5
+  total_items: 6
 cambio21.cl:
   items_por_nodo:
     ETICA_ESTETICA: 2
-    LENGUAJE: 2
-    POLITICA: 11
-    RELIGION: 3
+    LENGUAJE: 3
+    POLITICA: 14
+    RELIGION: 4
     SEXUALIDAD: 5
-    TECNOLOGIA: 14
+    TECNOLOGIA: 18
   proporcion_relevantes: 1.0
-  total_items: 37
+  total_items: 46
 duckduckgo:
   items_por_nodo:
     ECONOMIA: 4
-    POLITICA: 1
-    RELIGION: 3
-    TECNOLOGIA: 1
+    POLITICA: 2
+    RELIGION: 4
+    TECNOLOGIA: 7
     TRABAJO: 7
   proporcion_relevantes: 1.0
-  total_items: 16
+  total_items: 24
 elsiglo.cl:
   items_por_nodo:
     LENGUAJE: 3
-    POLITICA: 6
-    RELIGION: 3
-    TECNOLOGIA: 6
-    TRABAJO: 3
+    POLITICA: 8
+    RELIGION: 4
+    TECNOLOGIA: 8
+    TRABAJO: 4
   proporcion_relevantes: 1.0
-  total_items: 21
+  total_items: 27
 espectro b/tvn:
-  items_por_nodo:
-    POLITICA: 2
-    TECNOLOGIA: 2
-  proporcion_relevantes: 1.0
-  total_items: 4
-feeds.elpais.com:
   items_por_nodo:
     POLITICA: 3
     TECNOLOGIA: 3
   proporcion_relevantes: 1.0
   total_items: 6
+feeds.elpais.com:
+  items_por_nodo:
+    POLITICA: 4
+    TECNOLOGIA: 4
+  proporcion_relevantes: 1.0
+  total_items: 8
 google_trends:
   items_por_nodo:
     EDUCACION: 1
@@ -64,14 +64,14 @@ radio.uchile.cl:
   total_items: 36
 resumen.cl:
   items_por_nodo:
-    ECONOMIA: 5
-    EDUCACION: 5
+    ECONOMIA: 6
+    EDUCACION: 6
     LENGUAJE: 2
-    POLITICA: 5
-    RELIGION: 5
-    TECNOLOGIA: 15
+    POLITICA: 6
+    RELIGION: 6
+    TECNOLOGIA: 18
   proporcion_relevantes: 1.0
-  total_items: 37
+  total_items: 44
 scraping:educacion:
   items_por_nodo:
     POLITICA: 1
@@ -89,55 +89,65 @@ scraping:sexualidad:
 scraping:trabajo:
   items_por_nodo:
     ECONOMIA: 1
-    RELIGION: 8
+    RELIGION: 12
     TECNOLOGIA: 1
-    TRABAJO: 10
+    TRABAJO: 15
   proporcion_relevantes: 1.0
-  total_items: 20
+  total_items: 29
 theclinic.cl:
   items_por_nodo:
-    ECONOMIA: 3
+    ECONOMIA: 4
     LENGUAJE: 2
-    POLITICA: 10
+    POLITICA: 11
     RELIGION: 10
     TECNOLOGIA: 12
     TRABAJO: 1
   proporcion_relevantes: 1.0
-  total_items: 38
+  total_items: 40
 www.ciperchile.cl:
   items_por_nodo:
-    POLITICA: 3
-    TECNOLOGIA: 3
+    POLITICA: 4
+    TECNOLOGIA: 4
   proporcion_relevantes: 1.0
-  total_items: 6
+  total_items: 8
 www.elciudadano.com:
   items_por_nodo:
     ECONOMIA: 15
-    LENGUAJE: 3
-    POLITICA: 28
-    RELIGION: 7
+    LENGUAJE: 4
+    POLITICA: 31
+    RELIGION: 8
     SEXUALIDAD: 1
-    TECNOLOGIA: 39
+    TECNOLOGIA: 43
   proporcion_relevantes: 1.0
-  total_items: 93
+  total_items: 102
+www.trendtic.cl:
+  items_por_nodo:
+    EDUCACION: 1
+    LENGUAJE: 1
+    POLITICA: 1
+    RELIGION: 2
+    SEXUALIDAD: 3
+    TECNOLOGIA: 4
+  proporcion_relevantes: 1.0
+  total_items: 12
 youtube/dnews:
   items_por_nodo:
-    TECNOLOGIA: 3
+    TECNOLOGIA: 4
   proporcion_relevantes: 1.0
-  total_items: 3
+  total_items: 4
 youtube/dw español:
   items_por_nodo:
     POLITICA: 2
-    RELIGION: 3
-    TECNOLOGIA: 3
-  proporcion_relevantes: 1.0
-  total_items: 8
-youtube/el comercio:
-  items_por_nodo:
-    ECONOMIA: 5
-    TECNOLOGIA: 5
+    RELIGION: 4
+    TECNOLOGIA: 4
   proporcion_relevantes: 1.0
   total_items: 10
+youtube/el comercio:
+  items_por_nodo:
+    ECONOMIA: 6
+    TECNOLOGIA: 6
+  proporcion_relevantes: 1.0
+  total_items: 12
 youtube/el país:
   items_por_nodo:
     POLITICA: 3
@@ -146,10 +156,10 @@ youtube/el país:
   total_items: 6
 youtube/latina noticias:
   items_por_nodo:
-    POLITICA: 5
-    TECNOLOGIA: 5
+    POLITICA: 6
+    TECNOLOGIA: 6
   proporcion_relevantes: 1.0
-  total_items: 10
+  total_items: 12
 youtube/multiplicatex0:
   items_por_nodo:
     POLITICA: 4
@@ -162,16 +172,16 @@ youtube/qué dice chile:
   total_items: 2
 youtube/radio riquelme:
   items_por_nodo:
-    TECNOLOGIA: 3
+    TECNOLOGIA: 4
   proporcion_relevantes: 1.0
-  total_items: 3
+  total_items: 4
 youtube/rtve noticias:
   items_por_nodo:
-    POLITICA: 5
-    RELIGION: 5
-    TECNOLOGIA: 5
+    POLITICA: 6
+    RELIGION: 6
+    TECNOLOGIA: 6
   proporcion_relevantes: 1.0
-  total_items: 15
+  total_items: 18
 youtube/sala de prensa:
   items_por_nodo:
     RELIGION: 2
@@ -179,8 +189,8 @@ youtube/sala de prensa:
   total_items: 2
 youtube/un topo por el mundo:
   items_por_nodo:
-    ETICA_ESTETICA: 5
+    ETICA_ESTETICA: 6
     LENGUAJE: 1
-    TECNOLOGIA: 5
+    TECNOLOGIA: 6
   proporcion_relevantes: 1.0
-  total_items: 11
+  total_items: 13
