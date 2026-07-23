@@ -21,7 +21,7 @@ class Redactor(Agent):
             prompt="",
             temperatura=0.5,
             modelo="deepseek-chat",
-            max_tokens=2048,
+            max_tokens=4096,
         ))
         self.prompts = PromptLoader()
 
@@ -60,8 +60,14 @@ class Redactor(Agent):
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)
         except Exception as e:
-            logger.error(f"Error en Redactor: {e}")
-            return self._fallback(estado, operaciones)
+            logger.error(f"Error en Redactor (intento 1): {e}")
+            try:
+                logger.info("Redactor: reintentando con prompt simplificado...")
+                prompt_simple = prompt + "\n\nIMPORTANTE: Responde ÚNICAMENTE con JSON válido. Asegúrate de escapar correctamente cualquier carácter especial."
+                resultado = self.ejecutar_prompt(prompt_simple, formato_json=True)
+            except Exception as e2:
+                logger.error(f"Error en Redactor (intento 2): {e2}")
+                return self._fallback(estado, operaciones)
 
         return self._parsear_resultado(resultado, estado, operaciones)
 
