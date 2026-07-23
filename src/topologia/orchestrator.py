@@ -239,6 +239,20 @@ class Orchestrator:
             items = puntuar_relevancia(items, estrategia)
             items_por_nodo = self._clasificar_items_por_nodo(items)
 
+        # PASO 5: Descubrimiento dinámico de fuentes
+        # El investigador busca activamente nuevos sitios para nodos prioritarios y con déficit
+        nodos_con_brecha = [n for n, c in brechas_iniciales.items() if c.get("items_relevantes", 0) <= 1]
+        nodos_a_descubrir = list(set(nodos_con_brecha + estrategia.nodos_prioritarios))
+        if nodos_a_descubrir:
+            logger.info(f"Descubridor: investigando fuentes para {nodos_a_descubrir}")
+            from topologia.web.descubridor import buscar_nuevas_fuentes
+            items_descubiertos = buscar_nuevas_fuentes(nodos_a_descubrir, estrategia.nodos_prioritarios)
+            if items_descubiertos:
+                logger.info(f"Descubrimiento: {len(items_descubiertos)} items de fuentes nuevas")
+                items.extend(items_descubiertos)
+                items = puntuar_relevancia(items, estrategia)
+                items_por_nodo = self._clasificar_items_por_nodo(items)
+
         paso1 = self.observar(sociedad, items=items)
         operaciones = detectar_operaciones(paso1)
 
