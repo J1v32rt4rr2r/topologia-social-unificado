@@ -5,14 +5,6 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
-class EstadoPatron(str, Enum):
-    especulativo = "especulativo"
-    en_estudio = "en_estudio"
-    validado = "validado"
-    refutado = "refutado"
-    parcial = "parcial"
-
-
 class TipoAlerta(str, Enum):
     reconfiguracion = "reconfiguracion"
     cambio_acelerado = "cambio_acelerado"
@@ -155,7 +147,7 @@ class PatronAnalogico(BaseModel):
     forma: str
     significado: str
     origen_poetico: str = ""
-    estado: EstadoPatron = EstadoPatron.especulativo
+    estado: str = "especulativo"
     descubierto_en: datetime = Field(default_factory=datetime.now)
     validado_en: datetime | None = None
     veces_estudiado: int = 0

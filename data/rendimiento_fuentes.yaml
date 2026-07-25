@@ -1,28 +1,41 @@
 bcn:
   items_por_nodo:
-    POLITICA: 11
+    POLITICA: 28
   proporcion_relevantes: 1.0
-  total_items: 11
+  total_items: 28
 cambio21.cl:
   items_por_nodo:
     ETICA_ESTETICA: 2
     LENGUAJE: 5
-    POLITICA: 25
-    RELIGION: 9
+    POLITICA: 51
+    RELIGION: 11
     SEXUALIDAD: 5
-    TECNOLOGIA: 36
-    TRABAJO: 2
+    TECNOLOGIA: 66
+    TRABAJO: 4
   proporcion_relevantes: 1.0
-  total_items: 84
+  total_items: 144
 duckduckgo:
   items_por_nodo:
-    ECONOMIA: 10
-    POLITICA: 3
-    RELIGION: 6
-    TECNOLOGIA: 15
-    TRABAJO: 13
+    ECONOMIA: 18
+    EDUCACION: 10
+    ETICA_ESTETICA: 13
+    LENGUAJE: 1
+    POLITICA: 23
+    RELIGION: 11
+    TECNOLOGIA: 35
+    TRABAJO: 32
   proporcion_relevantes: 1.0
-  total_items: 47
+  total_items: 143
+educacion2020.cl:
+  items_por_nodo:
+    ECONOMIA: 2
+    EDUCACION: 2
+    ETICA_ESTETICA: 2
+    LENGUAJE: 2
+    RELIGION: 2
+    TECNOLOGIA: 4
+  proporcion_relevantes: 1.0
+  total_items: 14
 elsiglo.cl:
   items_por_nodo:
     LENGUAJE: 3
@@ -32,6 +45,11 @@ elsiglo.cl:
     TRABAJO: 6
   proporcion_relevantes: 1.0
   total_items: 39
+espectro b/biobio:
+  items_por_nodo:
+    TRABAJO: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
 espectro b/emol:
   items_por_nodo:
     LENGUAJE: 1
@@ -47,102 +65,210 @@ espectro b/tvn:
   total_items: 6
 feeds.elpais.com:
   items_por_nodo:
-    POLITICA: 9
-    TECNOLOGIA: 9
+    POLITICA: 10
+    TECNOLOGIA: 11
   proporcion_relevantes: 1.0
-  total_items: 18
+  total_items: 21
 google_trends:
   items_por_nodo:
-    EDUCACION: 3
-    POLITICA: 2
-    TECNOLOGIA: 21
-    TRABAJO: 4
+    EDUCACION: 4
+    POLITICA: 5
+    TECNOLOGIA: 41
+    TRABAJO: 19
   proporcion_relevantes: 1.0
-  total_items: 30
+  total_items: 69
+iglesiadesantiago.cl:
+  items_por_nodo:
+    ECONOMIA: 2
+    ETICA_ESTETICA: 8
+    TECNOLOGIA: 8
+    TRABAJO: 2
+  proporcion_relevantes: 1.0
+  total_items: 20
+mileschile.cl:
+  items_por_nodo:
+    POLITICA: 24
+    SEXUALIDAD: 8
+    TECNOLOGIA: 4
+  proporcion_relevantes: 1.0
+  total_items: 36
 radio.uchile.cl:
   items_por_nodo:
     ECONOMIA: 1
     EDUCACION: 14
     ETICA_ESTETICA: 1
     LENGUAJE: 2
-    POLITICA: 10
+    POLITICA: 12
     RELIGION: 7
     SEXUALIDAD: 4
     TECNOLOGIA: 14
   proporcion_relevantes: 1.0
-  total_items: 53
+  total_items: 55
 resumen.cl:
   items_por_nodo:
-    ECONOMIA: 11
-    EDUCACION: 11
+    ECONOMIA: 26
+    EDUCACION: 16
     LENGUAJE: 2
-    POLITICA: 11
-    RELIGION: 11
-    TECNOLOGIA: 33
+    POLITICA: 26
+    RELIGION: 16
+    TECNOLOGIA: 58
   proporcion_relevantes: 1.0
-  total_items: 79
-scraping:educacion:
-  items_por_nodo:
-    POLITICA: 1
-    RELIGION: 1
-    TECNOLOGIA: 1
-  proporcion_relevantes: 1.0
-  total_items: 3
-scraping:etica_estetica:
-  items_por_nodo:
-    ETICA_ESTETICA: 1
-  proporcion_relevantes: 1.0
-  total_items: 1
-scraping:lenguaje:
-  items_por_nodo:
-    TECNOLOGIA: 1
-  proporcion_relevantes: 1.0
-  total_items: 1
-scraping:sexualidad:
-  items_por_nodo:
-    EDUCACION: 12
-    POLITICA: 6
-    RELIGION: 5
-    SEXUALIDAD: 6
-    TECNOLOGIA: 9
-  proporcion_relevantes: 1.0
-  total_items: 38
-scraping:trabajo:
-  items_por_nodo:
-    ECONOMIA: 1
-    POLITICA: 2
-    RELIGION: 17
-    TECNOLOGIA: 6
-    TRABAJO: 25
-  proporcion_relevantes: 1.0
-  total_items: 51
-theclinic.cl:
-  items_por_nodo:
-    ECONOMIA: 10
-    ETICA_ESTETICA: 2
-    LENGUAJE: 2
-    POLITICA: 22
-    RELIGION: 15
-    TECNOLOGIA: 22
-    TRABAJO: 1
-  proporcion_relevantes: 1.0
-  total_items: 74
-www.ciperchile.cl:
-  items_por_nodo:
-    POLITICA: 5
-    TECNOLOGIA: 5
-  proporcion_relevantes: 1.0
-  total_items: 10
-www.elciudadano.com:
+  total_items: 144
+scraping:economia:
   items_por_nodo:
     ECONOMIA: 17
-    LENGUAJE: 7
-    POLITICA: 43
-    RELIGION: 21
-    SEXUALIDAD: 6
-    TECNOLOGIA: 64
   proporcion_relevantes: 1.0
-  total_items: 158
+  total_items: 17
+scraping:educacion:
+  items_por_nodo:
+    ECONOMIA: 3
+    EDUCACION: 28
+    POLITICA: 14
+    RELIGION: 2
+    SEXUALIDAD: 3
+    TECNOLOGIA: 13
+  proporcion_relevantes: 1.0
+  total_items: 63
+scraping:etica_estetica:
+  items_por_nodo:
+    ECONOMIA: 1
+    ETICA_ESTETICA: 24
+    POLITICA: 3
+    TECNOLOGIA: 2
+  proporcion_relevantes: 1.0
+  total_items: 30
+scraping:lenguaje:
+  items_por_nodo:
+    EDUCACION: 4
+    ETICA_ESTETICA: 1
+    LENGUAJE: 49
+    RELIGION: 4
+    TECNOLOGIA: 7
+    TRABAJO: 4
+  proporcion_relevantes: 1.0
+  total_items: 69
+scraping:religion:
+  items_por_nodo:
+    RELIGION: 5
+    TECNOLOGIA: 16
+    TRABAJO: 4
+  proporcion_relevantes: 1.0
+  total_items: 25
+scraping:sexualidad:
+  items_por_nodo:
+    EDUCACION: 25
+    ETICA_ESTETICA: 1
+    LENGUAJE: 1
+    POLITICA: 11
+    RELIGION: 9
+    SEXUALIDAD: 63
+    TECNOLOGIA: 17
+  proporcion_relevantes: 1.0
+  total_items: 127
+scraping:tecnologia:
+  items_por_nodo:
+    ECONOMIA: 2
+    TECNOLOGIA: 33
+  proporcion_relevantes: 1.0
+  total_items: 35
+scraping:trabajo:
+  items_por_nodo:
+    ECONOMIA: 4
+    EDUCACION: 1
+    POLITICA: 2
+    RELIGION: 19
+    TECNOLOGIA: 11
+    TRABAJO: 54
+  proporcion_relevantes: 1.0
+  total_items: 91
+theclinic.cl:
+  items_por_nodo:
+    ECONOMIA: 25
+    ETICA_ESTETICA: 7
+    LENGUAJE: 2
+    POLITICA: 56
+    RELIGION: 15
+    TECNOLOGIA: 35
+    TRABAJO: 1
+  proporcion_relevantes: 1.0
+  total_items: 141
+www.acti.cl:
+  items_por_nodo:
+    ETICA_ESTETICA: 2
+    POLITICA: 2
+    TECNOLOGIA: 8
+    TRABAJO: 8
+  proporcion_relevantes: 1.0
+  total_items: 20
+www.aprofa.cl:
+  items_por_nodo:
+    EDUCACION: 8
+    ETICA_ESTETICA: 4
+    LENGUAJE: 8
+    POLITICA: 16
+    RELIGION: 20
+    SEXUALIDAD: 48
+    TECNOLOGIA: 28
+    TRABAJO: 8
+  proporcion_relevantes: 1.0
+  total_items: 140
+www.cem.cl:
+  items_por_nodo:
+    ECONOMIA: 2
+    EDUCACION: 6
+    ETICA_ESTETICA: 2
+    POLITICA: 10
+    RELIGION: 10
+    SEXUALIDAD: 8
+    TECNOLOGIA: 18
+    TRABAJO: 6
+  proporcion_relevantes: 1.0
+  total_items: 62
+www.ciperchile.cl:
+  items_por_nodo:
+    ETICA_ESTETICA: 5
+    POLITICA: 18
+    TECNOLOGIA: 15
+    TRABAJO: 13
+  proporcion_relevantes: 1.0
+  total_items: 51
+www.educacion2020.cl:
+  items_por_nodo:
+    ECONOMIA: 2
+    EDUCACION: 4
+    ETICA_ESTETICA: 2
+    RELIGION: 6
+    TECNOLOGIA: 6
+  proporcion_relevantes: 1.0
+  total_items: 20
+www.elciudadano.com:
+  items_por_nodo:
+    ECONOMIA: 20
+    ETICA_ESTETICA: 13
+    LENGUAJE: 21
+    POLITICA: 51
+    RELIGION: 64
+    SEXUALIDAD: 18
+    TECNOLOGIA: 141
+  proporcion_relevantes: 1.0
+  total_items: 328
+www.humanas.cl:
+  items_por_nodo:
+    ECONOMIA: 2
+    ETICA_ESTETICA: 2
+    RELIGION: 2
+    SEXUALIDAD: 8
+    TECNOLOGIA: 2
+  proporcion_relevantes: 1.0
+  total_items: 16
+www.iing.cl:
+  items_por_nodo:
+    ECONOMIA: 2
+    ETICA_ESTETICA: 4
+    RELIGION: 2
+    TECNOLOGIA: 6
+  proporcion_relevantes: 1.0
+  total_items: 14
 www.mac.uchile.cl:
   items_por_nodo:
     EDUCACION: 16
@@ -152,16 +278,41 @@ www.mac.uchile.cl:
     TECNOLOGIA: 12
   proporcion_relevantes: 1.0
   total_items: 50
+www.mileschile.cl:
+  items_por_nodo:
+    EDUCACION: 2
+    POLITICA: 24
+    RELIGION: 10
+    SEXUALIDAD: 8
+    TECNOLOGIA: 12
+  proporcion_relevantes: 1.0
+  total_items: 56
 www.mineduc.cl:
   items_por_nodo:
-    EDUCACION: 40
-    ETICA_ESTETICA: 12
-    POLITICA: 4
-    RELIGION: 4
-    TECNOLOGIA: 28
-    TRABAJO: 4
+    EDUCACION: 124
+    ETICA_ESTETICA: 54
+    POLITICA: 22
+    RELIGION: 10
+    TECNOLOGIA: 118
+    TRABAJO: 22
   proporcion_relevantes: 1.0
-  total_items: 92
+  total_items: 350
+www.monumentos.gob.cl:
+  items_por_nodo:
+    TECNOLOGIA: 10
+  proporcion_relevantes: 1.0
+  total_items: 10
+www.subtrab.gob.cl:
+  items_por_nodo:
+    ECONOMIA: 8
+    EDUCACION: 4
+    POLITICA: 12
+    RELIGION: 8
+    SEXUALIDAD: 4
+    TECNOLOGIA: 28
+    TRABAJO: 36
+  proporcion_relevantes: 1.0
+  total_items: 100
 www.trendtic.cl:
   items_por_nodo:
     EDUCACION: 4
@@ -173,23 +324,48 @@ www.trendtic.cl:
     TECNOLOGIA: 18
   proporcion_relevantes: 1.0
   total_items: 52
+youtube/azz:
+  items_por_nodo:
+    POLITICA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
+youtube/bbc news mundo:
+  items_por_nodo:
+    POLITICA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
 youtube/bio bio:
   items_por_nodo:
-    POLITICA: 2
-    RELIGION: 2
+    POLITICA: 10
+    RELIGION: 7
   proporcion_relevantes: 1.0
-  total_items: 4
+  total_items: 17
+youtube/br editor:
+  items_por_nodo:
+    TECNOLOGIA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
 youtube/canal 26:
   items_por_nodo:
-    RELIGION: 4
-    TECNOLOGIA: 4
+    RELIGION: 9
+    TECNOLOGIA: 18
   proporcion_relevantes: 1.0
-  total_items: 8
+  total_items: 27
 youtube/canal 9 televida mendoza:
   items_por_nodo:
-    TECNOLOGIA: 2
+    TECNOLOGIA: 11
   proporcion_relevantes: 1.0
-  total_items: 2
+  total_items: 11
+youtube/chv noticias:
+  items_por_nodo:
+    TECNOLOGIA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
+youtube/clarín:
+  items_por_nodo:
+    TECNOLOGIA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
 youtube/dnews:
   items_por_nodo:
     TECNOLOGIA: 5
@@ -198,22 +374,47 @@ youtube/dnews:
 youtube/dw español:
   items_por_nodo:
     POLITICA: 2
-    RELIGION: 8
-    TECNOLOGIA: 8
+    RELIGION: 9
+    TECNOLOGIA: 13
   proporcion_relevantes: 1.0
-  total_items: 18
+  total_items: 24
 youtube/el comercio:
   items_por_nodo:
-    ECONOMIA: 9
-    TECNOLOGIA: 9
+    ECONOMIA: 15
+    TECNOLOGIA: 12
   proporcion_relevantes: 1.0
-  total_items: 18
+  total_items: 27
 youtube/el país:
   items_por_nodo:
     POLITICA: 3
     RELIGION: 3
   proporcion_relevantes: 1.0
   total_items: 6
+youtube/elchileno2.0 lml.:
+  items_por_nodo:
+    TECNOLOGIA: 2
+  proporcion_relevantes: 1.0
+  total_items: 2
+youtube/espn fans:
+  items_por_nodo:
+    POLITICA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
+youtube/facultad de ingeniería udec:
+  items_por_nodo:
+    TECNOLOGIA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
+youtube/gemelos viajeros:
+  items_por_nodo:
+    TECNOLOGIA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
+youtube/la cátedra deportes:
+  items_por_nodo:
+    ETICA_ESTETICA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
 youtube/latina noticias:
   items_por_nodo:
     POLITICA: 11
@@ -225,11 +426,22 @@ youtube/multiplicatex0:
     POLITICA: 4
   proporcion_relevantes: 1.0
   total_items: 4
+youtube/multisanchez:
+  items_por_nodo:
+    TECNOLOGIA: 2
+  proporcion_relevantes: 1.0
+  total_items: 2
+youtube/planeta increíble:
+  items_por_nodo:
+    TECNOLOGIA: 2
+  proporcion_relevantes: 1.0
+  total_items: 2
 youtube/qué dice chile:
   items_por_nodo:
     ETICA_ESTETICA: 2
+    TECNOLOGIA: 6
   proporcion_relevantes: 1.0
-  total_items: 2
+  total_items: 8
 youtube/radio la clave:
   items_por_nodo:
     EDUCACION: 1
@@ -238,30 +450,40 @@ youtube/radio la clave:
   total_items: 2
 youtube/radio riquelme:
   items_por_nodo:
-    TECNOLOGIA: 4
+    TECNOLOGIA: 5
   proporcion_relevantes: 1.0
-  total_items: 4
+  total_items: 5
 youtube/rtve noticias:
   items_por_nodo:
-    POLITICA: 11
-    RELIGION: 11
-    TECNOLOGIA: 11
+    POLITICA: 19
+    RELIGION: 15
+    TECNOLOGIA: 15
   proporcion_relevantes: 1.0
-  total_items: 33
+  total_items: 49
+youtube/saitoword - historia y geopolítica 🌎:
+  items_por_nodo:
+    TECNOLOGIA: 1
+  proporcion_relevantes: 1.0
+  total_items: 1
 youtube/sala de prensa:
   items_por_nodo:
-    RELIGION: 2
+    RELIGION: 4
   proporcion_relevantes: 1.0
-  total_items: 2
+  total_items: 4
 youtube/solo pasa en chile:
   items_por_nodo:
     TECNOLOGIA: 2
   proporcion_relevantes: 1.0
   total_items: 2
+youtube/tubarco:
+  items_por_nodo:
+    POLITICA: 3
+  proporcion_relevantes: 1.0
+  total_items: 3
 youtube/un topo por el mundo:
   items_por_nodo:
-    ETICA_ESTETICA: 11
+    ETICA_ESTETICA: 25
     LENGUAJE: 1
-    TECNOLOGIA: 11
+    TECNOLOGIA: 16
   proporcion_relevantes: 1.0
-  total_items: 23
+  total_items: 42

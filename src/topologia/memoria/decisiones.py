@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from topologia.models.schemas import PatronAnalogico, EstadoPatron
+from topologia.models.schemas import PatronAnalogico
 from topologia.paths import get_memoria_dir
 
 
@@ -79,16 +79,6 @@ class DecisionDB:
                 return p
         return None
 
-    def validar_patron(self, patron_id: str, resultado: EstadoPatron):
-        patron = self.patron_por_id(patron_id)
-        if patron:
-            patron.estado = resultado
-            if resultado == EstadoPatron.validado:
-                patron.validado_en = datetime.now()
-                patron.veces_validado += 1
-            patron.veces_estudiado += 1
-            self.guardar_patron(patron)
-
     def sincronizar_desde(self, ruta_externa: str):
         ext = Path(ruta_externa)
         if ext.exists():
@@ -107,5 +97,5 @@ class DecisionDB:
             "total": total,
             "por_tipo": por_tipo,
             "patrones": len(self.patrones()),
-            "validados": sum(1 for p in self.patrones() if p.estado == EstadoPatron.validado),
+            "estudios_totales": sum(p.veces_estudiado for p in self.patrones()),
         }

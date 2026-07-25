@@ -30,9 +30,9 @@ ESPECULACIONES ANTERIORES Y SU RESULTADO:
 {especulaciones_previas}
 
 Estas son especulaciones que hiciste en días anteriores y lo que se investigó.
-- Si un patrón fue validado: considera si sigue activo o se agotó.
-- Si fue refutado: no lo repitas, a menos que haya nuevas señales.
-- Si sigue abierto (sin estudio): ¿las noticias de hoy aportan algo?
+- Considera si las noticias de hoy aportan nueva evidencia o abren una nueva línea de investigación.
+- Si una pregunta quedó sin responder en ciclos anteriores, ¿las noticias de hoy permiten responderla?
+- Los patrones son herramientas analógicas permanentes: puedes volver a usarlos si ves nuevas conexiones.
 
 Hoy recibes estas noticias:
 

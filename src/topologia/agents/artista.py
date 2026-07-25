@@ -37,8 +37,7 @@ class Artista(Agent):
             return "Aún no has descubierto patrones. Esta es tu primera vez."
         partes = []
         for p in patrones:
-            estado = f"[{p.estado.value}]"
-            partes.append(f"{p.id} {estado}: {p.forma}\n   Significado: {p.significado}")
+            partes.append(f"{p.id}: {p.forma}\n   Significado: {p.significado}")
         return "\n\n".join(partes)
 
     def _formatear_estado_vectores(self, estado: EstadoCultural | None) -> str:

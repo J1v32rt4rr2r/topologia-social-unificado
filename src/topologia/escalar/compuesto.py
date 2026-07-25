@@ -47,6 +47,7 @@ class RiesgoCultural:
             "co_sincronia": round(self.co_sincronia, 4),
             "pesos_usados": self.pesos_usados,
             "alerta": self.alerta,
+            "desglose": {k: round(v, 4) for k, v in self.desglose.items()},
             "nodos_destacados": self.nodos_destacados,
         }
 
