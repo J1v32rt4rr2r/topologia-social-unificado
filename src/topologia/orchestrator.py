@@ -634,6 +634,22 @@ class Orchestrator:
         base = self.store.base / "estudios"
         if not base.exists():
             return estudios
+        archivos = sorted(base.glob("*.txt"), key=os.path.getmtime, reverse=True)
+        for a in archivos[:max_dias]:
+            try:
+                from topologia.models.schemas import Estudio
+                contenido = a.read_text(encoding="utf-8")
+                estudio = Estudio(
+                    id=f"EST-HIST-{a.stem}",
+                    especulacion_id="",
+                    patron_id=a.stem.replace("estudio_", "").replace("_", " ").title(),
+                    pregunta_investigada=contenido[:100],
+                    respuesta=contenido[:500],
+                )
+                estudios.append(estudio)
+            except Exception:
+                continue
+        return estudios
 
     def calibrar(self, estado: EstadoCultural, ruta_hitos: str | Path | None = None) -> dict:
         """Compara el estado cultural actual contra hitos históricos.
@@ -741,20 +757,3 @@ class Orchestrator:
         if hito_id in cluster_b:
             return "crisis_fundacional (pre-2020)"
         return "indeterminado"
-        archivos = sorted(base.glob("*.txt"), key=os.path.getmtime, reverse=True)
-        for a in archivos[:max_dias]:
-            try:
-                # Build a lightweight object from saved estudio files
-                from topologia.models.schemas import Estudio
-                contenido = a.read_text(encoding="utf-8")
-                estudio = Estudio(
-                    id=f"EST-HIST-{a.stem}",
-                    especulacion_id="",
-                    patron_id=a.stem.replace("estudio_", "").replace("_", " ").title(),
-                    pregunta_investigada=contenido[:100],
-                    respuesta=contenido[:500],
-                )
-                estudios.append(estudio)
-            except Exception:
-                continue
-        return estudios
