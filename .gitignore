@@ -9,8 +9,9 @@ data/cache/
 data/local/
 data/logs/
 data/historico/
-data/barrido/timeline.*
+data/barrido/
 data/daily-poetry-log.json
+data/rendimiento_fuentes.yaml
 data/pipeline_output/
 data/estudios/
 data/topologico/
