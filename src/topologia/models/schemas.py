@@ -23,6 +23,20 @@ class TendenciaDim(str, Enum):
     estable = "estable"
     mejora = "mejora"
     deterioro = "deterioro"
+    intensificacion = "intensificación"
+    polarizacion = "polarización"
+    estancamiento = "estancamiento"
+    recuperacion = "recuperación"
+
+
+class VotoObservador(BaseModel):
+    dimension: str = ""
+    score: float = 5.0
+    justificacion: str = ""
+    confianza: float = 0.5
+    tendencia: str = "estable"
+    contra_punto: str = ""
+    tension_con: list[str] = []
 
 
 # ─── Capa 1: ESTRUCTURAL ───────────────────────────────────
@@ -45,6 +59,8 @@ class EvaluacionNodo(BaseModel):
     score_anterior_m: float | None = None
     score_anterior_l: float | None = None
     score_anterior_s: float | None = None
+    votos: dict[str, VotoObservador] = {}
+    tension_observacional: float = 0.0
 
     def toroidal_angles(self) -> tuple[float, float, float]:
         theta_m = 360.0 / max(self.dimension_m, 0.1)
@@ -68,6 +84,9 @@ class EstadoCultural(BaseModel):
     theta_cultura: float = 0.0
     tension_total: float = 0.0
     vuelco_detectado: bool = False
+
+    tension_observacional_promedio: float = 0.0
+    alertas_arbitro: list[str] = []
 
     # Formas culturales complejas (e^(2πi / m), m = Σ(v/9.9))
     m_m: float = 0.0

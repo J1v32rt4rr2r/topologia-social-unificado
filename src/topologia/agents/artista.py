@@ -59,14 +59,47 @@ class Artista(Agent):
             lineas.append(f"  {n.nodo_id:15s} M_m={m}  M_l={l}  M_s={s}  delta={d:5.1f}°  [{clasif}]")
         return "\n".join(lineas)
 
-    def especular(self, items: list[ItemInformativo], estado: EstadoCultural | None = None) -> list[Especulacion]:
+    def _formatear_especulaciones_previas(self, estudios: list) -> str:
+        if not estudios:
+            return "No hay especulaciones anteriores registradas."
+        lineas = []
+        for e in estudios[-10:]:
+            tag = "✅ VALIDADO" if not e.tension_latente and e.respuesta and e.respuesta != "Sin hallazgos concluyentes" else "🔍 ABIERTO" if e.tension_latente else "❌ SIN CONCLUSION"
+            lineas.append(f"- {e.patron_id}: {e.pregunta_investigada or '(sin pregunta)'} → {tag}")
+            lineas.append(f"  Hallazgo: {e.respuesta[:150]}")
+        return "\n".join(lineas)
+
+    def _formatear_historial(self, estados: list[EstadoCultural]) -> str:
+        if not estados:
+            return "No hay historial disponible."
+        lineas = []
+        for nodo_id in ["ECONOMIA", "TRABAJO", "SEXUALIDAD", "POLITICA", "LENGUAJE",
+                         "ETICA_ESTETICA", "TECNOLOGIA", "EDUCACION", "RELIGION"]:
+            evol = []
+            for e in estados:
+                for n in e.nodos:
+                    if n.nodo_id == nodo_id:
+                        evol.append(f"δ={n.delta:.1f}")
+                        break
+            if evol:
+                flecha = "↓" if len(estados) >= 2 and estados[-1].delta_promedio < estados[0].delta_promedio else "↑" if len(estados) >= 2 and estados[-1].delta_promedio > estados[0].delta_promedio else "→"
+                lineas.append(f"  {nodo_id:15s} {flecha} {' → '.join(evol)}")
+        return "\n".join(lineas)
+
+    def especular(self, items: list[ItemInformativo], estado: EstadoCultural | None = None,
+                  historial: list[EstadoCultural] | None = None,
+                  estudios_previos: list | None = None) -> list[Especulacion]:
         patrones_str = self._formatear_patrones_memoria()
         items_str = self.formatear_items(items)
         vectores_str = self._formatear_estado_vectores(estado)
+        historial_str = self._formatear_historial(historial or []) if historial else "No hay historial disponible."
+        esp_previas_str = self._formatear_especulaciones_previas(estudios_previos or [])
         prompt = self.prompts.load("artista_noticias",
             patrones_en_memoria=patrones_str,
             estado_vectores=vectores_str,
             items_del_dia=items_str,
+            datos_historicos=historial_str,
+            especulaciones_previas=esp_previas_str,
         )
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)

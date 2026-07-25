@@ -1,5 +1,7 @@
 from topologia.agents.base import Agent
-from topologia.models.schemas import ConfigAgente, EvaluacionNodo, ItemInformativo, AnalisisDim
+from topologia.models.schemas import (
+    ConfigAgente, EvaluacionNodo, ItemInformativo, AnalisisDim, VotoObservador,
+)
 from topologia.prompts import PromptLoader
 
 
@@ -27,7 +29,17 @@ class Estadista(Agent):
         ))
         self.prompts = PromptLoader()
 
-    def evaluar_nodo(self, nodo_id: str, items: list[ItemInformativo], score_anterior: float = 5.0, just_anterior: str = "") -> EvaluacionNodo:
+    def evaluar_nodo(
+        self,
+        nodo_id: str,
+        items: list[ItemInformativo],
+        score_anterior: float = 5.0,
+        just_anterior: str = "",
+        puntuacion_m_l: float | None = None,
+        justificacion_m_l: str = "",
+        puntuacion_m_s: float | None = None,
+        justificacion_m_s: str = "",
+    ) -> VotoObservador:
         pregunta = NODOS_PREGUNTAS.get(nodo_id, "")
         items_str = self.formatear_items(items)
         prompt = self.prompts.load("estadista_evaluar",
@@ -36,27 +48,80 @@ class Estadista(Agent):
             items_del_nodo=items_str,
             score_anterior=score_anterior,
             justificacion_anterior=just_anterior,
+            puntuacion_m_l=puntuacion_m_l if puntuacion_m_l is not None else "aún no evaluado",
+            justificacion_m_l=justificacion_m_l or "aún no disponible",
+            puntuacion_m_s=puntuacion_m_s if puntuacion_m_s is not None else "aún no evaluado",
+            justificacion_m_s=justificacion_m_s or "aún no disponible",
         )
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)
+            if isinstance(resultado, list):
+                resultado = resultado[0] if resultado else {}
             punt = max(0.1, min(9.9, float(resultado.get("puntuacion", 5.0))))
             just = resultado.get("justificacion", "")
             tend = resultado.get("tendencia", "estable")
+            conf = float(resultado.get("confianza", 0.5))
+            contra = resultado.get("contra_punto_inicial", "")
+            tension_con = resultado.get("tension_con", [])
         except Exception:
             punt = 5.0
             just = "Error en evaluación"
             tend = "estable"
+            conf = 0.0
+            contra = ""
+            tension_con = []
 
-        return EvaluacionNodo(
-            nodo_id=nodo_id,
-            nodo_nombre=nodo_id.capitalize(),
-            dimension_m=round(punt, 1),
-            dimension_l=0.0,
-            dimension_s=0.0,
-            justificacion_m=just,
-            tendencia_m=tend,
-            score_anterior_m=score_anterior,
+        return VotoObservador(
+            dimension="M_m",
+            score=round(punt, 1),
+            justificacion=just,
+            confianza=conf,
+            tendencia=tend,
+            contra_punto=contra,
+            tension_con=tension_con,
         )
+
+    def deliberar(
+        self,
+        nodo_id: str,
+        mi_voto: VotoObservador,
+        votos_otros: dict[str, VotoObservador],
+    ) -> dict:
+        prompt = self.prompts.load("estadista_deliberar",
+            nodo=nodo_id,
+            mi_score=mi_voto.score,
+            mi_confianza=mi_voto.confianza,
+            mi_justificacion=mi_voto.justificacion,
+            score_m_l=votos_otros.get("M_l", VotoObservador()).score,
+            confianza_m_l=votos_otros.get("M_l", VotoObservador()).confianza,
+            justificacion_m_l=votos_otros.get("M_l", VotoObservador()).justificacion,
+            score_m_s=votos_otros.get("M_s", VotoObservador()).score,
+            confianza_m_s=votos_otros.get("M_s", VotoObservador()).confianza,
+            justificacion_m_s=votos_otros.get("M_s", VotoObservador()).justificacion,
+        )
+        try:
+            resultado = self.ejecutar_prompt(prompt, formato_json=True)
+            if isinstance(resultado, list):
+                resultado = resultado[0] if resultado else {}
+            return {
+                "ajuste": float(resultado.get("ajuste_puntuacion", 0.0)),
+                "mantiene": bool(resultado.get("mantiene", True)),
+                "justificacion": resultado.get("justificacion_ajuste", ""),
+                "contra_punto": resultado.get("contra_punto", ""),
+                "tension_con": resultado.get("tension_con", []),
+                "nueva_confianza": float(resultado.get("nueva_confianza", mi_voto.confianza)),
+                "reflexion": resultado.get("reflexion", ""),
+            }
+        except Exception:
+            return {
+                "ajuste": 0.0,
+                "mantiene": True,
+                "justificacion": "Error en deliberación",
+                "contra_punto": "",
+                "tension_con": [],
+                "nueva_confianza": mi_voto.confianza,
+                "reflexion": "",
+            }
 
     def validar_estudio(self, items_investigacion: list[ItemInformativo], **kwargs) -> AnalisisDim:
         prompt = self.prompts.load("estadista_validar",

@@ -24,17 +24,18 @@ def test_prompt_loader_todas_las_variables():
     )
     assert "ECONOMIA" in content
     assert "noticia1" in content
-    assert "DIMENSIÓN MATERIAL" in content
+    assert "ESTANCIA (M_m)" in content
 
 
 def test_prompt_loader_todas_los_archivos():
     loader = PromptLoader()
     esperados = [
         "artista_noticias", "artista_taller",
-        "estadista_evaluar", "estadista_validar",
-        "filosofo_evaluar", "filosofo_validar",
-        "sociologo_evaluar", "sociologo_validar",
+        "estadista_evaluar", "estadista_validar", "estadista_deliberar",
+        "filosofo_evaluar", "filosofo_validar", "filosofo_deliberar",
+        "sociologo_evaluar", "sociologo_validar", "sociologo_deliberar",
         "redactor_sintesis",
+        "arbitro_deliberacion",
     ]
     for name in esperados:
         content = loader.load(name)

@@ -167,7 +167,7 @@ def grafico_orbita_temporal(estados: list[dict], path: Path, contexto: dict | No
         pico = max(estados, key=lambda e: e["delta"])
         ctx = contexto.get("_global", {}).get("resumen", "")
         if ctx:
-            ax.text(-1.4, -1.0, f"📰 Pico δ={pico['delta']}° ({pico['fecha_label']}):\n{ctx[:80]}",
+            ax.text(-1.4, -1.0, f"[N] Pico δ={pico['delta']}° ({pico['fecha_label']}):\n{ctx[:80]}",
                     fontsize=7, color="#ffd700", alpha=0.7)
 
     fig.tight_layout()
@@ -432,7 +432,7 @@ def grafico_delta_evolucion(estados: list[dict], path: Path, contexto: dict | No
         label = f"{d:.0f}°"
         if d > 50 and contexto:
             ctx = contexto.get("_global", {}).get("resumen", "")
-            label = f"{d:.0f}° ⚠"
+            label = f"{d:.0f}° !!"
         ax.text(i, d + 3, label, ha="center", fontsize=8, fontweight="bold", color=C_DELTA)
 
     ax.axhline(y=70, color=C_TENSION, ls="--", lw=1, alpha=0.5, label="δ > 70°: Nodo frágil (cizallamiento torsional alto)")
@@ -443,7 +443,7 @@ def grafico_delta_evolucion(estados: list[dict], path: Path, contexto: dict | No
         pico = max(enumerate(deltas), key=lambda x: x[1])
         ctx = contexto.get("_global", {}).get("resumen", "")
         if ctx:
-            ax.annotate(f"📰 Pico: {ctx[:100]}", xy=(pico[0], pico[1]),
+            ax.annotate(f"[N] Pico: {ctx[:100]}", xy=(pico[0], pico[1]),
                         xytext=(pico[0] + 2, pico[1] + 10),
                         fontsize=7, color="#ffd700", alpha=0.8,
                         arrowprops=dict(arrowstyle="->", color="#ffd700", alpha=0.4))

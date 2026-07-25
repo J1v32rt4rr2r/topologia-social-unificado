@@ -40,9 +40,9 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
 
     resultados: list[ItemInformativo] = []
     try:
-        from duckduckgo_search import DDGS
+        from ddgs import DDGS
         _esperar_rate_limit()
-        with DDGS(headers={"User-Agent": USER_AGENT}) as ddgs:
+        with DDGS() as ddgs:
             for r in ddgs.text(palabras_clave, max_results=max_resultados):
                 titulo = r.get("title", "")
                 cuerpo = r.get("body", "")
@@ -59,7 +59,7 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
                     tags=["search", palabras_clave],
                 ))
     except ImportError:
-        logger.warning("duckduckgo_search no instalado")
+        logger.warning("ddgs no instalado")
     except Exception as e:
         logger.warning(f"Error en búsqueda '{palabras_clave}': {e}")
 

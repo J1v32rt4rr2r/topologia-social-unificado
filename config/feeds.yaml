@@ -26,6 +26,15 @@ rss:
     activo: false
   - url: "https://www.gerencia.cl/rss"
     activo: true
+  # Tecnología
+  - url: "https://www.fayerwayer.com/feed/"
+    activo: true
+  - url: "https://www.elmostrador.cl/tecno/feed/"
+    activo: true
+  - url: "https://www.latercera.com/tech/feed/"
+    activo: true
+  - url: "https://www.startupchile.org/feed/"
+    activo: true
   # Fuentes inactivas (RSS bloqueado; reemplazado por scraping Espectro B)
   - url: "https://feeds.emol.com/emol/rss/portada"
     activo: false

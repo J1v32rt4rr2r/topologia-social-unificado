@@ -1,0 +1,2673 @@
+- id: plebiscito_1988
+  descripcion: Plebiscito Sí/No — retorno a la democracia, fin de la dictadura
+  periodo:
+    inicio: '1988-10-01'
+    fin: '1988-10-31'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - manual
+    total_items: 0
+  estado:
+    delta_promedio: 8.4
+    M_m: 5.2
+    M_l: 6.3
+    M_s: 6.2
+    coherente: true
+    tension_total: 270.9
+    era_k: 8
+    theta_cultura: 57.3
+    operaciones:
+    - O11
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 6.5
+      l: 5.5
+      s: 4.5
+      delta: 10.1
+      fragil: false
+    TRABAJO:
+      m: 4.5
+      l: 7.0
+      s: 7.5
+      delta: 14.3
+      fragil: false
+    SEXUALIDAD:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    POLITICA:
+      m: 5.0
+      l: 6.5
+      s: 8.0
+      delta: 11.1
+      fragil: false
+    LENGUAJE:
+      m: 6.0
+      l: 6.5
+      s: 7.0
+      delta: 3.5
+      fragil: false
+    ETICA_ESTETICA:
+      m: 5.0
+      l: 7.5
+      s: 7.0
+      delta: 10.6
+      fragil: false
+    TECNOLOGIA:
+      m: 3.5
+      l: 5.5
+      s: 5.0
+      delta: 16.3
+      fragil: false
+    EDUCACION:
+      m: 5.0
+      l: 6.5
+      s: 6.0
+      delta: 7.0
+      fragil: false
+    RELIGION:
+      m: 6.0
+      l: 6.5
+      s: 6.0
+      delta: 2.2
+      fragil: false
+- id: estallido_2019
+  descripcion: Estallido social — tope de la crisis, masivas protestas
+  periodo:
+    inicio: '2019-10-18'
+    fin: '2019-11-30'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - ciperchile.cl
+    - theclinic.cl
+    - elmostrador.cl
+    - radio.uchile.cl
+    - emol.com
+    total_items: 43
+  estado:
+    delta_promedio: 5.1
+    M_m: 5.1
+    M_l: 5.8
+    M_s: 5.9
+    coherente: true
+    tension_total: 335.5
+    era_k: 8
+    theta_cultura: 62.5
+    operaciones:
+    - O11
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 5.0
+      l: 6.0
+      s: 5.5
+      delta: 4.9
+      fragil: false
+    TRABAJO:
+      m: 5.0
+      l: 6.8
+      s: 6.0
+      delta: 7.9
+      fragil: false
+    SEXUALIDAD:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    POLITICA:
+      m: 5.0
+      l: 5.0
+      s: 7.5
+      delta: 11.3
+      fragil: false
+    LENGUAJE:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    ETICA_ESTETICA:
+      m: 5.0
+      l: 6.5
+      s: 7.5
+      delta: 10.0
+      fragil: false
+    TECNOLOGIA:
+      m: 5.5
+      l: 6.0
+      s: 5.2
+      delta: 3.8
+      fragil: false
+    EDUCACION:
+      m: 5.0
+      l: 6.5
+      s: 6.5
+      delta: 7.8
+      fragil: false
+    RELIGION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+  serie:
+  - estado:
+      delta_promedio: 4.3
+      M_m: 5.6
+      M_l: 5.8
+      M_s: 5.9
+    nodos:
+      ECONOMIA:
+        m: 5.8
+        l: 5.0
+        s: 6.2
+        delta: 5.9
+      TRABAJO:
+        m: 5.2
+        l: 6.0
+        s: 5.5
+        delta: 3.8
+      SEXUALIDAD:
+        m: 4.5
+        l: 6.8
+        s: 6.2
+        delta: 11.7
+      POLITICA:
+        m: 6.8
+        l: 5.0
+        s: 7.2
+        delta: 9.8
+      LENGUAJE:
+        m: 5.0
+        l: 5.4
+        s: 5.0
+        delta: 2.5
+      ETICA_ESTETICA:
+        m: 7.5
+        l: 8.2
+        s: 7.2
+        delta: 2.5
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.5
+        l: 6.0
+        s: 5.5
+        delta: 2.6
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2019-10-18'
+    total_items: 50
+  - estado:
+      delta_promedio: 4.9
+      M_m: 5.5
+      M_l: 5.8
+      M_s: 5.7
+    nodos:
+      ECONOMIA:
+        m: 5.5
+        l: 7.2
+        s: 6.3
+        delta: 6.3
+      TRABAJO:
+        m: 5.0
+        l: 5.8
+        s: 5.0
+        delta: 4.7
+      SEXUALIDAD:
+        m: 5.0
+        l: 6.7
+        s: 5.0
+        delta: 8.6
+      POLITICA:
+        m: 6.3
+        l: 6.5
+        s: 6.2
+        delta: 1.1
+      LENGUAJE:
+        m: 5.0
+        l: 5.5
+        s: 5.0
+        delta: 3.1
+      ETICA_ESTETICA:
+        m: 7.8
+        l: 5.0
+        s: 7.8
+        delta: 12.2
+      TECNOLOGIA:
+        m: 4.5
+        l: 5.0
+        s: 5.0
+        delta: 3.8
+      EDUCACION:
+        m: 5.0
+        l: 5.8
+        s: 5.6
+        delta: 4.3
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2019-10-21'
+    total_items: 50
+  - estado:
+      delta_promedio: 6.4
+      M_m: 5.3
+      M_l: 5.7
+      M_s: 6.1
+    nodos:
+      ECONOMIA:
+        m: 5.0
+        l: 5.0
+        s: 6.5
+        delta: 7.8
+      TRABAJO:
+        m: 6.2
+        l: 6.5
+        s: 6.8
+        delta: 2.1
+      SEXUALIDAD:
+        m: 3.5
+        l: 6.3
+        s: 6.3
+        delta: 21.5
+      POLITICA:
+        m: 6.8
+        l: 5.0
+        s: 5.8
+        delta: 7.8
+      LENGUAJE:
+        m: 5.0
+        l: 6.0
+        s: 5.0
+        delta: 5.7
+      ETICA_ESTETICA:
+        m: 6.2
+        l: 6.5
+        s: 7.8
+        delta: 5.1
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.5
+        delta: 3.1
+      EDUCACION:
+        m: 5.0
+        l: 5.8
+        s: 5.8
+        delta: 4.7
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2019-10-24'
+    total_items: 50
+  - estado:
+      delta_promedio: 5.9
+      M_m: 5.2
+      M_l: 5.9
+      M_s: 5.8
+    nodos:
+      ECONOMIA:
+        m: 6.0
+        l: 6.0
+        s: 6.5
+        delta: 2.2
+      TRABAJO:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      SEXUALIDAD:
+        m: 3.8
+        l: 6.3
+        s: 6.0
+        delta: 17.1
+      POLITICA:
+        m: 6.5
+        l: 6.2
+        s: 5.0
+        delta: 7.3
+      LENGUAJE:
+        m: 5.0
+        l: 5.5
+        s: 5.2
+        delta: 2.7
+      ETICA_ESTETICA:
+        m: 6.0
+        l: 6.8
+        s: 7.3
+        delta: 4.4
+      TECNOLOGIA:
+        m: 4.5
+        l: 5.5
+        s: 6.0
+        delta: 8.4
+      EDUCACION:
+        m: 5.0
+        l: 5.8
+        s: 6.0
+        delta: 5.2
+      RELIGION:
+        m: 5.0
+        l: 6.0
+        s: 5.0
+        delta: 5.7
+    fecha: '2019-10-27'
+    total_items: 50
+  - estado:
+      delta_promedio: 6.7
+      M_m: 5.1
+      M_l: 6.1
+      M_s: 5.9
+    nodos:
+      ECONOMIA:
+        m: 3.5
+        l: 6.5
+        s: 6.5
+        delta: 22.4
+      TRABAJO:
+        m: 5.0
+        l: 6.8
+        s: 5.7
+        delta: 7.8
+      SEXUALIDAD:
+        m: 5.0
+        l: 6.5
+        s: 6.0
+        delta: 7.0
+      POLITICA:
+        m: 6.2
+        l: 6.0
+        s: 6.8
+        delta: 3.0
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      ETICA_ESTETICA:
+        m: 6.0
+        l: 5.8
+        s: 7.0
+        delta: 4.6
+      TECNOLOGIA:
+        m: 5.0
+        l: 6.2
+        s: 6.0
+        delta: 6.2
+      EDUCACION:
+        m: 5.5
+        l: 6.3
+        s: 5.5
+        delta: 3.9
+      RELIGION:
+        m: 5.0
+        l: 6.0
+        s: 5.0
+        delta: 5.7
+    fecha: '2019-10-30'
+    total_items: 50
+  velocidades:
+    ECONOMIA:
+      valores:
+      - 0.13
+      - 0.5
+      - -1.87
+      - 6.73
+      media: 1.373
+      max: 6.73
+      direccion: +
+      aceleracion: 0.55
+      delta_inicial: 5.9
+      delta_final: 22.4
+    TRABAJO:
+      valores:
+      - 0.3
+      - -0.87
+      - -0.7
+      - 2.6
+      media: 0.333
+      max: 2.6
+      direccion: +
+      aceleracion: 0.192
+      delta_inicial: 3.8
+      delta_final: 7.8
+    SEXUALIDAD:
+      valores:
+      - -1.03
+      - 4.3
+      - -1.47
+      - -3.37
+      media: -0.393
+      max: 4.3
+      direccion: '-'
+      aceleracion: -0.195
+      delta_inicial: 11.7
+      delta_final: 7.0
+    POLITICA:
+      valores:
+      - -2.9
+      - 2.23
+      - -0.17
+      - -1.43
+      media: -0.568
+      max: -2.9
+      direccion: '-'
+      aceleracion: 0.122
+      delta_inicial: 9.8
+      delta_final: 3.0
+    LENGUAJE:
+      valores:
+      - 0.2
+      - 0.87
+      - -1.0
+      - -0.9
+      media: -0.208
+      max: -1.0
+      direccion: '-'
+      aceleracion: -0.092
+      delta_inicial: 2.5
+      delta_final: 0.0
+    ETICA_ESTETICA:
+      valores:
+      - 3.23
+      - -2.37
+      - -0.23
+      - 0.07
+      media: 0.175
+      max: 3.23
+      direccion: +
+      aceleracion: -0.263
+      delta_inicial: 2.5
+      delta_final: 4.6
+    TECNOLOGIA:
+      valores:
+      - 1.27
+      - -0.23
+      - 1.77
+      - -0.73
+      media: 0.52
+      max: 1.77
+      direccion: +
+      aceleracion: -0.167
+      delta_inicial: 0.0
+      delta_final: 6.2
+    EDUCACION:
+      valores:
+      - 0.57
+      - 0.13
+      - 0.17
+      - -0.43
+      media: 0.11
+      max: 0.57
+      direccion: +
+      aceleracion: -0.083
+      delta_inicial: 2.6
+      delta_final: 3.9
+    RELIGION:
+      valores:
+      - 0.0
+      - 0.0
+      - 1.9
+      - 0.0
+      media: 0.475
+      max: 1.9
+      direccion: +
+      aceleracion: 0.0
+      delta_inicial: 0.0
+      delta_final: 5.7
+- id: pandemia_ola1_2020
+  descripcion: Pandemia COVID-19 — primera ola, cuarentena total
+  periodo:
+    inicio: '2020-03-15'
+    fin: '2020-06-30'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - ciperchile.cl
+    - elmostrador.cl
+    - latercera.com
+    - radio.uchile.cl
+    - emol.com
+    total_items: 19
+  estado:
+    delta_promedio: 4.1
+    M_m: 4.8
+    M_l: 5.3
+    M_s: 5.3
+    coherente: true
+    tension_total: 193.1
+    era_k: 8
+    theta_cultura: 68.1
+    operaciones: []
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 4.2
+      l: 5.7
+      s: 5.2
+      delta: 9.5
+      fragil: false
+    TRABAJO:
+      m: 5.0
+      l: 5.0
+      s: 6.3
+      delta: 7.0
+      fragil: false
+    SEXUALIDAD:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    POLITICA:
+      m: 5.0
+      l: 5.0
+      s: 5.5
+      delta: 3.1
+      fragil: false
+    LENGUAJE:
+      m: 5.0
+      l: 5.2
+      s: 5.5
+      delta: 2.7
+      fragil: false
+    ETICA_ESTETICA:
+      m: 5.0
+      l: 6.5
+      s: 6.0
+      delta: 7.0
+      fragil: false
+    TECNOLOGIA:
+      m: 4.2
+      l: 5.2
+      s: 4.2
+      delta: 7.8
+      fragil: false
+    EDUCACION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    RELIGION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+  serie:
+  - estado:
+      delta_promedio: 8.7
+      M_m: 4.8
+      M_l: 6.0
+      M_s: 5.5
+    nodos:
+      ECONOMIA:
+        m: 2.8
+        l: 5.5
+        s: 3.5
+        delta: 25.9
+      TRABAJO:
+        m: 3.5
+        l: 6.5
+        s: 5.5
+        delta: 20.4
+      SEXUALIDAD:
+        m: 5.0
+        l: 6.2
+        s: 6.0
+        delta: 6.2
+      POLITICA:
+        m: 6.5
+        l: 7.0
+        s: 7.0
+        delta: 1.9
+      LENGUAJE:
+        m: 5.0
+        l: 4.8
+        s: 5.0
+        delta: 1.4
+      ETICA_ESTETICA:
+        m: 6.0
+        l: 6.3
+        s: 6.8
+        delta: 2.9
+      TECNOLOGIA:
+        m: 4.2
+        l: 6.0
+        s: 5.5
+        delta: 11.1
+      EDUCACION:
+        m: 5.3
+        l: 5.5
+        s: 5.5
+        delta: 1.2
+      RELIGION:
+        m: 5.0
+        l: 6.5
+        s: 5.0
+        delta: 7.8
+    fecha: '2020-03-15'
+    total_items: 50
+  - estado:
+      delta_promedio: 12.3
+      M_m: 4.4
+      M_l: 6.0
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 2.7
+        l: 5.0
+        s: 2.8
+        delta: 27.9
+      TRABAJO:
+        m: 2.5
+        l: 6.3
+        s: 4.5
+        delta: 36.8
+      SEXUALIDAD:
+        m: 4.0
+        l: 6.5
+        s: 6.2
+        delta: 15.7
+      POLITICA:
+        m: 5.0
+        l: 7.0
+        s: 7.5
+        delta: 10.6
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      ETICA_ESTETICA:
+        m: 6.0
+        l: 6.5
+        s: 6.5
+        delta: 2.2
+      TECNOLOGIA:
+        m: 4.5
+        l: 5.8
+        s: 4.5
+        delta: 8.5
+      EDUCACION:
+        m: 5.3
+        l: 5.5
+        s: 5.5
+        delta: 1.2
+      RELIGION:
+        m: 5.0
+        l: 6.5
+        s: 5.0
+        delta: 7.8
+    fecha: '2020-03-18'
+    total_items: 50
+  - estado:
+      delta_promedio: 10.4
+      M_m: 4.7
+      M_l: 5.4
+      M_s: 5.0
+    nodos:
+      ECONOMIA:
+        m: 2.8
+        l: 6.0
+        s: 2.6
+        delta: 34.9
+      TRABAJO:
+        m: 5.0
+        l: 3.5
+        s: 4.6
+        delta: 13.3
+      SEXUALIDAD:
+        m: 3.8
+        l: 6.8
+        s: 6.3
+        delta: 18.8
+      POLITICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      LENGUAJE:
+        m: 5.0
+        l: 4.0
+        s: 5.0
+        delta: 8.5
+      ETICA_ESTETICA:
+        m: 6.0
+        l: 6.5
+        s: 6.5
+        delta: 2.2
+      TECNOLOGIA:
+        m: 4.5
+        l: 5.4
+        s: 4.2
+        delta: 8.0
+      EDUCACION:
+        m: 5.0
+        l: 5.5
+        s: 5.5
+        delta: 3.1
+      RELIGION:
+        m: 5.0
+        l: 6.0
+        s: 5.5
+        delta: 4.9
+    fecha: '2020-03-21'
+    total_items: 50
+  - estado:
+      delta_promedio: 12.2
+      M_m: 4.6
+      M_l: 5.2
+      M_s: 5.4
+    nodos:
+      ECONOMIA:
+        m: 2.5
+        l: 5.0
+        s: 5.0
+        delta: 33.9
+      TRABAJO:
+        m: 5.0
+        l: 2.5
+        s: 4.5
+        delta: 32.2
+      SEXUALIDAD:
+        m: 5.0
+        l: 6.5
+        s: 6.0
+        delta: 7.0
+      POLITICA:
+        m: 4.8
+        l: 7.5
+        s: 7.0
+        delta: 12.0
+      LENGUAJE:
+        m: 5.0
+        l: 4.0
+        s: 4.0
+        delta: 8.5
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 6.5
+        s: 6.5
+        delta: 7.8
+      TECNOLOGIA:
+        m: 4.2
+        l: 4.6
+        s: 4.5
+        delta: 3.2
+      EDUCACION:
+        m: 5.0
+        l: 5.5
+        s: 5.5
+        delta: 3.1
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.3
+        delta: 1.9
+    fecha: '2020-03-24'
+    total_items: 50
+  - estado:
+      delta_promedio: 9.4
+      M_m: 4.1
+      M_l: 5.0
+      M_s: 5.0
+    nodos:
+      ECONOMIA:
+        m: 2.3
+        l: 4.0
+        s: 4.0
+        delta: 31.4
+      TRABAJO:
+        m: 3.5
+        l: 5.0
+        s: 4.0
+        delta: 12.7
+      SEXUALIDAD:
+        m: 4.0
+        l: 6.0
+        s: 5.5
+        delta: 13.0
+      POLITICA:
+        m: 4.2
+        l: 5.0
+        s: 7.2
+        delta: 14.7
+      LENGUAJE:
+        m: 4.0
+        l: 4.0
+        s: 3.9
+        delta: 1.1
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.2
+        delta: 1.3
+      TECNOLOGIA:
+        m: 4.0
+        l: 4.6
+        s: 4.3
+        delta: 4.8
+      EDUCACION:
+        m: 5.0
+        l: 5.5
+        s: 5.5
+        delta: 3.1
+      RELIGION:
+        m: 5.0
+        l: 5.5
+        s: 5.3
+        delta: 2.7
+    fecha: '2020-03-27'
+    total_items: 50
+  velocidades:
+    ECONOMIA:
+      valores:
+      - 0.67
+      - 2.33
+      - -0.33
+      - -0.83
+      media: 0.46
+      max: 2.33
+      direccion: +
+      aceleracion: -0.125
+      delta_inicial: 25.9
+      delta_final: 31.4
+    TRABAJO:
+      valores:
+      - 5.47
+      - -7.83
+      - 6.3
+      - -6.5
+      media: -0.64
+      max: -7.83
+      direccion: '-'
+      aceleracion: -0.997
+      delta_inicial: 20.4
+      delta_final: 12.7
+    SEXUALIDAD:
+      valores:
+      - 3.17
+      - 1.03
+      - -3.93
+      - 2.0
+      media: 0.567
+      max: -3.93
+      direccion: +
+      aceleracion: -0.097
+      delta_inicial: 6.2
+      delta_final: 13.0
+    POLITICA:
+      valores:
+      - 2.9
+      - -3.53
+      - 4.0
+      - 0.9
+      media: 1.068
+      max: 4.0
+      direccion: +
+      aceleracion: -0.167
+      delta_inicial: 1.9
+      delta_final: 14.7
+    LENGUAJE:
+      valores:
+      - -0.47
+      - 2.83
+      - 0.0
+      - -2.47
+      media: -0.028
+      max: 2.83
+      direccion: '-'
+      aceleracion: -0.167
+      delta_inicial: 1.4
+      delta_final: 1.1
+    ETICA_ESTETICA:
+      valores:
+      - -0.23
+      - 0.0
+      - 1.87
+      - -2.17
+      media: -0.132
+      max: -2.17
+      direccion: '-'
+      aceleracion: -0.162
+      delta_inicial: 2.9
+      delta_final: 1.3
+    TECNOLOGIA:
+      valores:
+      - -0.87
+      - -0.17
+      - -1.6
+      - 0.53
+      media: -0.527
+      max: -1.6
+      direccion: '-'
+      aceleracion: 0.117
+      delta_inicial: 11.1
+      delta_final: 4.8
+    EDUCACION:
+      valores:
+      - 0.0
+      - 0.63
+      - 0.0
+      - 0.0
+      media: 0.158
+      max: 0.63
+      direccion: +
+      aceleracion: 0.0
+      delta_inicial: 1.2
+      delta_final: 3.1
+    RELIGION:
+      valores:
+      - 0.0
+      - -0.97
+      - -1.0
+      - 0.27
+      media: -0.425
+      max: -1.0
+      direccion: '-'
+      aceleracion: 0.023
+      delta_inicial: 7.8
+      delta_final: 2.7
+- id: pandemia_ola2_2021
+  descripcion: Pandemia — segunda ola, vacunación masiva
+  periodo:
+    inicio: '2021-03-01'
+    fin: '2021-06-30'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - ciperchile.cl
+    - elmostrador.cl
+    - latercera.com
+    - radio.uchile.cl
+    - emol.com
+    total_items: 72
+  estado:
+    delta_promedio: 5.1
+    M_m: 4.8
+    M_l: 5.4
+    M_s: 5.5
+    coherente: true
+    tension_total: 226.4
+    era_k: 8
+    theta_cultura: 67.2
+    operaciones: []
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 4.5
+      l: 6.2
+      s: 5.6
+      delta: 9.2
+      fragil: false
+    TRABAJO:
+      m: 4.2
+      l: 5.2
+      s: 5.0
+      delta: 7.2
+      fragil: false
+    SEXUALIDAD:
+      m: 4.0
+      l: 5.0
+      s: 5.3
+      delta: 9.6
+      fragil: false
+    POLITICA:
+      m: 5.0
+      l: 6.3
+      s: 5.8
+      delta: 6.2
+      fragil: false
+    LENGUAJE:
+      m: 5.6
+      l: 5.0
+      s: 5.6
+      delta: 3.6
+      fragil: false
+    ETICA_ESTETICA:
+      m: 5.0
+      l: 5.5
+      s: 6.5
+      delta: 6.8
+      fragil: false
+    TECNOLOGIA:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    EDUCACION:
+      m: 5.0
+      l: 5.0
+      s: 5.5
+      delta: 3.1
+      fragil: false
+    RELIGION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+  serie:
+  - estado:
+      delta_promedio: 5.4
+      M_m: 5.0
+      M_l: 5.3
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 7.2
+        l: 6.0
+        s: 6.5
+        delta: 4.1
+      TRABAJO:
+        m: 4.5
+        l: 4.5
+        s: 5.2
+        delta: 5.1
+      SEXUALIDAD:
+        m: 5.0
+        l: 5.5
+        s: 5.2
+        delta: 2.7
+      POLITICA:
+        m: 4.2
+        l: 7.2
+        s: 7.0
+        delta: 16.5
+      LENGUAJE:
+        m: 5.0
+        l: 3.9
+        s: 3.7
+        delta: 10.9
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.1
+        delta: 0.7
+      TECNOLOGIA:
+        m: 4.4
+        l: 4.5
+        s: 4.2
+        delta: 2.4
+      EDUCACION:
+        m: 5.0
+        l: 5.5
+        s: 5.5
+        delta: 3.1
+      RELIGION:
+        m: 5.0
+        l: 5.3
+        s: 5.6
+        delta: 3.2
+    fecha: '2021-03-01'
+    total_items: 50
+  - estado:
+      delta_promedio: 5.6
+      M_m: 5.2
+      M_l: 5.1
+      M_s: 5.6
+    nodos:
+      ECONOMIA:
+        m: 7.5
+        l: 5.0
+        s: 6.8
+        delta: 10.3
+      TRABAJO:
+        m: 5.3
+        l: 5.2
+        s: 5.5
+        delta: 1.6
+      SEXUALIDAD:
+        m: 5.3
+        l: 5.3
+        s: 5.1
+        delta: 1.3
+      POLITICA:
+        m: 4.5
+        l: 6.8
+        s: 7.3
+        delta: 13.7
+      LENGUAJE:
+        m: 5.0
+        l: 3.6
+        s: 5.2
+        delta: 13.9
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 4.6
+        l: 4.4
+        s: 4.3
+        delta: 2.3
+      EDUCACION:
+        m: 5.0
+        l: 5.5
+        s: 5.5
+        delta: 3.1
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.7
+        delta: 4.2
+    fecha: '2021-03-04'
+    total_items: 50
+  - estado:
+      delta_promedio: 2.9
+      M_m: 5.4
+      M_l: 5.0
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 7.8
+        l: 5.0
+        s: 7.0
+        delta: 11.2
+      TRABAJO:
+        m: 5.1
+        l: 5.0
+        s: 5.0
+        delta: 0.7
+      SEXUALIDAD:
+        m: 5.8
+        l: 5.3
+        s: 5.3
+        delta: 2.8
+      POLITICA:
+        m: 5.2
+        l: 5.0
+        s: 5.0
+        delta: 1.3
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.3
+        delta: 1.9
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 4.4
+        l: 4.5
+        s: 4.3
+        delta: 1.5
+      EDUCACION:
+        m: 5.0
+        l: 5.0
+        s: 5.5
+        delta: 3.1
+      RELIGION:
+        m: 5.0
+        l: 5.6
+        s: 5.0
+        delta: 3.6
+    fecha: '2021-03-07'
+    total_items: 50
+  - estado:
+      delta_promedio: 4.4
+      M_m: 5.5
+      M_l: 5.3
+      M_s: 5.0
+    nodos:
+      ECONOMIA:
+        m: 7.6
+        l: 5.0
+        s: 5.0
+        delta: 11.6
+      TRABAJO:
+        m: 5.0
+        l: 5.0
+        s: 4.0
+        delta: 8.5
+      SEXUALIDAD:
+        m: 6.3
+        l: 5.6
+        s: 5.5
+        delta: 3.7
+      POLITICA:
+        m: 5.3
+        l: 7.0
+        s: 6.0
+        delta: 6.7
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.5
+        l: 4.5
+        s: 4.4
+        delta: 7.3
+      EDUCACION:
+        m: 5.0
+        l: 5.2
+        s: 5.3
+        delta: 1.7
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2021-03-10'
+    total_items: 50
+  - estado:
+      delta_promedio: 4.1
+      M_m: 5.2
+      M_l: 5.4
+      M_s: 5.2
+    nodos:
+      ECONOMIA:
+        m: 5.0
+        l: 5.0
+        s: 5.5
+        delta: 3.1
+      TRABAJO:
+        m: 5.0
+        l: 5.0
+        s: 4.0
+        delta: 8.5
+      SEXUALIDAD:
+        m: 5.8
+        l: 5.5
+        s: 5.2
+        delta: 2.9
+      POLITICA:
+        m: 5.2
+        l: 7.0
+        s: 6.5
+        delta: 7.6
+      LENGUAJE:
+        m: 5.0
+        l: 6.2
+        s: 5.5
+        delta: 5.7
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.5
+        l: 4.8
+        s: 4.5
+        delta: 6.0
+      EDUCACION:
+        m: 5.0
+        l: 5.5
+        s: 5.2
+        delta: 2.7
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2021-03-13'
+    total_items: 50
+  velocidades:
+    ECONOMIA:
+      valores:
+      - 2.07
+      - 0.3
+      - 0.13
+      - -2.83
+      media: -0.083
+      max: -2.83
+      direccion: '-'
+      aceleracion: -0.408
+      delta_inicial: 4.1
+      delta_final: 3.1
+    TRABAJO:
+      valores:
+      - -1.17
+      - -0.3
+      - 2.6
+      - 0.0
+      media: 0.283
+      max: 2.6
+      direccion: +
+      aceleracion: 0.097
+      delta_inicial: 5.1
+      delta_final: 8.5
+    SEXUALIDAD:
+      valores:
+      - -0.47
+      - 0.5
+      - 0.3
+      - -0.27
+      media: 0.015
+      max: 0.5
+      direccion: +
+      aceleracion: 0.017
+      delta_inicial: 2.7
+      delta_final: 2.9
+    POLITICA:
+      valores:
+      - -0.93
+      - -4.13
+      - 1.8
+      - 0.3
+      media: -0.74
+      max: -4.13
+      direccion: '-'
+      aceleracion: 0.102
+      delta_inicial: 16.5
+      delta_final: 7.6
+    LENGUAJE:
+      valores:
+      - 1.0
+      - -4.0
+      - -0.63
+      - 1.9
+      media: -0.432
+      max: -4.0
+      direccion: '-'
+      aceleracion: 0.075
+      delta_inicial: 10.9
+      delta_final: 5.7
+    ETICA_ESTETICA:
+      valores:
+      - -0.23
+      - 0.0
+      - 0.0
+      - 0.0
+      media: -0.058
+      max: -0.23
+      direccion: '-'
+      aceleracion: 0.019
+      delta_inicial: 0.7
+      delta_final: 0.0
+    TECNOLOGIA:
+      valores:
+      - -0.03
+      - -0.27
+      - 1.93
+      - -0.43
+      media: 0.3
+      max: 1.93
+      direccion: +
+      aceleracion: -0.033
+      delta_inicial: 2.4
+      delta_final: 6.0
+    EDUCACION:
+      valores:
+      - 0.0
+      - 0.0
+      - -0.47
+      - 0.33
+      media: -0.035
+      max: -0.47
+      direccion: '-'
+      aceleracion: 0.028
+      delta_inicial: 3.1
+      delta_final: 2.7
+    RELIGION:
+      valores:
+      - 0.33
+      - -0.2
+      - -1.2
+      - 0.0
+      media: -0.267
+      max: -1.2
+      direccion: '-'
+      aceleracion: -0.028
+      delta_inicial: 3.2
+      delta_final: 0.0
+- id: temporal_julio_2026
+  descripcion: Temporal extremo — lluvias récord, El Niño Godzilla, río atmosférico
+  periodo:
+    inicio: '2026-07-15'
+    fin: '2026-07-22'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - duckduckgo
+    total_items: 100
+  estado:
+    delta_promedio: 5.3
+    M_m: 4.9
+    M_l: 5.4
+    M_s: 5.4
+    coherente: true
+    tension_total: 207.1
+    era_k: 8
+    theta_cultura: 67.1
+    operaciones: []
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 4.8
+      l: 5.2
+      s: 5.0
+      delta: 2.4
+      fragil: false
+    TRABAJO:
+      m: 3.5
+      l: 4.8
+      s: 4.8
+      delta: 13.1
+      fragil: false
+    SEXUALIDAD:
+      m: 3.8
+      l: 6.5
+      s: 6.2
+      delta: 18.0
+      fragil: false
+    POLITICA:
+      m: 5.0
+      l: 6.0
+      s: 6.5
+      delta: 7.0
+      fragil: false
+    LENGUAJE:
+      m: 5.2
+      l: 5.0
+      s: 5.0
+      delta: 1.3
+      fragil: false
+    ETICA_ESTETICA:
+      m: 5.5
+      l: 5.3
+      s: 5.8
+      delta: 2.4
+      fragil: false
+    TECNOLOGIA:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    EDUCACION:
+      m: 6.0
+      l: 5.5
+      s: 5.3
+      delta: 3.3
+      fragil: false
+    RELIGION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+  serie:
+  - estado:
+      delta_promedio: 2.5
+      M_m: 5.1
+      M_l: 5.3
+      M_s: 5.4
+    nodos:
+      ECONOMIA:
+        m: 5.0
+        l: 5.0
+        s: 6.0
+        delta: 5.7
+      TRABAJO:
+        m: 4.0
+        l: 4.5
+        s: 4.5
+        delta: 4.7
+      SEXUALIDAD:
+        m: 5.6
+        l: 5.0
+        s: 5.4
+        delta: 3.2
+      POLITICA:
+        m: 5.3
+        l: 6.2
+        s: 5.7
+        delta: 4.0
+      LENGUAJE:
+        m: 5.5
+        l: 6.0
+        s: 6.2
+        delta: 3.1
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.3
+        l: 5.5
+        s: 5.2
+        delta: 1.6
+      EDUCACION:
+        m: 5.6
+        l: 5.5
+        s: 5.5
+        delta: 0.6
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2026-07-15'
+    total_items: 50
+  - estado:
+      delta_promedio: 2.8
+      M_m: 5.2
+      M_l: 5.2
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 6.2
+        l: 5.0
+        s: 6.0
+        delta: 6.2
+      TRABAJO:
+        m: 3.8
+        l: 4.0
+        s: 4.0
+        delta: 2.2
+      SEXUALIDAD:
+        m: 6.2
+        l: 5.7
+        s: 5.6
+        delta: 2.7
+      POLITICA:
+        m: 5.6
+        l: 6.2
+        s: 6.2
+        delta: 2.9
+      LENGUAJE:
+        m: 5.2
+        l: 5.5
+        s: 5.5
+        delta: 1.8
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.3
+        delta: 1.9
+      EDUCACION:
+        m: 5.0
+        l: 5.6
+        s: 5.5
+        delta: 3.4
+      RELIGION:
+        m: 5.0
+        l: 4.5
+        s: 5.0
+        delta: 3.8
+    fecha: '2026-07-18'
+    total_items: 50
+  - estado:
+      delta_promedio: 3.9
+      M_m: 5.2
+      M_l: 5.0
+      M_s: 5.2
+    nodos:
+      ECONOMIA:
+        m: 6.4
+        l: 5.0
+        s: 5.5
+        delta: 6.5
+      TRABAJO:
+        m: 3.5
+        l: 5.0
+        s: 4.5
+        delta: 13.1
+      SEXUALIDAD:
+        m: 6.3
+        l: 6.0
+        s: 5.7
+        delta: 2.5
+      POLITICA:
+        m: 5.0
+        l: 5.0
+        s: 6.0
+        delta: 5.7
+      LENGUAJE:
+        m: 5.1
+        l: 5.0
+        s: 5.3
+        delta: 1.7
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.1
+        l: 5.0
+        s: 5.0
+        delta: 0.7
+      RELIGION:
+        m: 5.0
+        l: 4.3
+        s: 5.0
+        delta: 5.5
+    fecha: '2026-07-21'
+    total_items: 50
+  velocidades:
+    ECONOMIA:
+      valores:
+      - 0.17
+      - 0.1
+      media: 0.135
+      max: 0.17
+      direccion: +
+      aceleracion: -0.012
+      delta_inicial: 5.7
+      delta_final: 6.5
+    TRABAJO:
+      valores:
+      - -0.83
+      - 3.63
+      media: 1.4
+      max: 3.63
+      direccion: +
+      aceleracion: 0.743
+      delta_inicial: 4.7
+      delta_final: 13.1
+    SEXUALIDAD:
+      valores:
+      - -0.17
+      - -0.07
+      media: -0.12
+      max: -0.17
+      direccion: '-'
+      aceleracion: 0.017
+      delta_inicial: 3.2
+      delta_final: 2.5
+    POLITICA:
+      valores:
+      - -0.37
+      - 0.93
+      media: 0.28
+      max: 0.93
+      direccion: +
+      aceleracion: 0.217
+      delta_inicial: 4.0
+      delta_final: 5.7
+    LENGUAJE:
+      valores:
+      - -0.43
+      - -0.03
+      media: -0.23
+      max: -0.43
+      direccion: '-'
+      aceleracion: 0.067
+      delta_inicial: 3.1
+      delta_final: 1.7
+    ETICA_ESTETICA:
+      valores:
+      - 0.0
+      - 0.0
+      media: 0.0
+      max: 0.0
+      direccion: +
+      aceleracion: 0.0
+      delta_inicial: 0.0
+      delta_final: 0.0
+    TECNOLOGIA:
+      valores:
+      - 0.1
+      - -0.63
+      media: -0.265
+      max: -0.63
+      direccion: '-'
+      aceleracion: -0.122
+      delta_inicial: 1.6
+      delta_final: 0.0
+    EDUCACION:
+      valores:
+      - 0.93
+      - -0.9
+      media: 0.015
+      max: 0.93
+      direccion: +
+      aceleracion: -0.305
+      delta_inicial: 0.6
+      delta_final: 0.7
+    RELIGION:
+      valores:
+      - 1.27
+      - 0.57
+      media: 0.92
+      max: 1.27
+      direccion: +
+      aceleracion: -0.117
+      delta_inicial: 0.0
+      delta_final: 5.5
+- id: plebiscito_2020
+  descripcion: Plebiscito constitucional — 78% apruebo, voto obligatorio
+  periodo:
+    inicio: '2020-10-01'
+    fin: '2020-10-31'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - duckduckgo
+    total_items: 100
+  estado:
+    delta_promedio: 7.5
+    M_m: 4.6
+    M_l: 5.5
+    M_s: 5.2
+    coherente: true
+    tension_total: 312.9
+    era_k: 8
+    theta_cultura: 66.0
+    operaciones: []
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 4.2
+      l: 5.0
+      s: 4.2
+      delta: 6.5
+      fragil: false
+    TRABAJO:
+      m: 2.8
+      l: 4.2
+      s: 3.5
+      delta: 17.6
+      fragil: false
+    SEXUALIDAD:
+      m: 3.2
+      l: 6.3
+      s: 5.8
+      delta: 25.0
+      fragil: false
+    POLITICA:
+      m: 5.0
+      l: 7.8
+      s: 7.8
+      delta: 12.2
+      fragil: false
+    LENGUAJE:
+      m: 5.2
+      l: 5.0
+      s: 5.2
+      delta: 1.3
+      fragil: false
+    ETICA_ESTETICA:
+      m: 5.5
+      l: 5.5
+      s: 5.5
+      delta: 0.0
+      fragil: false
+    TECNOLOGIA:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    EDUCACION:
+      m: 5.5
+      l: 5.3
+      s: 4.7
+      delta: 4.8
+      fragil: false
+    RELIGION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+  serie:
+  - estado:
+      delta_promedio: 5.4
+      M_m: 4.9
+      M_l: 5.3
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 3.8
+        l: 4.5
+        s: 5.0
+        delta: 9.4
+      TRABAJO:
+        m: 3.5
+        l: 6.0
+        s: 5.5
+        delta: 19.0
+      SEXUALIDAD:
+        m: 6.5
+        l: 6.1
+        s: 6.0
+        delta: 2.0
+      POLITICA:
+        m: 5.5
+        l: 6.5
+        s: 7.0
+        delta: 5.9
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.0
+        l: 5.0
+        s: 4.0
+        delta: 8.5
+      RELIGION:
+        m: 5.0
+        l: 4.5
+        s: 5.0
+        delta: 3.8
+    fecha: '2020-10-01'
+    total_items: 50
+  - estado:
+      delta_promedio: 5.4
+      M_m: 4.9
+      M_l: 5.2
+      M_s: 5.2
+    nodos:
+      ECONOMIA:
+        m: 3.8
+        l: 4.0
+        s: 3.8
+        delta: 2.2
+      TRABAJO:
+        m: 3.8
+        l: 5.7
+        s: 6.2
+        delta: 16.2
+      SEXUALIDAD:
+        m: 6.6
+        l: 6.0
+        s: 5.8
+        delta: 3.2
+      POLITICA:
+        m: 4.8
+        l: 6.8
+        s: 6.5
+        delta: 9.9
+      LENGUAJE:
+        m: 5.0
+        l: 5.5
+        s: 5.8
+        delta: 4.1
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.0
+        l: 4.5
+        s: 3.8
+        delta: 9.4
+      RELIGION:
+        m: 5.0
+        l: 4.5
+        s: 5.0
+        delta: 3.8
+    fecha: '2020-10-04'
+    total_items: 50
+  - estado:
+      delta_promedio: 6.3
+      M_m: 4.9
+      M_l: 5.3
+      M_s: 5.1
+    nodos:
+      ECONOMIA:
+        m: 4.0
+        l: 4.2
+        s: 3.8
+        delta: 3.7
+      TRABAJO:
+        m: 3.6
+        l: 6.0
+        s: 5.5
+        delta: 17.7
+      SEXUALIDAD:
+        m: 6.8
+        l: 6.3
+        s: 6.0
+        delta: 2.9
+      POLITICA:
+        m: 4.5
+        l: 7.0
+        s: 6.8
+        delta: 13.1
+      LENGUAJE:
+        m: 5.0
+        l: 6.0
+        s: 5.0
+        delta: 5.7
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.0
+        l: 4.0
+        s: 4.0
+        delta: 8.5
+      RELIGION:
+        m: 5.0
+        l: 4.3
+        s: 5.0
+        delta: 5.5
+    fecha: '2020-10-07'
+    total_items: 50
+  - estado:
+      delta_promedio: 4.9
+      M_m: 4.9
+      M_l: 5.4
+      M_s: 5.1
+    nodos:
+      ECONOMIA:
+        m: 3.9
+        l: 4.0
+        s: 3.9
+        delta: 1.1
+      TRABAJO:
+        m: 5.0
+        l: 6.5
+        s: 5.5
+        delta: 6.8
+      SEXUALIDAD:
+        m: 6.2
+        l: 6.7
+        s: 6.4
+        delta: 1.8
+      POLITICA:
+        m: 4.2
+        l: 6.8
+        s: 6.5
+        delta: 14.9
+      LENGUAJE:
+        m: 5.0
+        l: 6.0
+        s: 5.0
+        delta: 5.7
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.0
+        l: 4.0
+        s: 4.0
+        delta: 8.5
+      RELIGION:
+        m: 5.0
+        l: 4.3
+        s: 5.0
+        delta: 5.5
+    fecha: '2020-10-10'
+    total_items: 50
+  - estado:
+      delta_promedio: 6.0
+      M_m: 4.7
+      M_l: 5.3
+      M_s: 5.2
+    nodos:
+      ECONOMIA:
+        m: 3.0
+        l: 3.9
+        s: 3.5
+        delta: 11.4
+      TRABAJO:
+        m: 3.5
+        l: 6.2
+        s: 4.8
+        delta: 18.5
+      SEXUALIDAD:
+        m: 6.2
+        l: 6.5
+        s: 6.3
+        delta: 1.1
+      POLITICA:
+        m: 5.0
+        l: 6.2
+        s: 6.8
+        delta: 8.1
+      LENGUAJE:
+        m: 5.0
+        l: 4.5
+        s: 5.0
+        delta: 3.8
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 6.0
+        s: 6.5
+        delta: 7.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 4.5
+        l: 4.2
+        s: 4.0
+        delta: 4.1
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2020-10-13'
+    total_items: 50
+  velocidades:
+    ECONOMIA:
+      valores:
+      - -2.4
+      - 0.5
+      - -0.87
+      - 3.43
+      media: 0.165
+      max: 3.43
+      direccion: +
+      aceleracion: 0.486
+      delta_inicial: 9.4
+      delta_final: 11.4
+    TRABAJO:
+      valores:
+      - -0.93
+      - 0.5
+      - -3.63
+      - 3.9
+      media: -0.04
+      max: 3.9
+      direccion: '-'
+      aceleracion: 0.403
+      delta_inicial: 19.0
+      delta_final: 18.5
+    SEXUALIDAD:
+      valores:
+      - 0.4
+      - -0.1
+      - -0.37
+      - -0.23
+      media: -0.075
+      max: 0.4
+      direccion: '-'
+      aceleracion: -0.052
+      delta_inicial: 2.0
+      delta_final: 1.1
+    POLITICA:
+      valores:
+      - 1.33
+      - 1.07
+      - 0.6
+      - -2.27
+      media: 0.183
+      max: -2.27
+      direccion: +
+      aceleracion: -0.3
+      delta_inicial: 5.9
+      delta_final: 8.1
+    LENGUAJE:
+      valores:
+      - 1.37
+      - 0.53
+      - 0.0
+      - -0.63
+      media: 0.318
+      max: 1.37
+      direccion: +
+      aceleracion: -0.167
+      delta_inicial: 0.0
+      delta_final: 3.8
+    ETICA_ESTETICA:
+      valores:
+      - 0.0
+      - 0.0
+      - 0.0
+      - 2.33
+      media: 0.583
+      max: 2.33
+      direccion: +
+      aceleracion: 0.194
+      delta_inicial: 0.0
+      delta_final: 7.0
+    TECNOLOGIA:
+      valores:
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      media: 0.0
+      max: 0.0
+      direccion: +
+      aceleracion: 0.0
+      delta_inicial: 0.0
+      delta_final: 0.0
+    EDUCACION:
+      valores:
+      - 0.3
+      - -0.3
+      - 0.0
+      - -1.47
+      media: -0.367
+      max: -1.47
+      direccion: '-'
+      aceleracion: -0.147
+      delta_inicial: 8.5
+      delta_final: 4.1
+    RELIGION:
+      valores:
+      - 0.0
+      - 0.57
+      - 0.0
+      - -1.83
+      media: -0.315
+      max: -1.83
+      direccion: '-'
+      aceleracion: -0.152
+      delta_inicial: 3.8
+      delta_final: 0.0
+- id: estallido_nocturno_2020
+  descripcion: Estallido nocturno — cacerolazos, protestas nocturnas, toque de queda
+    sanitario
+  periodo:
+    inicio: '2020-06-01'
+    fin: '2020-08-31'
+  recoleccion:
+    fecha_recoleccion: '2026-07-24'
+    fuentes_usadas:
+    - duckduckgo
+    total_items: 100
+  estado:
+    delta_promedio: 5.8
+    M_m: 4.9
+    M_l: 5.5
+    M_s: 5.1
+    coherente: true
+    tension_total: 460.6
+    era_k: 8
+    theta_cultura: 65.6
+    operaciones: []
+    nodos_fragiles: []
+  nodos:
+    ECONOMIA:
+      m: 3.8
+      l: 4.5
+      s: 3.8
+      delta: 6.9
+      fragil: false
+    TRABAJO:
+      m: 5.0
+      l: 3.8
+      s: 3.8
+      delta: 10.7
+      fragil: false
+    SEXUALIDAD:
+      m: 5.0
+      l: 6.4
+      s: 6.2
+      delta: 7.0
+      fragil: false
+    POLITICA:
+      m: 6.2
+      l: 7.5
+      s: 6.5
+      delta: 4.3
+      fragil: false
+    LENGUAJE:
+      m: 5.2
+      l: 6.2
+      s: 5.3
+      delta: 5.0
+      fragil: false
+    ETICA_ESTETICA:
+      m: 4.0
+      l: 5.5
+      s: 5.6
+      delta: 11.9
+      fragil: false
+    TECNOLOGIA:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+    EDUCACION:
+      m: 4.5
+      l: 5.5
+      s: 4.6
+      delta: 6.5
+      fragil: false
+    RELIGION:
+      m: 5.0
+      l: 5.0
+      s: 5.0
+      delta: 0.0
+      fragil: false
+  serie:
+  - estado:
+      delta_promedio: 6.6
+      M_m: 4.6
+      M_l: 4.9
+      M_s: 4.6
+    nodos:
+      ECONOMIA:
+        m: 2.8
+        l: 3.5
+        s: 2.8
+        delta: 12.1
+      TRABAJO:
+        m: 2.7
+        l: 6.0
+        s: 3.5
+        delta: 30.1
+      SEXUALIDAD:
+        m: 5.7
+        l: 5.8
+        s: 5.8
+        delta: 0.5
+      POLITICA:
+        m: 5.5
+        l: 5.0
+        s: 5.2
+        delta: 2.7
+      LENGUAJE:
+        m: 5.0
+        l: 4.2
+        s: 5.0
+        delta: 6.5
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      EDUCACION:
+        m: 5.0
+        l: 4.4
+        s: 4.0
+        delta: 7.4
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2020-06-01'
+    total_items: 50
+  - estado:
+      delta_promedio: 4.2
+      M_m: 4.6
+      M_l: 5.2
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 2.5
+        l: 2.8
+        s: 2.8
+        delta: 7.3
+      TRABAJO:
+        m: 5.0
+        l: 5.2
+        s: 5.5
+        delta: 2.7
+      SEXUALIDAD:
+        m: 5.0
+        l: 5.6
+        s: 6.0
+        delta: 5.0
+      POLITICA:
+        m: 5.0
+        l: 6.8
+        s: 7.2
+        delta: 9.8
+      LENGUAJE:
+        m: 5.0
+        l: 5.3
+        s: 5.0
+        delta: 1.9
+      ETICA_ESTETICA:
+        m: 5.0
+        l: 6.5
+        s: 6.5
+        delta: 7.8
+      TECNOLOGIA:
+        m: 5.0
+        l: 5.0
+        s: 5.2
+        delta: 1.3
+      EDUCACION:
+        m: 4.2
+        l: 4.3
+        s: 4.5
+        delta: 2.4
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2020-06-04'
+    total_items: 50
+  - estado:
+      delta_promedio: 10.3
+      M_m: 4.6
+      M_l: 5.4
+      M_s: 5.8
+    nodos:
+      ECONOMIA:
+        m: 2.4
+        l: 2.5
+        s: 7.5
+        delta: 46.7
+      TRABAJO:
+        m: 3.8
+        l: 5.8
+        s: 5.8
+        delta: 15.4
+      SEXUALIDAD:
+        m: 5.8
+        l: 5.8
+        s: 5.8
+        delta: 0.0
+      POLITICA:
+        m: 5.2
+        l: 7.2
+        s: 6.8
+        delta: 8.5
+      LENGUAJE:
+        m: 5.0
+        l: 5.3
+        s: 5.0
+        delta: 1.9
+      ETICA_ESTETICA:
+        m: 4.5
+        l: 7.0
+        s: 7.0
+        delta: 13.5
+      TECNOLOGIA:
+        m: 4.5
+        l: 5.0
+        s: 5.0
+        delta: 3.8
+      EDUCACION:
+        m: 5.0
+        l: 4.6
+        s: 4.6
+        delta: 3.0
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2020-06-07'
+    total_items: 50
+  - estado:
+      delta_promedio: 6.1
+      M_m: 4.8
+      M_l: 5.3
+      M_s: 5.3
+    nodos:
+      ECONOMIA:
+        m: 2.8
+        l: 2.3
+        s: 3.5
+        delta: 21.9
+      TRABAJO:
+        m: 4.3
+        l: 5.8
+        s: 5.0
+        delta: 8.8
+      SEXUALIDAD:
+        m: 5.0
+        l: 6.0
+        s: 5.8
+        delta: 5.2
+      POLITICA:
+        m: 5.0
+        l: 6.0
+        s: 6.5
+        delta: 7.0
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      ETICA_ESTETICA:
+        m: 7.0
+        l: 7.5
+        s: 6.5
+        delta: 3.0
+      TECNOLOGIA:
+        m: 4.2
+        l: 5.0
+        s: 5.0
+        delta: 6.5
+      EDUCACION:
+        m: 5.0
+        l: 4.7
+        s: 5.0
+        delta: 2.2
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2020-06-10'
+    total_items: 50
+  - estado:
+      delta_promedio: 6.2
+      M_m: 5.1
+      M_l: 5.2
+      M_s: 5.2
+    nodos:
+      ECONOMIA:
+        m: 5.0
+        l: 5.0
+        s: 3.2
+        delta: 19.1
+      TRABAJO:
+        m: 5.0
+        l: 5.6
+        s: 5.7
+        delta: 3.9
+      SEXUALIDAD:
+        m: 5.0
+        l: 6.3
+        s: 6.0
+        delta: 6.4
+      POLITICA:
+        m: 6.5
+        l: 5.0
+        s: 5.8
+        delta: 6.8
+      LENGUAJE:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+      ETICA_ESTETICA:
+        m: 5.5
+        l: 5.5
+        s: 6.0
+        delta: 2.6
+      TECNOLOGIA:
+        m: 3.5
+        l: 5.0
+        s: 5.0
+        delta: 14.5
+      EDUCACION:
+        m: 5.0
+        l: 4.8
+        s: 5.2
+        delta: 2.4
+      RELIGION:
+        m: 5.0
+        l: 5.0
+        s: 5.0
+        delta: 0.0
+    fecha: '2020-06-13'
+    total_items: 50
+  velocidades:
+    ECONOMIA:
+      valores:
+      - -1.6
+      - 13.13
+      - -8.27
+      - -0.93
+      media: 0.583
+      max: 13.13
+      direccion: +
+      aceleracion: 0.056
+      delta_inicial: 12.1
+      delta_final: 19.1
+    TRABAJO:
+      valores:
+      - -9.13
+      - 4.23
+      - -2.2
+      - -1.63
+      media: -2.183
+      max: -9.13
+      direccion: '-'
+      aceleracion: 0.625
+      delta_inicial: 30.1
+      delta_final: 3.9
+    SEXUALIDAD:
+      valores:
+      - 1.5
+      - -1.67
+      - 1.73
+      - 0.4
+      media: 0.49
+      max: 1.73
+      direccion: +
+      aceleracion: -0.092
+      delta_inicial: 0.5
+      delta_final: 6.4
+    POLITICA:
+      valores:
+      - 2.37
+      - -0.43
+      - -0.5
+      - -0.07
+      media: 0.343
+      max: 2.37
+      direccion: +
+      aceleracion: -0.203
+      delta_inicial: 2.7
+      delta_final: 6.8
+    LENGUAJE:
+      valores:
+      - -1.53
+      - 0.0
+      - -0.63
+      - 0.0
+      media: -0.54
+      max: -1.53
+      direccion: '-'
+      aceleracion: 0.128
+      delta_inicial: 6.5
+      delta_final: 0.0
+    ETICA_ESTETICA:
+      valores:
+      - 2.6
+      - 1.9
+      - -3.5
+      - -0.13
+      media: 0.217
+      max: -3.5
+      direccion: +
+      aceleracion: -0.228
+      delta_inicial: 0.0
+      delta_final: 2.6
+    TECNOLOGIA:
+      valores:
+      - 0.43
+      - 0.83
+      - 0.9
+      - 2.67
+      media: 1.208
+      max: 2.67
+      direccion: +
+      aceleracion: 0.187
+      delta_inicial: 0.0
+      delta_final: 14.5
+    EDUCACION:
+      valores:
+      - -1.67
+      - 0.2
+      - -0.27
+      - 0.07
+      media: -0.417
+      max: -1.67
+      direccion: '-'
+      aceleracion: 0.145
+      delta_inicial: 7.4
+      delta_final: 2.4
+    RELIGION:
+      valores:
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      media: 0.0
+      max: 0.0
+      direccion: +
+      aceleracion: 0.0
+      delta_inicial: 0.0
+      delta_final: 0.0

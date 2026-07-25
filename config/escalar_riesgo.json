@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "descripcion": "Escalar compuesto de riesgo cultural — mide proximidad a condiciones de hito",
+  "nodos_activos": [
+    "ECONOMIA",
+    "TRABAJO",
+    "SEXUALIDAD",
+    "POLITICA",
+    "LENGUAJE",
+    "ETICA_ESTETICA",
+    "TECNOLOGIA",
+    "EDUCACION"
+  ],
+  "nodo_filtrado": {
+    "id": "RELIGION",
+    "razon": "delta=0 en 6/7 hitos"
+  },
+  "componentes": [
+    {
+      "id": "delta_proximidad",
+      "label": "Proximidad a hitos",
+      "descripcion": "1 - distancia_min(actual, hitos) / max_distancia_historica",
+      "normalizacion": {
+        "min": 0,
+        "max": 1
+      },
+      "parametros": {
+        "max_distancia_historica": 32.29
+      }
+    },
+    {
+      "id": "m_contraccion",
+      "label": "Contraccion M",
+      "descripcion": "1 - (suma_M - min_M) / (baseline_M - min_M)",
+      "normalizacion": {
+        "min": 0,
+        "max": 1
+      },
+      "parametros": {
+        "baseline_M": 17.7,
+        "min_M": 15.3
+      }
+    },
+    {
+      "id": "theta_desviacion",
+      "label": "Desviacion de theta",
+      "descripcion": "|theta - theta_base| / rango_theta",
+      "normalizacion": {
+        "min": 0,
+        "max": 1
+      },
+      "parametros": {
+        "theta_base": 57.3,
+        "rango_theta": 10.8
+      }
+    },
+    {
+      "id": "v_trabajo_norm",
+      "label": "Velocidad de TRABAJO",
+      "descripcion": "min(|v| / max_v_historica, 1.0)",
+      "normalizacion": {
+        "min": 0,
+        "max": 1
+      },
+      "parametros": {
+        "max_v_historica": 2.183
+      },
+      "nodos": [
+        "TRABAJO"
+      ]
+    },
+    {
+      "id": "s_activacion",
+      "label": "Activacion de SEXUALIDAD",
+      "descripcion": "min(delta_SEXUALIDAD / max_delta_historica, 1.0)",
+      "normalizacion": {
+        "min": 0,
+        "max": 1
+      },
+      "parametros": {
+        "max_delta_historica": 25.0
+      },
+      "nodos": [
+        "SEXUALIDAD"
+      ]
+    },
+    {
+      "id": "co_sincronia",
+      "label": "Co-sincronia ECONOMIA+TRABAJO+SEXUALIDAD",
+      "descripcion": "correlacion promedio de deltas entre los 3 nodos en ventana movil",
+      "normalizacion": {
+        "min": -1,
+        "max": 1
+      },
+      "parametros": {
+        "ventana_minima": 3,
+        "nodos": [
+          "ECONOMIA",
+          "TRABAJO",
+          "SEXUALIDAD"
+        ]
+      }
+    }
+  ],
+  "pesos_iniciales": {
+    "delta_proximidad": 0.1667,
+    "m_contraccion": 0.1667,
+    "theta_desviacion": 0.1667,
+    "v_trabajo_norm": 0.1667,
+    "s_activacion": 0.1667,
+    "co_sincronia": 0.1667
+  },
+  "umbrales": {
+    "alerta_amarilla": 0.4,
+    "alerta_roja": 0.7
+  },
+  "prediccion": {
+    "ventana_corta_dias": 3,
+    "ventana_media_dias": 7,
+    "ventana_larga_dias": 14
+  },
+  "calibracion": {
+    "fecha": "1784996440.7527118",
+    "mae_leave_one_out": 0.2189,
+    "rmse_leave_one_out": 0.2857,
+    "metodo": "pesos_uniformes_con_diagnostico_correlacion",
+    "n_hitos": 7
+  }
+}

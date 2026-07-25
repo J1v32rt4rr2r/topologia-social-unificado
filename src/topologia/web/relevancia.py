@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from topologia.logger import logger
 from topologia.models.llm import LLMClient
@@ -98,11 +99,7 @@ def generar_queries(
         )
         try:
             resultado = llm.generar_json(prompt, temperatura=0.7, max_tokens=512)
-            if isinstance(resultado, list):
-                queries[nodo_id] = resultado[:max_por_nodo]
-            elif isinstance(resultado, dict):
-                vals = list(resultado.values())
-                queries[nodo_id] = vals[:max_por_nodo]
+            queries[nodo_id] = _extraer_strings(resultado, max_por_nodo)
             logger.info(f"Queries generadas para {nodo_id}: {queries.get(nodo_id, [])}")
         except Exception as e:
             logger.warning(f"No se pudieron generar queries para {nodo_id}: {e}")
@@ -130,11 +127,7 @@ def generar_queries(
         )
         try:
             resultado = llm.generar_json(prompt, temperatura=0.5, max_tokens=512)
-            if isinstance(resultado, list):
-                queries[nodo_id] = resultado[:max_por_nodo]
-            elif isinstance(resultado, dict):
-                vals = list(resultado.values())
-                queries[nodo_id] = vals[:max_por_nodo]
+            queries[nodo_id] = _extraer_strings(resultado, max_por_nodo)
             logger.info(f"Queries generadas para {nodo_id}: {queries.get(nodo_id, [])}")
         except Exception as e:
             logger.warning(f"No se pudieron generar queries para {nodo_id}: {e}")
@@ -166,6 +159,23 @@ def recolectar_por_queries(
     return items
 
 
+def _extraer_strings(resultado: Any, max_items: int) -> list[str]:
+    if isinstance(resultado, list):
+        strings = []
+        for item in resultado:
+            if isinstance(item, str):
+                strings.append(item)
+            elif isinstance(item, dict):
+                for v in item.values():
+                    if isinstance(v, str):
+                        strings.append(v)
+        return strings[:max_items]
+    elif isinstance(resultado, dict):
+        vals = [str(v) for v in resultado.values() if isinstance(v, (str, int, float))]
+        return vals[:max_items]
+    return []
+
+
 def _descripcion_nodo(nodo_id: str) -> str:
     descs = {
         "ECONOMIA": "recursos económicos, mercado, producción, inflación, comercio en Chile",
@@ -174,7 +184,7 @@ def _descripcion_nodo(nodo_id: str) -> str:
         "POLITICA": "gobierno, congreso, partidos, leyes, constitución, corrupción en Chile",
         "LENGUAJE": "discurso público, propaganda, medios, narrativas políticas, lenguaje en Chile",
         "ETICA_ESTETICA": "arte, cultura, ética, estética, festivales, moral, cine chileno",
-        "TECNOLOGIA": "innovación, ciencia, litio, hidrógeno verde, IA, startups en Chile",
+        "TECNOLOGIA": "innovación tecnológica, ciencia, inteligencia artificial, startups, litio, hidrógeno verde, energía renovable, digitalización, internet, ciberseguridad en Chile",
         "EDUCACION": "educación, universidades, reforma educacional, estudiantes, SIMCE en Chile",
         "RELIGION": "iglesia, religión, evangélicos, catolicismo, espiritualidad en Chile",
     }

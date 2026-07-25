@@ -36,6 +36,7 @@ def recolectar_para_nodo(nodo_id: str, max_items: int = 5) -> list[ItemInformati
                 vistos.add(r.url)
                 r.fuente = f"scraping:{nodo_id.lower()}"
                 r.id = f"scrape-{nodo_id.lower()}-{len(items)}"
+                r.nodo_sugerido = nodo_id
                 items.append(r)
                 if len(items) >= max_items:
                     break
@@ -50,7 +51,10 @@ def recolectar_para_brechas(brechas: dict) -> list[ItemInformativo]:
         score_plano = info.get("score_plano", False)
         tiene_items = info.get("total_items", 0) > 0
         tiene_brecha = info.get("tiene_brecha", True)
-        if score_plano or not tiene_items or tiene_brecha:
+        debe_scrapear = score_plano or not tiene_items or tiene_brecha
+        if nid == "TECNOLOGIA":
+            debe_scrapear = True
+        if debe_scrapear:
             if i > 0:
                 time.sleep(3)
             max_items = 10 if score_plano else 5

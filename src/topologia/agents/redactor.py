@@ -35,6 +35,7 @@ class Redactor(Agent):
         proyeccion: str = "",
         analisis_formas: str = "",
         graficos_generados: list[str] | None = None,
+        informe_anterior: str = "",
     ) -> InformeDiario:
         estado_str = self._formatear_estado(estado)
         ops_str = self._formatear_operaciones(operaciones)
@@ -43,6 +44,7 @@ class Redactor(Agent):
         formas_str = analisis_formas or "Sin análisis de formas complejas disponible."
         graf_str = self._formatear_graficos(graficos_generados)
         tens_str = self._formatear_tensiones_latentes(estudios)
+        inf_ant_str = informe_anterior or "No hay informe anterior disponible."
 
         prompt = self.prompts.load("redactor_sintesis",
             estado_cultural=estado_str,
@@ -54,6 +56,7 @@ class Redactor(Agent):
             proyeccion=proyeccion or "Sin proyección disponible.",
             analisis_formas=formas_str,
             graficos_generados=graf_str,
+            informe_anterior=inf_ant_str,
             fecha=estado.fecha.strftime("%Y-%m-%d"),
         )
 

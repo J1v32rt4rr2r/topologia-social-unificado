@@ -1,0 +1,81 @@
+periodos:
+- id: estallido_2019
+  activo: true
+  completado: true
+  fecha_inicio: '2019-10-18'
+  fecha_fin: '2019-11-30'
+  descripcion: Estallido social — tope de la crisis, masivas protestas
+  fuentes:
+  - dominio: ciperchile.cl
+    selector_articulo: article
+  - dominio: theclinic.cl
+    selector_articulo: .entry-content, article
+  - dominio: elmostrador.cl
+    selector_articulo: article, .post-content
+  - dominio: radio.uchile.cl
+    selector_articulo: .noticia, article
+  - dominio: emol.com
+    selector_articulo: '#cuDetalle, .detalle'
+- id: pandemia_ola1_2020
+  activo: true
+  completado: true
+  fecha_inicio: '2020-03-15'
+  fecha_fin: '2020-06-30'
+  descripcion: Pandemia COVID-19 — primera ola, cuarentena total
+  fuentes:
+  - dominio: ciperchile.cl
+    selector_articulo: article
+  - dominio: elmostrador.cl
+    selector_articulo: article, .post-content
+  - dominio: latercera.com
+    selector_articulo: .story-contents, article
+  - dominio: radio.uchile.cl
+    selector_articulo: .noticia, article
+  - dominio: emol.com
+    selector_articulo: '#cuDetalle, .detalle'
+- id: pandemia_ola2_2021
+  activo: true
+  completado: true
+  fecha_inicio: '2021-03-01'
+  fecha_fin: '2021-06-30'
+  descripcion: Pandemia — segunda ola, vacunación masiva
+  fuentes:
+  - dominio: ciperchile.cl
+    selector_articulo: article
+  - dominio: elmostrador.cl
+    selector_articulo: article, .post-content
+  - dominio: latercera.com
+    selector_articulo: .story-contents, article
+  - dominio: radio.uchile.cl
+    selector_articulo: .noticia, article
+  - dominio: emol.com
+    selector_articulo: '#cuDetalle, .detalle'
+- id: plebiscito_1988
+  activo: true
+  completado: true
+  fecha_inicio: '1988-10-01'
+  fecha_fin: '1988-10-31'
+  descripcion: Plebiscito Sí/No — retorno a la democracia, fin de la dictadura
+  fuentes: []
+- id: temporal_julio_2026
+  activo: true
+  completado: true
+  fecha_inicio: '2026-07-15'
+  fecha_fin: '2026-07-22'
+  descripcion: Temporal extremo — lluvias récord, El Niño Godzilla, río atmosférico
+  fuentes: []
+- id: plebiscito_2020
+  activo: true
+  completado: true
+  fecha_inicio: '2020-10-01'
+  fecha_fin: '2020-10-31'
+  descripcion: Plebiscito constitucional — 78% apruebo, voto obligatorio
+  fuentes: []
+- id: estallido_nocturno_2020
+  activo: true
+  completado: true
+  fecha_inicio: '2020-06-01'
+  fecha_fin: '2020-08-31'
+  descripcion: Estallido nocturno — cacerolazos, protestas nocturnas, toque de queda
+    sanitario
+  fuentes: []

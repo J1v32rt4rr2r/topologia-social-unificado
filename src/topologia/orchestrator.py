@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import json
 import math
+import os
 import shutil
 from pathlib import Path
 
+from topologia.agents.arbitro import Arbitro
 from topologia.agents.artista import Artista
 from topologia.agents.estadista import Estadista
 from topologia.agents.filosofo import Filosofo
@@ -30,6 +33,7 @@ from topologia.models.schemas import (
     Estudio,
     EvaluacionNodo,
     InformeDiario,
+    TendenciaDim,
 )
 from topologia.storage.store import FileStore
 from topologia.web.brechas import (
@@ -65,6 +69,7 @@ class Orchestrator:
         self.estadista = Estadista()
         self.filosofo = Filosofo()
         self.sociologo = Sociologo()
+        self.arbitro = Arbitro()
         self.redactor = Redactor()
         self.memoria = DecisionDB()
         self.store = FileStore()
@@ -96,33 +101,105 @@ class Orchestrator:
                         just_anterior_s = n.justificacion_s
 
             terminos = terminos_para_nodo(nodo_id)
+            import unicodedata
+            def _norm(s: str) -> str:
+                return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
             items_filtrados = [
                 it for it in items
-                if any(t in (it.titulo + it.contenido).lower() for t in terminos)
+                if getattr(it, "nodo_sugerido", None) == nodo_id
+                or any(_norm(t) in _norm(it.titulo + " " + (it.contenido or ""))
+                       for t in terminos)
             ]
-            items_filtrados = items_filtrados or items[:5]
+            if not items_filtrados:
+                items_filtrados = items[:5]
+            logger.info(f"[{nodo_id}] items filtrados: {len(items_filtrados)}")
 
-            eval_m = self.estadista.evaluar_nodo(nodo_id, items_filtrados, score_anterior_m, just_anterior_m)
-            eval_l = self.filosofo.evaluar_nodo(nodo_id, items_filtrados, score_anterior_l, just_anterior_l)
-            eval_s = self.sociologo.evaluar_nodo(nodo_id, items_filtrados, score_anterior_s, just_anterior_s)
+            # RONDA 1: cada evaluador ve las puntuaciones de ayer de los otros
+            voto_m = self.estadista.evaluar_nodo(
+                nodo_id, items_filtrados,
+                score_anterior_m, just_anterior_m,
+                puntuacion_m_l=score_anterior_l,
+                justificacion_m_l=just_anterior_l,
+                puntuacion_m_s=score_anterior_s,
+                justificacion_m_s=just_anterior_s,
+            )
+            voto_l = self.filosofo.evaluar_nodo(
+                nodo_id, items_filtrados,
+                score_anterior_l, just_anterior_l,
+                puntuacion_m_m=score_anterior_m,
+                justificacion_m_m=just_anterior_m,
+                puntuacion_m_s=score_anterior_s,
+                justificacion_m_s=just_anterior_s,
+            )
+            voto_s = self.sociologo.evaluar_nodo(
+                nodo_id, items_filtrados,
+                score_anterior_s, just_anterior_s,
+                puntuacion_m_m=score_anterior_m,
+                justificacion_m_m=just_anterior_m,
+                puntuacion_m_l=score_anterior_l,
+                justificacion_m_l=just_anterior_l,
+            )
+
+            # RONDA 2: deliberación con las puntuaciones frescas de hoy
+            deliberacion_m = self.estadista.deliberar(nodo_id, voto_m,
+                {"M_l": voto_l, "M_s": voto_s})
+            deliberacion_l = self.filosofo.deliberar(nodo_id, voto_l,
+                {"M_m": voto_m, "M_s": voto_s})
+            deliberacion_s = self.sociologo.deliberar(nodo_id, voto_s,
+                {"M_m": voto_m, "M_l": voto_l})
+
+            # Aplicar ajustes de la deliberación
+            score_m = max(0.1, min(9.9, voto_m.score + deliberacion_m.get("ajuste", 0.0)))
+            score_l = max(0.1, min(9.9, voto_l.score + deliberacion_l.get("ajuste", 0.0)))
+            score_s = max(0.1, min(9.9, voto_s.score + deliberacion_s.get("ajuste", 0.0)))
+
+            voto_m.score = round(score_m, 1)
+            voto_m.confianza = deliberacion_m.get("nueva_confianza", voto_m.confianza)
+            voto_m.contra_punto = deliberacion_m.get("contra_punto", voto_m.contra_punto)
+            voto_m.tension_con = deliberacion_m.get("tension_con", voto_m.tension_con)
+
+            voto_l.score = round(score_l, 1)
+            voto_l.confianza = deliberacion_l.get("nueva_confianza", voto_l.confianza)
+            voto_l.contra_punto = deliberacion_l.get("contra_punto", voto_l.contra_punto)
+            voto_l.tension_con = deliberacion_l.get("tension_con", voto_l.tension_con)
+
+            voto_s.score = round(score_s, 1)
+            voto_s.confianza = deliberacion_s.get("nueva_confianza", voto_s.confianza)
+            voto_s.contra_punto = deliberacion_s.get("contra_punto", voto_s.contra_punto)
+            voto_s.tension_con = deliberacion_s.get("tension_con", voto_s.tension_con)
+
+            def _safe_tendencia(v: str) -> str:
+                try:
+                    TendenciaDim(v)
+                    return v
+                except ValueError:
+                    return "estable"
 
             evaluacion = EvaluacionNodo(
                 nodo_id=nodo_id,
                 nodo_nombre=nodo_id.capitalize(),
-                dimension_m=eval_m.dimension_m,
-                dimension_l=eval_l.dimension_l,
-                dimension_s=eval_s.dimension_s,
-                justificacion_m=eval_m.justificacion_m,
-                justificacion_l=eval_l.justificacion_l,
-                justificacion_s=eval_s.justificacion_s,
-                tendencia_m=eval_m.tendencia_m,
-                tendencia_l=eval_l.tendencia_l,
-                tendencia_s=eval_s.tendencia_s,
+                dimension_m=voto_m.score,
+                dimension_l=voto_l.score,
+                dimension_s=voto_s.score,
+                justificacion_m=voto_m.justificacion,
+                justificacion_l=voto_l.justificacion,
+                justificacion_s=voto_s.justificacion,
+                tendencia_m=_safe_tendencia(voto_m.tendencia),
+                tendencia_l=_safe_tendencia(voto_l.tendencia),
+                tendencia_s=_safe_tendencia(voto_s.tendencia),
                 score_anterior_m=score_anterior_m,
                 score_anterior_l=score_anterior_l,
                 score_anterior_s=score_anterior_s,
+                votos={"M_m": voto_m, "M_l": voto_l, "M_s": voto_s},
             )
             evaluaciones.append(evaluacion)
+
+        # Árbitro: analizar tensión observacional
+        tension_data = self.arbitro.analizar(evaluaciones)
+        for ev in evaluaciones:
+            for t in tension_data["tensiones_por_nodo"]:
+                if t["nodo"] == ev.nodo_id:
+                    ev.tension_observacional = t["tension_observacional"]
 
         vals = [(n.dimension_m, n.dimension_l, n.dimension_s) for n in evaluaciones]
         coh = coherencia_global(vals)
@@ -154,6 +231,11 @@ class Orchestrator:
             theta_cultura=round(t_cultura, 1),
             tension_total=round(tension, 1),
             vuelco_detectado=era_k > (ultimo_estado.era_k if ultimo_estado else 0),
+            tension_observacional_promedio=tension_data.get("tension_promedio", 0.0),
+            alertas_arbitro=[
+                f"[{a.get('nodo','?')}] tensión {a.get('tension',0):.2f}: {a.get('diagnostico','')}"
+                for a in tension_data.get("alertas", [])
+            ],
         )
 
         # Formas culturales complejas (e^(2πi / m), m = Σ(v/9.9))
@@ -173,8 +255,13 @@ class Orchestrator:
         estado.coherencia_interna = round(math.degrees(coherencia_formas(Fs)), 1)
 
         self.store.guardar_estado(estado)
-        self.memoria.registrar("observation", f"Observacion {sociedad}: M=({estado.M_m},{estado.M_l},{estado.M_s}) δ={estado.delta_promedio} m=({estado.m_m},{estado.m_l},{estado.m_s}) θ=({estado.theta_m}°,{estado.theta_l}°,{estado.theta_s}°)")
-        logger.info(f"Observacion completada: delta={estado.delta_promedio:.1f}")
+        self.memoria.registrar("observation", f"Observacion {sociedad}: M=({estado.M_m},{estado.M_l},{estado.M_s}) δ={estado.delta_promedio} t_obs={estado.tension_observacional_promedio:.2f}")
+        logger.info(f"Observacion completada: delta={estado.delta_promedio:.1f} t_obs={estado.tension_observacional_promedio:.2f}")
+
+        try:
+            self.calcular_riesgo(estado, sociedad)
+        except Exception as e:
+            logger.warning(f"No se pudo calcular riesgo cultural: {e}")
 
         return estado
 
@@ -255,11 +342,24 @@ class Orchestrator:
         paso1 = self.observar(sociedad, items=items)
         operaciones = detectar_operaciones(paso1)
 
-        especulaciones = self.artista.especular(items, estado=paso1)
+        historial_lista = self._cargar_historial_lista(sociedad, max_dias=7)
+        estudios_previos = self._cargar_estudios_recientes()
+        especulaciones = self.artista.especular(
+            items, estado=paso1,
+            historial=historial_lista,
+            estudios_previos=estudios_previos,
+        )
 
         estudios = self._investigar_preguntas(especulaciones, paso1)
 
         historial = self._obtener_historial_reciente(sociedad)
+        if paso1.tension_observacional_promedio > 0:
+            historial += f"\n\nTensión observacional promedio: {paso1.tension_observacional_promedio:.2f}"
+            for a in paso1.alertas_arbitro:
+                historial += f"\n- [Árbitro] {a}"
+
+        informe_anterior = self._cargar_informe_anterior(sociedad)
+
         analisis_formas = self._analizar_formas_complejas(paso1)
         graficos = [
             "grafico_plano_complejo.png",
@@ -272,7 +372,10 @@ class Orchestrator:
             paso1, operaciones, especulaciones, estudios, historial,
             analisis_formas=analisis_formas,
             graficos_generados=graficos,
+            informe_anterior=informe_anterior,
         )
+
+        self._guardar_informe(sociedad, informe)
 
         brechas = detectar_brechas(estado=paso1, items_por_nodo=items_por_nodo)
         resumen = resumen_brechas(brechas)
@@ -492,3 +595,166 @@ class Orchestrator:
             if estado:
                 partes.append(f"- {f}: δ={estado.delta_promedio:.1f}° M=({estado.M_m:.1f},{estado.M_l:.1f},{estado.M_s:.1f})")
         return "\n".join(partes)
+
+    def _cargar_historial_lista(self, sociedad: str, max_dias: int = 7) -> list:
+        fechas = self.store.listar_estados(sociedad)
+        fechas = fechas[-max_dias:]
+        estados = []
+        for f in fechas:
+            estado = self.store.cargar_estado(sociedad, f)
+            if estado:
+                estados.append(estado)
+        return estados
+
+    def _guardar_informe(self, sociedad: str, informe) -> None:
+        fecha = informe.fecha.strftime("%Y-%m-%d")
+        self.store.guardar_json(
+            f"reportes_json/{sociedad}_{fecha}.json",
+            informe.model_dump(mode="json"),
+        )
+
+    def _cargar_informe_anterior(self, sociedad: str) -> str:
+        base = self.store.base / "reportes_json"
+        if not base.exists():
+            return ""
+        archivos = sorted(base.glob(f"{sociedad}_*.json"))
+        if len(archivos) < 2:
+            return ""
+        data = json.loads(archivos[-2].read_text(encoding="utf-8"))
+        partes = []
+        for campo in ("panorama", "dinamicas", "especulaciones_y_estudios", "mirada_adelante"):
+            val = data.get(campo, "")
+            if val:
+                label = campo.replace("_", " ").title()
+                partes.append(f"=== {label} ===\n{val[:500]}")
+        return "\n\n".join(partes) if partes else ""
+
+    def _cargar_estudios_recientes(self, max_dias: int = 7) -> list:
+        estudios = []
+        base = self.store.base / "estudios"
+        if not base.exists():
+            return estudios
+
+    def calibrar(self, estado: EstadoCultural, ruta_hitos: str | Path | None = None) -> dict:
+        """Compara el estado cultural actual contra hitos históricos.
+        Retorna ranking de similitud + hito más cercano.
+
+        Args:
+            estado: EstadoCultural actual (con nodos con delta)
+            ruta_hitos: path a hitos.yaml (default: config/hitos.yaml)
+
+        Returns:
+            dict con 'mas_similar', 'ranking' (lista ordenada por correlación),
+            'cluster', 'nodos_destacados'
+        """
+        import yaml
+        from math import sqrt
+
+        if ruta_hitos is None:
+            ruta_hitos = Path(__file__).resolve().parent.parent.parent / "config" / "hitos.yaml"
+        if not Path(ruta_hitos).exists():
+            return {"mas_similar": None, "ranking": [], "cluster": "sin_datos"}
+
+        hitos: list[dict] = yaml.safe_load(open(ruta_hitos, encoding="utf-8")) or []
+        if not hitos:
+            return {"mas_similar": None, "ranking": [], "cluster": "sin_hitos"}
+
+        NODOS = ["ECONOMIA","TRABAJO","SEXUALIDAD","POLITICA","LENGUAJE",
+                 "ETICA_ESTETICA","TECNOLOGIA","EDUCACION","RELIGION"]
+        actual = {n.nodo_id: n.delta for n in estado.nodos}
+
+        resultados = []
+        for hito in hitos:
+            fingerprint = {n: hito["nodos"][n]["delta"] for n in NODOS}
+            va = [actual.get(n, 0) for n in NODOS]
+            vh = [fingerprint[n] for n in NODOS]
+            ma = sum(va) / len(va)
+            mh = sum(vh) / len(vh)
+            num = sum((va[k] - ma) * (vh[k] - mh) for k in range(9))
+            den = sqrt(sum((va[k] - ma) ** 2 for k in range(9)) * sum((vh[k] - mh) ** 2 for k in range(9)))
+            r = num / den if den else 0
+            mae = sum(abs(va[k] - vh[k]) for k in range(9)) / 9
+            resultados.append({
+                "id": hito["id"],
+                "descripcion": hito.get("descripcion", ""),
+                "periodo": f"{hito['periodo']['inicio']} - {hito['periodo']['fin']}",
+                "correlacion": round(r, 3),
+                "mae": round(mae, 2),
+                "delta_hito": hito["estado"]["delta_promedio"],
+                "delta_actual": round(estado.delta_promedio, 1),
+            })
+
+        resultados.sort(key=lambda x: x["correlacion"], reverse=True)
+
+        mas_similar = resultados[0] if resultados else None
+        cluster = self._clasificar_cluster(mas_similar["id"] if mas_similar else None)
+
+        nodos_destacados = []
+        if mas_similar:
+            hito = next((x for x in hitos if x["id"] == mas_similar["id"]), None)
+            if hito:
+                for n in NODOS:
+                    dif = actual.get(n, 0) - hito["nodos"][n]["delta"]
+                    if abs(dif) > 3:
+                        nodos_destacados.append({
+                            "nodo": n,
+                            "delta_actual": round(actual.get(n, 0), 1),
+                            "delta_hito": round(hito["nodos"][n]["delta"], 1),
+                            "diferencia": round(dif, 1),
+                            "etiqueta": "ALERTA" if abs(dif) > 5 else "DIFERENCIA"
+                        })
+
+        return {
+            "mas_similar": mas_similar,
+            "ranking": resultados,
+            "cluster": cluster,
+            "nodos_destacados": nodos_destacados,
+        }
+
+    def calcular_riesgo(self, estado: EstadoCultural, sociedad: str = "Chile") -> dict:
+        from topologia.escalar.compuesto import calcular_riesgo as _calc
+        from topologia.escalar.red_riesgo import exportar_red
+
+        historial = self._cargar_historial_lista(sociedad, max_dias=14)
+        riesgo = _calc(estado, historial=historial)
+
+        ruta_red = exportar_red(riesgo, estado, historial=historial)
+
+        res = riesgo.a_dict()
+        res["ruta_red"] = str(ruta_red)
+        res["historial_tam"] = len(historial)
+
+        logger.info(f"Riesgo cultural: R={riesgo.R_compuesto:.3f} ({riesgo.alerta}) — red: {ruta_red.name}")
+
+        self.store.guardar_json("riesgo_actual.json", res)
+
+        return res
+
+    @staticmethod
+    def _clasificar_cluster(hito_id: str | None) -> str:
+        if hito_id is None:
+            return "desconocido"
+        cluster_a = {"estallido_nocturno_2020", "plebiscito_2020", "temporal_julio_2026", "pandemia_ola2_2021"}
+        cluster_b = {"plebiscito_1988", "estallido_2019", "pandemia_ola1_2020"}
+        if hito_id in cluster_a:
+            return "crisis_reciente (post-2020)"
+        if hito_id in cluster_b:
+            return "crisis_fundacional (pre-2020)"
+        return "indeterminado"
+        archivos = sorted(base.glob("*.txt"), key=os.path.getmtime, reverse=True)
+        for a in archivos[:max_dias]:
+            try:
+                # Build a lightweight object from saved estudio files
+                from topologia.models.schemas import Estudio
+                contenido = a.read_text(encoding="utf-8")
+                estudio = Estudio(
+                    id=f"EST-HIST-{a.stem}",
+                    especulacion_id="",
+                    patron_id=a.stem.replace("estudio_", "").replace("_", " ").title(),
+                    pregunta_investigada=contenido[:100],
+                    respuesta=contenido[:500],
+                )
+                estudios.append(estudio)
+            except Exception:
+                continue
+        return estudios

@@ -155,6 +155,77 @@ def graficos(
 
 
 @app.command()
+def calibrar(sociedad: str = "Chile"):
+    """Compara el estado cultural actual contra hitos históricos."""
+    from topologia.orchestrator import Orchestrator
+    from topologia.storage.store import FileStore
+    store = FileStore()
+    estado = store.cargar_estado(sociedad)
+    if estado is None:
+        print(f"No hay estado registrado para {sociedad}. Ejecute 'observe' o 'daily' primero.")
+        return
+    orch = Orchestrator()
+    res = orch.calibrar(estado)
+    ms = res["mas_similar"]
+    if ms:
+        print(f"\n=== CALIBRACION: {sociedad} ===")
+        print(f"Hito mas similar: {ms['id']}")
+        print(f"  Descripcion: {ms['descripcion']}")
+        print(f"  Correlacion: {ms['correlacion']} (1.0 = identico)")
+        print(f"  Error medio (MAE): {ms['mae']} grados")
+        print(f"  Delta actual: {ms['delta_actual']}deg vs hito: {ms['delta_hito']}deg")
+        print(f"  Cluster: {res['cluster']}")
+        print(f"\nRanking completo:")
+        for r in res["ranking"][:5]:
+            print(f"  {r['correlacion']:+.3f}  {r['id']:25s}  MAE={r['mae']}")
+        if res["nodos_destacados"]:
+            print(f"\nNodos con diferencia >3deg respecto al hito:")
+            for nd in res["nodos_destacados"]:
+                print(f"  [{nd['etiqueta']}] {nd['nodo']:15s} actual={nd['delta_actual']} vs hito={nd['delta_hito']} (dif={nd['diferencia']:+})")
+    else:
+        print("No hay hitos para comparar.")
+
+@app.command()
+def riesgo(sociedad: str = "Chile", historial: bool = False):
+    """Calcula el escalar compuesto de riesgo cultural."""
+    from topologia.orchestrator import Orchestrator
+    from topologia.storage.store import FileStore
+    store = FileStore()
+    estado = store.cargar_estado(sociedad)
+    if estado is None:
+        print(f"No hay estado registrado para {sociedad}. Ejecute 'observe' o 'daily' primero.")
+        return
+    orch = Orchestrator()
+    res = orch.calcular_riesgo(estado, sociedad)
+    print(f"\n=== RIESGO CULTURAL: {sociedad} ===")
+    print(f"  R compuesto: {res['R_compuesto']:.4f}  [{res['alerta']}]")
+    print(f"\n  Desglose:")
+    for k, v in sorted(res["desglose"].items(), key=lambda x: x[1], reverse=True):
+        bar = "█" * int(v * 20) + "░" * (20 - int(v * 20))
+        print(f"    {k:20s}  {v:.4f}  {bar}")
+    print(f"\n  Pesos usados:")
+    for k, v in sorted(res["pesos_usados"].items(), key=lambda x: x[1], reverse=True):
+        print(f"    {k:20s}  {v:.2f}")
+    if res["nodos_destacados"]:
+        print(f"\n  Nodos destacados:")
+        for nd in res["nodos_destacados"]:
+            print(f"    [{nd['etiqueta']}] {nd['nodo']}: δ={nd['delta']}")
+    print(f"\n  Red exportada: {res['ruta_red']}")
+    print(f"  Historial usado: {res['historial_tam']} estados")
+    if historial:
+        print(f"\n  R historico:")
+        from topologia.escalar.red_riesgo import listar_redes, cargar_red
+        redes = listar_redes()
+        for r in redes[-10:]:
+            data = cargar_red(r.stem.replace("red_riesgo_", ""))
+            if data:
+                fecha = data["metadatos"]["fecha"]
+                r_val = data["metadatos"]["R_compuesto"]
+                al = data["metadatos"]["alerta"]
+                print(f"    {fecha}  R={r_val:.4f}  [{al}]")
+
+
+@app.command()
 def test_llm():
     """Prueba de conectividad con el LLM configurado."""
     from topologia.models.llm import test_llm

@@ -38,6 +38,14 @@ Clasificación de cada nodo según su configuración vectorial (M_m, M_l, M_s):
 ## 8. GRÁFICOS GENERADOS
 {graficos_generados}
 
+## 9. INFORME ANTERIOR (ayer)
+{informe_anterior}
+
+Este es el informe que tú mismo redactaste ayer. Úsalo para mantener continuidad narrativa:
+- ¿Confirmas o refutas lo que dijiste ayer?
+- ¿Las tendencias que señalaste se aceleraron, se estabilizaron o se revirtieron?
+- No te repitas — refiérete a lo anterior para mostrar evolución.
+
 INSTRUCCIONES:
 Genera un INFORME DIARIO estructurado con:
 

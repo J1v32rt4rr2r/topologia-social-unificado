@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import unicodedata
 from pathlib import Path
 
 import yaml
@@ -16,6 +17,7 @@ UMBRAL_SCORE_PLANO = 0.5
 
 UMBRAL_POR_NODO: dict[str, int] = {
     "RELIGION": 1,
+    "TECNOLOGIA": 1,
 }
 
 
@@ -44,14 +46,19 @@ def terminos_para_nodo(nodo_id: str) -> list[str]:
     return info.get("clasificacion", [nodo_id.lower()])
 
 
+def _normalize(s: str) -> str:
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+
+
 def _match_parcial(texto: str, terminos: list[str]) -> bool:
     """Coincidencia exacta o parcial (prefijo de 4+ caracteres)."""
-    lower = texto.lower()
+    lower = _normalize(texto.lower())
     for t in terminos:
-        if t in lower:
+        if _normalize(t.lower()) in lower:
             return True
     for t in terminos:
-        if len(t) >= 4 and t[:4] in lower:
+        nt = _normalize(t.lower())
+        if len(nt) >= 4 and nt[:4] in lower:
             return True
     return False
 
@@ -61,27 +68,47 @@ def clasificar_items_por_nodo_semantico(
 ) -> dict[str, list[ItemInformativo]]:
     mapa: dict[str, list[ItemInformativo]] = {}
     todos_asignados: set[int] = set()
+
+    # Primera pasada: items con nodo_sugerido explícito
+    sugeridos: dict[str, list[int]] = {}
+    for idx, it in enumerate(items):
+        ns = getattr(it, "nodo_sugerido", None)
+        if ns and ns in NODOS_CULTURALES:
+            sugeridos.setdefault(ns, []).append(idx)
+
+    for idx in sum(sugeridos.values(), []):
+        todos_asignados.add(idx)
+
+    # Segunda pasada: matching semántico para nodos sin suficientes items sugeridos
     for nodo_id in NODOS_CULTURALES:
         terminos = terminos_para_nodo(nodo_id)
         encontrados: list[ItemInformativo] = []
+
+        for idx in sugeridos.get(nodo_id, []):
+            encontrados.append(items[idx])
+
         for idx, it in enumerate(items):
-            texto = (it.titulo + " " + it.contenido).lower()
-            if any(t in texto for t in terminos):
+            if idx in todos_asignados:
+                continue
+            texto = _normalize((it.titulo + " " + it.contenido).lower())
+            if any(_normalize(t.lower()) in texto for t in terminos):
                 encontrados.append(it)
                 todos_asignados.add(idx)
+
         umbral = UMBRAL_POR_NODO.get(nodo_id, UMBRAL_ITEMS_MINIMOS)
         if encontrados:
             mapa[nodo_id] = encontrados
+            continue
+
+        no_asignados = [it for idx, it in enumerate(items) if idx not in todos_asignados]
+        if no_asignados:
+            mapa[nodo_id] = no_asignados[:umbral]
+            for idx, it in enumerate(items):
+                if it in no_asignados[:umbral]:
+                    todos_asignados.add(idx)
         else:
-            # Fallback: asignar items no usados por otros nodos
-            no_asignados = [it for idx, it in enumerate(items) if idx not in todos_asignados]
-            if no_asignados:
-                mapa[nodo_id] = no_asignados[:umbral]
-                for idx, it in enumerate(items):
-                    if it in no_asignados[:umbral]:
-                        todos_asignados.add(idx)
-            else:
-                mapa[nodo_id] = items[:umbral]
+            mapa[nodo_id] = items[:umbral]
+
     return mapa
 
 
@@ -123,6 +150,8 @@ def detectar_brechas(
 
 
 def _es_item_relevante(item: ItemInformativo, nodo_id: str) -> bool:
+    if getattr(item, "nodo_sugerido", None) == nodo_id:
+        return True
     terminos = terminos_para_nodo(nodo_id)
     texto = (item.titulo + " " + item.contenido).lower()
     return _match_parcial(texto, terminos)
@@ -193,7 +222,9 @@ def resumen_brechas(brechas: dict[str, dict]) -> str:
     partes: list[str] = []
     contadores = {"con_datos": 0, "sin_datos": 0, "score_plano": 0}
     for nid, info in brechas.items():
-        if info.get("score_plano"):
+        if nid.startswith("_"):
+            continue
+        if info.get("score_plano") and info.get("total_items", 0) == 0:
             contadores["score_plano"] += 1
             contadores["sin_datos"] += 1
         elif info.get("tiene_brecha"):
