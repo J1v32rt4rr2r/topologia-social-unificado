@@ -1,4 +1,5 @@
 from topologia.agents.base import Agent
+from topologia.logger import logger
 from topologia.models.schemas import (
     ConfigAgente, EvaluacionNodo, ItemInformativo, AnalisisDim, VotoObservador,
 )
@@ -25,7 +26,7 @@ class Sociologo(Agent):
             prompt="",
             temperatura=0.4,
             modelo="deepseek-chat",
-            max_tokens=1024,
+            max_tokens=2048,
         ))
         self.prompts = PromptLoader()
 
@@ -63,7 +64,8 @@ class Sociologo(Agent):
             conf = float(resultado.get("confianza", 0.5))
             contra = resultado.get("contra_punto_inicial", "")
             tension_con = resultado.get("tension_con", [])
-        except Exception:
+        except Exception as e:
+            logger.warning(f"[{self.config.nombre}] fallback evaluar_nodo({nodo_id}): {e}")
             punt = 5.0
             just = "Error en evaluación"
             tend = "estable"
@@ -112,7 +114,8 @@ class Sociologo(Agent):
                 "nueva_confianza": float(resultado.get("nueva_confianza", mi_voto.confianza)),
                 "reflexion": resultado.get("reflexion", ""),
             }
-        except Exception:
+        except Exception as e:
+            logger.warning(f"[{self.config.nombre}] fallback deliberar({nodo_id}): {e}")
             return {
                 "ajuste": 0.0,
                 "mantiene": True,
@@ -134,7 +137,8 @@ class Sociologo(Agent):
         )
         try:
             resultado = self.ejecutar_prompt(prompt, formato_json=True)
-        except Exception:
+        except Exception as e:
+            logger.warning(f"[{self.config.nombre}] fallback validar_estudio: {e}")
             resultado = {
                 "dimension": "M_s",
                 "patron_id": kwargs.get("patron_id", "P-???"),

@@ -7,7 +7,7 @@ import time
 from typing import Any
 
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import APIStatusError, OpenAI
 
 from topologia.logger import logger
 
@@ -51,20 +51,46 @@ class LLMClient:
         }
         if formato_json:
             kwargs["response_format"] = {"type": "json_object"}
-        for intento in range(max_retries):
-            try:
-                respuesta = self.client.chat.completions.create(**kwargs)
-                contenido = respuesta.choices[0].message.content or ""
-                if not contenido.strip():
-                    raise ValueError("respuesta vacía del LLM")
-                return contenido
-            except Exception as e:
-                if intento < max_retries - 1:
-                    wait = 2 ** intento
-                    logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
-                    time.sleep(wait)
-                else:
-                    raise
+
+        def _intentar(con_thinking: bool) -> str:
+            payload = dict(kwargs)
+            if con_thinking:
+                # deepseek-v4-flash es modelo de razonamiento: gasta max_tokens en
+                # reasoning_content y puede devolver content vacío. Deshabilitarlo.
+                payload["extra_body"] = {"thinking": {"type": "disabled"}}
+            for intento in range(max_retries):
+                try:
+                    respuesta = self.client.chat.completions.create(**payload)
+                    contenido = respuesta.choices[0].message.content or ""
+                    if not contenido.strip():
+                        raise ValueError("respuesta vacía del LLM")
+                    return contenido
+                except APIStatusError as e:
+                    if con_thinking and e.status_code == 400:
+                        logger.warning("LLM: proveedor rechazó 'thinking' (HTTP 400), reintentando sin el parámetro")
+                        return None
+                    if intento < max_retries - 1:
+                        wait = 2 ** intento
+                        logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
+                        time.sleep(wait)
+                    else:
+                        raise
+                except Exception as e:
+                    if intento < max_retries - 1:
+                        wait = 2 ** intento
+                        logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
+                        time.sleep(wait)
+                    else:
+                        raise
+
+        try:
+            resultado = _intentar(con_thinking=True)
+        except Exception as e:
+            logger.warning(f"LLM con thinking disabled falló: {e}. Reintentando sin el parámetro...")
+            resultado = None
+        if resultado is None:
+            resultado = _intentar(con_thinking=False)
+        return resultado
 
     def generar_json(
         self,
