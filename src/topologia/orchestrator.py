@@ -391,6 +391,14 @@ class Orchestrator:
         except Exception as e:
             logger.warning(f"No se pudieron generar gráficos diarios: {e}")
 
+        # Tromba y tecelado del ente fractal
+        try:
+            from scripts.visualizar_tromba_tecelado import generar_todos as generar_tromba
+            generar_tromba(sociedad)
+            logger.info("Tromba y tecelado generados")
+        except Exception as e:
+            logger.warning(f"No se pudo generar la tromba/tecelado: {e}")
+
         # Timeline: actualizar data y regenerar gráficos de evolución
         try:
             from scripts.barrido_timeline import actualizar_timeline

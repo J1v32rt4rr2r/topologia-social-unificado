@@ -669,6 +669,9 @@ def _build_graficos(contexto: dict | None = None,
         ("grafico_triangulo_coherencia.png", "Tri&aacute;ngulo Coherencia"),
         ("grafico_radar_nodos.png", "Radar Nodos"),
         ("grafico_mapa_calor_nodos.png", "Mapa de Calor"),
+        ("tromba_chile_3d.png", "Tromba del UNO (3 hebras)"),
+        ("tromba_relacion_3d.png", "Tromba C&oacute;nica (relaci&oacute;n)"),
+        ("tecelado_chile.png", "Tecelado Social (27 v&eacute;rtices)"),
     ]
     thumbs = ""
     for name, label in nombres:

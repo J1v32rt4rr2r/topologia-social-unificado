@@ -87,6 +87,23 @@ F = e^(2πi / M)
 | S2 | 5 < δ ≤ 8 | Tensión emergente |
 | S3 | δ > 8 | Crisis / reconfiguración |
 
+#### El UNO y el Tecelado Social (Ente Fractal)
+
+El ente fractal `u` (persona = grupo = clase = sociedad, Axioma S) es una
+unidad con identidad invariante `I(u) = e^{2πi} = 1` (Axioma U) y estado
+evolutivo `s(u,t)` sobre la tromba `ℝ × T³`. Su operatividad:
+
+```
+p_{kj} = e^{i·θ_{kj}},  θ_{kj} = 360° / v_{kj}    27 vértices de contacto
+k* = argmax(M_k)                                  núcleo (canal dominante)
+θ* = 360° / M_{k*}                                fase dominante
+R  = |Σ e^{i(φ_j − θ*)} / 27|                     concentración (Axioma D)
+p* = p + λ·R·f(Δθ)·(núcleo − p)                   arrastre (vértice efectivo)
+```
+
+Ver `docs/axiomas_fractales.md` para la formalización completa (axiomas
+U, T, C, S, F, O, D).
+
 ### 2.3 Agentes
 
 | Agente | Rol | Modelo |
@@ -195,6 +212,7 @@ F = e^(2πi / M)
 | `scripts/barrido_timeline.py` | Barrido de timeline |
 | `scripts/graficos_timeline.py` | Gráficos de timeline |
 | `scripts/informe_topologia.py` | HTML unificado con estado+R+calibración+timeline+proyección |
+| `scripts/visualizar_tromba_tecelado.py` | Tromba ℝ×T³ y tecelado de 27 vértices del ente fractal |
 
 ---
 
@@ -224,19 +242,27 @@ F = e^(2πi / M)
 │   │   └── red_riesgo.py       # Exportación de red de riesgo
 │   ├── math/
 │   │   ├── torus.py            # Modelo 3-toro, formas complejas, δ, θ
-│   │   └── operations.py       # 6 operaciones cinéticas
+│   │   ├── operations.py       # 6 operaciones cinéticas
+│   │   ├── unity.py            # Núcleo del ente fractal (axiomas U, F, O, D)
+│   │   └── coherence.py        # Evaluación de entes fractales (axioma S)
 │   ├── models/
-│   │   └── schemas.py          # 18 clases Pydantic
+│   │   └── schemas.py          # 20 clases Pydantic (incluye EnteFractal, TipoEnte)
 │   ├── memoria/
 │   │   └── decisiones.py       # Almacenamiento de patrones y estudios
 │   ├── storage/
 │   │   └── store.py            # FileStore para estados e informes
 │   └── orchestrator.py         # Ciclo diario completo
-├── scripts/                    # 11 scripts de análisis
+├── scripts/                    # 13 scripts de análisis
 ├── reportes/
-│   └── redes_riesgo/           # Redes de riesgo exportadas por fecha
+│   ├── redes_riesgo/           # Redes de riesgo exportadas por fecha
+│   ├── tromba_chile_3d.png     # Tromba de Chile (3 hebras M, L, S)
+│   ├── tromba_relacion_3d.png  # Tromba cónica (relación de dos entes)
+│   └── tecelado_chile.png      # 27 vértices + núcleo + arrastre
+├── tests/
+│   └── test_unity.py           # 24 tests del núcleo del ente fractal
 └── docs/
-    └── avances_proyecto.md     # Este archivo
+    ├── avances_proyecto.md     # Este archivo
+    └── axiomas_fractales.md    # Formalización del UNO y el tecelado social
 ```
 
 ### 7.2 Commits Recientes (6 nuevos)
@@ -259,6 +285,7 @@ F = e^(2πi / M)
 3. **Monitorear la transición R > 0.7** — el estado actual (0.684) está a 2.3% del umbral ROJO. ECONOMIA (δ=19.1) y TECNOLOGIA (δ=14.5) son los nodos a vigilar.
 4. **Refinar la detección de transiciones de era** (k actualmente constante en 8; identificar condiciones de cambio).
 5. **Documentar y compartir hallazgos** de topología cultural chilena.
+6. **Validar el ente fractal** (el UNO): acumular tecelados diarios para medir la evolución de R (concentración) y D (densidad del corte) a lo largo del tiempo, y contrastar la predicción de arrastre contra nodos deficientes reales.
 
 ---
 

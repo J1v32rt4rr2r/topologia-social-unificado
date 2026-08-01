@@ -90,6 +90,39 @@ class EstadoCultural(BaseModel):
     coherencia_interna: float = 0.0  # Δθ promedio entre las 3 formas (grados)
 
 
+class TipoEnte(str, Enum):
+    persona = "persona"
+    grupo = "grupo"
+    clase = "clase"
+    sociedad = "sociedad"
+
+
+class EnteFractal(BaseModel):
+    """El UNO: identidad invariante e^{2πi} = 1, estado evolutivo y tecelado propio.
+
+    Axioma U: la identidad nunca cambia; el cambio vive en el estado.
+    Axioma S: persona, grupo, clase y sociedad son el mismo objeto formal,
+    diferenciado solo por el nivel fractal.
+    """
+
+    nombre: str = ""
+    tipo: TipoEnte = TipoEnte.grupo
+    nivel_fractal: int = 1
+    identidad: float = 1.0  # e^{2πi} = 1 — invariante
+    estado: EstadoCultural | None = None
+    nucleo: str = ""  # canal dominante k*
+    theta_nucleo: float = 0.0  # fase dominante θ* (grados)
+    densidad_R: float = 0.0  # concentración circular del tecelado (Axioma D)
+    densidad_D: float = 0.0  # fracción de vértices en la ventana ε
+    tecelado: dict[str, complex] = {}  # 27 vértices p_{kj} (clave "NODO:CANAL")
+    tecelado_efectivo: dict[str, complex] = {}  # vértices re-calculados bajo arrastre
+    sub_entes: list["EnteFractal"] = []
+    clase_padre: str = ""
+
+
+EnteFractal.model_rebuild()
+
+
 # ─── Capa 2: CINÉTICA ──────────────────────────────────────
 
 
