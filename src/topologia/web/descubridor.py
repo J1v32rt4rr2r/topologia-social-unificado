@@ -78,28 +78,32 @@ def _generar_plan_borqueda(nodos_deficit: list[str], nodos_prioritarios: list[st
         contexto_nodos = ", ".join(nodos_deficit + nodos_prioritarios)
 
     fuentes_conocidas = _cargar_fuentes_conocidas()
-    prompt = prompt_loader.load("descubridor_fuentes",
+    prompt_base = prompt_loader.load("descubridor_fuentes",
         contexto_nodos=contexto_nodos or "Sin descripción disponible.",
         nodos_deficit=", ".join(nodos_deficit) if nodos_deficit else "Ninguno",
         fuentes_conocidas=", ".join(fuentes_conocidas[:15]),
     )
+    reforzado = (
+        "\n\nIMPORTANTE: Responde ÚNICAMENTE con JSON válido y completo. "
+        'Si no conoces sitios, responde {"consultas": [], "sitios_sugeridos": []}.'
+    )
 
-    try:
-        from topologia.models.llm import LLMClient
-        import json
-        llm = LLMClient()
-        raw = llm.generar_json(prompt, temperatura=0.4, max_tokens=1024)
-        if isinstance(raw, str):
-            data = json.loads(raw)
-        else:
-            data = raw
-        consultas = data.get("consultas", [])
-        sitios = data.get("sitios_sugeridos", [])
-        logger.info(f"Descubridor: LLM sugirió {len(consultas)} consultas y {len(sitios)} sitios")
-        return consultas + sitios
-    except Exception as e:
-        logger.warning(f"Error generando plan de búsqueda: {e}")
-        return []
+    from topologia.models.llm import LLMClient
+    llm = LLMClient()
+    for intento in range(2):
+        prompt = prompt_base if intento == 0 else prompt_base + reforzado
+        try:
+            data = llm.generar_json(prompt, temperatura=0.4, max_tokens=2048)
+            consultas = data.get("consultas", [])
+            sitios = data.get("sitios_sugeridos", [])
+            if not consultas and not sitios:
+                logger.warning(f"Descubridor: plan vacío del LLM (intento {intento + 1}/2)")
+                continue
+            logger.info(f"Descubridor: LLM sugirió {len(consultas)} consultas y {len(sitios)} sitios")
+            return consultas + sitios
+        except Exception as e:
+            logger.warning(f"Error generando plan de búsqueda (intento {intento + 1}/2): {e}")
+    return []
 
 
 def _descubrir_rss_en_sitio(dominio: str) -> list[str]:

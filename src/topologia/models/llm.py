@@ -54,7 +54,10 @@ class LLMClient:
         for intento in range(max_retries):
             try:
                 respuesta = self.client.chat.completions.create(**kwargs)
-                return respuesta.choices[0].message.content or ""
+                contenido = respuesta.choices[0].message.content or ""
+                if not contenido.strip():
+                    raise ValueError("respuesta vacía del LLM")
+                return contenido
             except Exception as e:
                 if intento < max_retries - 1:
                     wait = 2 ** intento
