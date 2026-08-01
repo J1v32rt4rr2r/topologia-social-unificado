@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from topologia.memoria.decisiones import DecisionDB
-from topologia.models.schemas import EstadoPatron, PatronAnalogico
+from topologia.models.schemas import PatronAnalogico
 
 
 @pytest.fixture
@@ -52,19 +52,19 @@ class TestPatrones:
     def test_patron_no_existente(self, db):
         assert db.patron_por_id("NO_EXISTE") is None
 
-    def test_validar_patron(self, db):
+    def test_reemplazar_por_id(self, db):
         p = PatronAnalogico(id="P001", forma="espiral", significado="ciclo")
         db.guardar_patron(p)
-        db.validar_patron("P001", EstadoPatron.validado)
+        p2 = PatronAnalogico(
+            id="P001", forma="espiral", significado="ciclo",
+            estado="aprendido", veces_estudiado=3,
+        )
+        db.guardar_patron(p2)
         actualizado = db.patron_por_id("P001")
         assert actualizado is not None
-        assert actualizado.estado == EstadoPatron.validado
-        assert actualizado.veces_validado == 1
-        assert actualizado.veces_estudiado == 1
-
-    def test_validar_patron_inexistente_no_rompe(self, db):
-        db.validar_patron("NO_EXISTE", EstadoPatron.validado)
-        assert db.patrones() == []
+        assert actualizado.estado == "aprendido"
+        assert actualizado.veces_estudiado == 3
+        assert len(db.patrones()) == 1
 
 
 class TestSincronizacion:
@@ -88,15 +88,17 @@ class TestEstadisticas:
         assert stats["total"] == 0
         assert stats["por_tipo"] == {}
         assert stats["patrones"] == 0
-        assert stats["validados"] == 0
+        assert stats["estudios_totales"] == 0
 
     def test_estadisticas_con_datos(self, db):
         db.registrar("observation", "obs1")
         db.registrar("decision", "dec1")
-        p = PatronAnalogico(id="P001", forma="linea", significado="direccion")
+        p = PatronAnalogico(
+            id="P001", forma="linea", significado="direccion",
+            veces_estudiado=2,
+        )
         db.guardar_patron(p)
-        db.validar_patron("P001", EstadoPatron.validado)
         stats = db.estadisticas()
         assert stats["total"] == 2
         assert stats["patrones"] == 1
-        assert stats["validados"] == 1
+        assert stats["estudios_totales"] == 2

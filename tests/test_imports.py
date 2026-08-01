@@ -2,7 +2,7 @@
 
 from topologia.models.schemas import (
     Especulacion, EstadoCultural, EvaluacionNodo,
-    Estudio, AnalisisDim, PatronAnalogico, EstadoPatron,
+    Estudio, AnalisisDim, PatronAnalogico,
     OperacionCinetica, InformeDiario, Alerta,
 )
 from topologia.models.patterns import listar_operaciones, get_operacion
@@ -99,7 +99,7 @@ def test_patron_analogico():
         forma="Caída vertical con acumulación basal",
         significado="La violencia del poder invisible se desata cuando no se ve",
     )
-    assert patron.estado == EstadoPatron.especulativo
+    assert patron.estado == "especulativo"
     assert patron.id == "P-015"
     print(f"[OK] Patron analogico: {patron.id} - {patron.forma[:30]}...")
 
