@@ -136,7 +136,7 @@ PIPELINE ANALÓGICO (pipeline/engine + skills/fase1..6): inmersion → pictorica
 |---|---|
 | `models/llm.py` | `LLMClient`: llamadas DeepSeek con `thinking disabled` + retries + fallback |
 | `agents/` | Estadista (M_m), Filósofo (M_l), Sociólogo (M_s), Árbitro, Artista, Redactor |
-| `math/` | torus (3-toro, formas complejas, δ/θ), operations (cinética), unity/coherence (ente fractal) |
+| `math/` | torus (tromba ℝ×T³, formas complejas, δ/θ), operations (cinética), unity/coherence (ente fractal) |
 | `escalar/` | 6 índices de riesgo → compuesto R → red de riesgo |
 | `memoria/` | DecisionDB (decisiones/patrones), BloquesMemoria (analogías), MemoriaRedactor (conversacional) |
 | `storage/store.py` | FileStore → `estados/`, `reportes/`, `reportes_json/`, `memoria/`, `proyecciones/` |
