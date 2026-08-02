@@ -358,7 +358,28 @@ class Orchestrator:
             for a in paso1.alertas_arbitro:
                 historial += f"\n- [Árbitro] {a}"
 
-        informe_anterior = self._cargar_informe_anterior(sociedad)
+        memoria_redactor = None
+        try:
+            from topologia.memoria.conversacional import MemoriaRedactor
+
+            memoria_redactor = MemoriaRedactor(sociedad=sociedad)
+            ctx = memoria_redactor.contexto()
+            informe_anterior = ctx["informe_anterior"]
+            metricas = ctx["metricas"]
+            if memoria_redactor.buffer or metricas["resumen_rodante_tokens"] > 0:
+                logger.info(
+                    f"Memoria Redactor: buffer={metricas['buffer_tokens']} tok, "
+                    f"resumen={metricas['resumen_rodante_tokens']} tok, "
+                    f"permanente={metricas['bloques_permanentes']} bloques"
+                )
+            else:
+                logger.info("Memoria Redactor: sin historial previo (primer ciclo)")
+                informe_anterior = ""
+        except Exception as e:
+            logger.warning(f"Memoria Redactor no disponible: {e}")
+            informe_anterior = ""
+        if not informe_anterior:
+            informe_anterior = self._cargar_informe_anterior(sociedad)
 
         analisis_formas = self._analizar_formas_complejas(paso1)
         graficos = [
@@ -383,6 +404,19 @@ class Orchestrator:
         if items_scraping:
             logger.info(f"Items de scraping: {len(items_scraping)} (incluidos en cobertura)")
         informe.resumen_ejecutivo = (informe.resumen_ejecutivo or "") + f"\n\n[COBERTURA] {resumen}"
+
+        if memoria_redactor is not None:
+            try:
+                metricas = memoria_redactor.registrar_dia(
+                    paso1.fecha, paso1, operaciones, especulaciones, informe, cobertura=resumen
+                )
+                logger.info(
+                    f"Memoria Redactor tras registro: buffer={metricas['buffer_tokens']} tok, "
+                    f"resumen={metricas['resumen_rodante_tokens']} tok, "
+                    f"permanente={metricas['bloques_permanentes']} bloques"
+                )
+            except Exception as e:
+                logger.warning(f"Memoria Redactor: no se pudo registrar el día: {e}")
 
         try:
             from scripts.analisis_graficos import generar_todos
