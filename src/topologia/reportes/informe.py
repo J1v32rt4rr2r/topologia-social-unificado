@@ -233,6 +233,11 @@ body {
   color: var(--text-secondary);
   display: block;
 }
+.noticia-score {
+  font-size: 12px;
+  color: var(--accent);
+  margin-left: 6px;
+}
 
 /* ESPECULACIONES / ESTUDIOS CARDS */
 .card {
@@ -482,15 +487,18 @@ def _build_tres_columnas(estado: EstadoCultural, informe_redactor: InformeDiario
 
     noticias_html = ""
     if items_por_nodo:
+        # Los 2 items de mayor score por nodo, luego el top 9 global por score.
         items = []
         for nid, nitems in items_por_nodo.items():
-            for it in nitems[:2]:
+            por_score = sorted(nitems, key=lambda it: it.score_relevancia, reverse=True)
+            for it in por_score[:2]:
                 items.append((nid, it))
-        items = items[:9]
+        items = sorted(items, key=lambda t: t[1].score_relevancia, reverse=True)[:9]
         for nid, it in items:
             noticias_html += f"""<div class="noticia-item">
         <span class="noticia-titulo">{escape(it.titulo)}</span>
         <span class="noticia-fuente">{escape(nid)} &mdash; {escape(it.fuente)}</span>
+        <span class="noticia-score">{it.score_relevancia:.2f}</span>
       </div>"""
     if not noticias_html:
         noticias_html = '<p style="color:var(--text-secondary);">Sin noticias destacadas.</p>'

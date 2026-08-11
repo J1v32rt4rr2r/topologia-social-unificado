@@ -271,6 +271,7 @@ class ItemInformativo(BaseModel):
     tags: list[str] = []
     nodo_sugerido: str = ""
     dimension_sugerida: str = ""
+    score_relevancia: float = 0.0
 
 
 class ConfigAgente(BaseModel):

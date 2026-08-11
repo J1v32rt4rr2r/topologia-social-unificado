@@ -80,6 +80,7 @@ def puntuar_relevancia(
         if hasattr(item, "nodo_sugerido") and item.nodo_sugerido in nodos_prioritarios:
             score += 0.3
 
+        item.score_relevancia = score
         if score >= umbral:
             items_filtrados.append(item)
 
