@@ -40,23 +40,20 @@ class TestNivelHeuristica:
 
 class TestCascada:
     @patch("topologia.web.dimensiones._nivel_llm_deepseek", return_value=None)
-    @patch("topologia.web.dimensiones._nivel_llm_local", return_value=None)
     @patch("topologia.web.dimensiones._nivel_embeddings")
-    def test_prefiere_heuristica_antes_que_llm(self, mock_emb, mock_llm, mock_maestro):
-        # heurística no dispara → sigue a embeddings y LLM; si todo falla → maestro
+    def test_prefiere_heuristica_antes_que_maestro(self, mock_emb, mock_maestro):
+        # heurística no dispara → sigue a embeddings; si falla → maestro
         mock_emb.return_value = None
         from topologia.web.dimensiones import clasificar_dimension
 
         r = clasificar_dimension(_item("hablando de nada en absoluto con terminos raros"))
         assert r is None
         assert mock_emb.called
-        assert mock_llm.called
         assert mock_maestro.called
 
     @patch("topologia.web.dimensiones._nivel_llm_deepseek", return_value=("LENGUAJE", "l"))
-    @patch("topologia.web.dimensiones._nivel_llm_local", return_value=None)
     @patch("topologia.web.dimensiones._nivel_embeddings", return_value=None)
-    def test_maestro_llena_hueco_cuando_local_falla(self, mock_emb, mock_llm, mock_maestro):
+    def test_maestro_llena_hueco_cuando_embeddings_falla(self, mock_emb, mock_maestro):
         from topologia.web.dimensiones import clasificar_dimension
 
         item = _item("hablando de nada en absoluto con terminos raros")
@@ -128,7 +125,7 @@ class TestReleerCiegas:
         cobertura = {"ECONOMIA": {"m": 0, "l": 2, "s": 0}}
         ciegas = {"ECONOMIA": ["m"]}
         with patch(
-            "topologia.web.dimensiones._nivel_llm_local",
+            "topologia.web.dimensiones._nivel_llm_deepseek",
             side_effect=[("ECONOMIA", "m")],
         ):
             rellenas = releer_ciegas(items, ciegas, cobertura)
@@ -141,7 +138,7 @@ class TestReleerCiegas:
         cobertura = {"ECONOMIA": {"m": 0, "l": 0, "s": 1}}
         ciegas = {"ECONOMIA": ["m"]}
         with patch(
-            "topologia.web.dimensiones._nivel_llm_local",
+            "topologia.web.dimensiones._nivel_llm_deepseek",
             side_effect=[("ECONOMIA", "m")],
         ):
             rellenas = releer_ciegas(items, ciegas, cobertura)
@@ -152,7 +149,7 @@ class TestReleerCiegas:
         items = [self._item("Solo politica", "POLITICA", "m")]
         ciegas = {"RELIGION": ["m", "l", "s"]}
         cobertura = {"RELIGION": {"m": 0, "l": 0, "s": 0}}
-        with patch("topologia.web.dimensiones._nivel_llm_local") as llm:
+        with patch("topologia.web.dimensiones._nivel_llm_deepseek") as maestro:
             rellenas = releer_ciegas(items, ciegas, cobertura)
         assert rellenas == 0
-        llm.assert_not_called()
+        maestro.assert_not_called()

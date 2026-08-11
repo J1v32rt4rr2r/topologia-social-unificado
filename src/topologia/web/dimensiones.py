@@ -3,8 +3,9 @@
 Cascada progresiva (de barato a caro):
     1. Heurística determinista (keywords contra los descriptores de nodos.yaml) — ms.
     2. Embeddings locales (bge-m3, /api/embed) + similitud coseno con los 27 descriptores — ms.
-    3. LLM local (qwen3:1.7b, think off) — 1-2 s por item.
-Toda la cascada corre local (Ollama); si nada está disponible, devuelve None sin romper.
+    3. Clasificador DeepSeek (maestro) — resuelve lo que la heurística no cubre.
+La dimensión (m/l/s) del clasificador local qwen3 fue retirada del proyecto por
+errores; los embeddings bge-m3 se mantienen. Devolver None nunca rompe el ciclo.
 """
 
 from __future__ import annotations
@@ -28,14 +29,11 @@ DIM_LABEL = {"m": "material", "l": "razón lógica", "s": "social"}
 
 _OLLAMA_URL = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
 _EMBED_MODELO = os.getenv("LLM_LOCAL_EMBED", "bge-m3")
-_LLM_LOCAL = os.getenv("LLM_LOCAL_CLASIFICADOR", "qwen3:1.7b")
-_LLM_LOCAL_KEEP_ALIVE = os.getenv("LLM_LOCAL_KEEP_ALIVE", "30m")
 
-#: Alumno/maestro: registrar desacuerdos entre el clasificador local (qwen3:4b,
-#: "alumno") y DeepSeek ("maestro") para construir un dataset de destilación.
+#: Alumno/maestro: registrar desacuerdos del clasificador de dimensión (DeepSeek)
+#: para construir un dataset de destilación. (El clasificador local qwen3 fue
+#: retirado por errores; bge-m3 sigue disponible para embeddings.)
 _ALUMNO_MAESTRO = os.getenv("DIM_ALUMNO_MAESTRO", "1") == "1"
-
-_warmup_hecho = False
 
 _STOPWORDS = {
     "los", "las", "el", "la", "un", "una", "unos", "unas", "y", "o", "u",
@@ -102,39 +100,6 @@ def _llamada_ollama(ruta: str, payload: dict, timeout: int = 30):
         return json.loads(resp.read().decode("utf-8"))
 
 
-def calentar_clasificador_local() -> bool:
-    """Carga el modelo local y lo mantiene residente (keep_alive).
-
-    qwen3:4b tarda ~80s en cargar en CPU; pagarlo una sola vez por proceso
-    evita que cada clasificación re-cargue el modelo. Devuelve True si quedó
-    residente (o ya lo estaba).
-    """
-    global _warmup_hecho
-    if _warmup_hecho:
-        return True
-    if not _usar_ollama():
-        return False
-    try:
-        _llamada_ollama(
-            "/api/generate",
-            {
-                "model": _LLM_LOCAL,
-                "prompt": "hola",
-                "stream": False,
-                "think": False,
-                "keep_alive": _LLM_LOCAL_KEEP_ALIVE,
-                "options": {"num_ctx": 2048},
-            },
-            timeout=300,
-        )
-        _warmup_hecho = True
-        logger.info(f"Clasificador local '{_LLM_LOCAL}' pre-calentado (keep_alive={_LLM_LOCAL_KEEP_ALIVE})")
-        return True
-    except Exception as exc:
-        logger.warning(f"No se pudo pre-calentar '{_LLM_LOCAL}': {exc}")
-        return False
-
-
 def _ruta_alumno() -> Path:
     return (
         Path(__file__).resolve().parent.parent.parent.parent
@@ -168,7 +133,7 @@ def _registrar_alumno_maestro(
             "texto": texto[:1000],
             "alumno": {"nodo": alumno[0], "dim": alumno[1]} if alumno else None,
             "maestro": {"nodo": maestro[0], "dim": maestro[1]} if maestro else None,
-            "modelo_alumno": _LLM_LOCAL,
+            "modelo_alumno": "heuristica/embeddings (bge-m3)",
         }
         ruta = _ruta_alumno()
         ruta.parent.mkdir(parents=True, exist_ok=True)
@@ -307,67 +272,6 @@ def _nivel_embeddings(texto: str, umbral: float | None = None) -> tuple[str, str
     return (mejor[0], mejor[1])
 
 
-def _normalizar_json_salida(texto: str):
-    try:
-        return json.loads(texto)
-    except Exception:
-        m = re.search(r"\{[^}]*\}", texto, re.S)
-        if m:
-            try:
-                return json.loads(m.group(0))
-            except Exception:
-                return None
-        return None
-
-
-def _nivel_llm_local(texto: str) -> tuple[str, str] | None:
-    if not _usar_ollama():
-        return None
-    nodos = nodos_validos()
-    if not nodos:
-        return None
-    prompt = (
-        'Clasifica el siguiente texto en una de las coordenadas (nodo, dimensión) '
-        'de una matriz cultural de 9 nodos x 3 dimensiones.\n'
-        'Guías de dimensión:\n'
-        '- m (material): recursos físicos, dinero, infraestructura, máquinas, bienes.\n'
-        '- l (razón lógica): ideas, ideología, filosofía, leyes, doctrina, discurso, teoría.\n'
-        '- s (social): personas organizadas, comunidad, sindicatos, redes, familia, participación, protestas.\n'
-        'Elige s cuando el tema trate de interacción o colectivos de personas, '
-        'no solo de ideas. No uses l solo por defecto.\n'
-        'Responde SOLO con JSON exacto: {"nodo":"","dim":""}.\n'
-        f'Nodos válidos (usa estos identificadores exactos): {", ".join(nodos)}.\n'
-        f"Texto a clasificar: {texto[:600]}"
-    )
-    try:
-        data = _llamada_ollama(
-            "/api/generate",
-            {
-                "model": _LLM_LOCAL,
-                "prompt": prompt,
-                "stream": False,
-                "think": False,
-                "keep_alive": _LLM_LOCAL_KEEP_ALIVE,
-                "options": {"temperature": 0.1, "num_ctx": 2048},
-            },
-            timeout=60,
-        )
-        salida = data.get("response", "")
-        parsed = _normalizar_json_salida(salida)
-        if not isinstance(parsed, dict):
-            logger.debug(f"Salida LLM local no era dict: {salida[:100]}")
-            return None
-        nodo = str(parsed.get("nodo", "")).strip().upper()
-        dim = str(parsed.get("dim", "")).strip().lower()
-        if nodo in nodos and dim in DIMENSIONES:
-            return (nodo, dim)
-        logger.debug(f"Coordenada inválida de LLM local: {parsed}")
-        return None
-    except Exception as exc:
-        logger.debug(f"LLM local de clasificación no disponible: {exc}")
-        return None
-
-
 # ─── API pública ───────────────────────────────────────────────
 
 
@@ -376,7 +280,7 @@ _MAX_MAESTRO = int(os.getenv("DIM_ALUMNO_MAX_MAESTRO", "20"))
 
 
 def _consultar_maestro(item: ItemInformativo, texto: str) -> tuple[str, str] | None:
-    """Consulta a DeepSeek (maestro) para comparar con el alumno local.
+    """Consulta a DeepSeek (maestro) para comparar con el alumno estructural.
 
     Acotada por DIM_ALUMNO_MAX_MAESTRO por proceso para no gastar la API en
     todos los items; registra el desacuerdo cuando difiere del alumno.
@@ -404,13 +308,13 @@ def _aplicar_resultado(item: ItemInformativo, resultado: tuple[str, str] | None)
 
 
 def _clasificar_dimension_con_maestro(item: ItemInformativo, texto: str) -> tuple[str, str] | None:
-    """Cascada completa: heurística → embeddings → LLM local (alumno) → maestro.
+    """Cascada completa: heurística → embeddings (alumno) → maestro.
 
     El alumno es el clasificador estructural primario (abstracción metafórica).
     El maestro (DeepSeek) se consulta en una muestra acotada para comparar y
     registrar desacuerdos en data/alumno/destilacion.jsonl.
     """
-    for nivel in (_nivel_heuristica, _nivel_embeddings, _nivel_llm_local):
+    for nivel in (_nivel_heuristica, _nivel_embeddings):
         alumno = nivel(texto)
         if alumno and _aplicar_resultado(item, alumno):
             maestro = _consultar_maestro(item, texto)
@@ -426,7 +330,7 @@ def _clasificar_dimension_con_maestro(item: ItemInformativo, texto: str) -> tupl
 
 
 def clasificar_dimension(item: ItemInformativo) -> tuple[str, str] | None:
-    """Cascada heurística → embeddings → LLM local → maestro. Devuelve (nodo, dim) o None."""
+    """Cascada heurística → embeddings → maestro. Devuelve (nodo, dim) o None."""
     texto = f"{item.titulo} {item.contenido}".strip()
     if not texto:
         return None
@@ -436,13 +340,10 @@ def clasificar_dimension(item: ItemInformativo) -> tuple[str, str] | None:
 def asignar_dimensiones(items: list[ItemInformativo]) -> None:
     """Etiqueta cada item en (nodo, m/l/s).
 
-    Cascada para todos (heurística → embeddings → LLM local → maestro). Los
-    items que ya traen nodo solo reciben dimensión; los sin nodo
-    (descubiertos/RSS) reciben nodo+dim y así entran en la cobertura de las
-    27 coordenadas. Con `DIM_LLM_TODO=1` (opt-in) los items sin nodo usan el
-    LLM como clasificador primario (más lento y con sesgo hacia 'l').
+    Cascada para todos (heurística → embeddings → maestro). Los items que ya
+    traen nodo solo reciben dimensión; los sin nodo (descubiertos/RSS)
+    reciben nodo+dim y así entran en la cobertura de las 27 coordenadas.
     """
-    calentar_clasificador_local()
     for item in items:
         texto = f"{item.titulo} {item.contenido}".strip()
         if not texto:
@@ -454,7 +355,7 @@ def asignar_dimensiones(items: list[ItemInformativo]) -> None:
 
 
 def _clasificar_llm_primario(item: ItemInformativo, texto: str) -> tuple[str, str] | None:
-    for nivel in (_nivel_llm_local, _nivel_heuristica, _nivel_embeddings):
+    for nivel in (_nivel_llm_deepseek, _nivel_heuristica, _nivel_embeddings):
         if _aplicar_resultado(item, nivel(texto)):
             return item.nodo_sugerido, item.dimension_sugerida
     return None
@@ -487,15 +388,14 @@ def releer_ciegas(
     cobertura: dict[str, dict[str, int]],
     max_por_coord: int = 6,
 ) -> int:
-    """Re-lectura local: llena coordenadas ciegas con items ya existentes.
+    """Re-lectura: llena coordenadas ciegas con items ya existentes.
 
     Por cada (nodo, dimensión) ciega revisa hasta `max_por_coord` items del
-    nodo con el LLM local; el primero que el LLM asigne a esa dimensión se
-    re-etiqueta. No roba el único ocupante de otra coordenada. Sin búsquedas.
+    nodo con DeepSeek; el primero que asigne a esa dimensión se re-etiqueta.
+    No roba el único ocupante de otra coordenada. Sin búsquedas.
     Devuelve cuántas coordenadas se cubrieron.
     """
     rellenas = 0
-    calentar_clasificador_local()
     for nodo, dims in ciegas.items():
         nodo_items = [it for it in items if getattr(it, "nodo_sugerido", None) == nodo]
         if not nodo_items:
@@ -508,7 +408,7 @@ def releer_ciegas(
                 texto = f"{it.titulo} {it.contenido}".strip()
                 if not texto:
                     continue
-                resultado = _nivel_llm_local(texto)
+                resultado = _nivel_llm_deepseek(texto)
                 if resultado and resultado[1] == dim:
                     it.dimension_sugerida = dim
                     rellenas += 1
