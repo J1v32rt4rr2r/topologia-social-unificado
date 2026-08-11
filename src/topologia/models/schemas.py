@@ -89,6 +89,17 @@ class EstadoCultural(BaseModel):
     theta_s: float = 0.0  # grados
     coherencia_interna: float = 0.0  # Δθ promedio entre las 3 formas (grados)
 
+    # Vector de desarrollo temporal por matriz lógica (axioma T, Fourier/DFT)
+    desarrollo_m: dict = Field(default_factory=dict)
+    desarrollo_l: dict = Field(default_factory=dict)
+    desarrollo_s: dict = Field(default_factory=dict)
+
+    # Disrupciones temporales: lo esperado según el modelo armónico vs lo observado
+    disrupcion_m: dict = Field(default_factory=dict)
+    disrupcion_l: dict = Field(default_factory=dict)
+    disrupcion_s: dict = Field(default_factory=dict)
+    disrupcion_detectada: bool = False
+
 
 class TipoEnte(str, Enum):
     persona = "persona"
@@ -229,6 +240,7 @@ class EstrategiaRecoleccion(BaseModel):
     nodos_prioritarios: list[str] = []
     nodos_con_brecha: list[str] = []
     dimensiones_inestables: dict[str, str] = {}
+    dimensiones_con_brecha: dict[str, list[str]] = {}
 
     queries_generadas: dict[str, list[str]] = {}
 
@@ -258,6 +270,7 @@ class ItemInformativo(BaseModel):
     fecha: datetime = Field(default_factory=datetime.now)
     tags: list[str] = []
     nodo_sugerido: str = ""
+    dimension_sugerida: str = ""
 
 
 class ConfigAgente(BaseModel):

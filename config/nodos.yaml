@@ -6,9 +6,9 @@ nodos:
     s_desc: "Redes de producción, distribución, relaciones laborales"
   - id: TRABAJO
     nombre: Trabajo
-    m_desc: "Herramientas de trabajo, tecnología aplicada, jornada"
-    l_desc: "Ética del trabajo, concepto de mérito"
-    s_desc: "Organización sindical, división social del trabajo"
+    m_desc: "Herramientas de trabajo, tecnología aplicada, jornada, empleo, sueldo, salario, cesantía, despido, precariedad laboral"
+    l_desc: "Ética del trabajo, concepto de mérito, cultura del esfuerzo, meritocracia, valoración social del trabajo"
+    s_desc: "Organización sindical, división social del trabajo, sindicatos, huelga, negociación colectiva, paro, relaciones laborales, afp, pensiones"
   - id: SEXUALIDAD
     nombre: Sexualidad/Reproducción
     m_desc: "Educación sexual, anticoncepción, salud reproductiva, regulación del cuerpo"
@@ -21,9 +21,9 @@ nodos:
     s_desc: "Relaciones de poder, jerarquías, participación ciudadana"
   - id: LENGUAJE
     nombre: Lenguaje
-    m_desc: "Soportes físicos de escritura, bibliotecas"
-    l_desc: "Gramática, lógica formal, semántica, discurso"
-    s_desc: "Dialecto, uso social del lenguaje, comunicación"
+    m_desc: "Soportes físicos de escritura, bibliotecas, libros, archivos, prensa escrita, imprenta"
+    l_desc: "Gramática, lógica formal, semántica, discurso, retórica, neologismos, ortografía, lengua oficial, normativa"
+    s_desc: "Dialecto, uso social del lenguaje, comunicación, jerga, bilingüismo, mapudungun, lenguaje inclusivo, acento, habla popular"
   - id: ETICA_ESTETICA
     nombre: Ética/Estética
     m_desc: "Obras de arte, monumentos, objetos rituales"
@@ -44,3 +44,55 @@ nodos:
     m_desc: "Templos, iglesias, objetos sagrados"
     l_desc: "Teología, doctrina, dogma, cosmovisión"
     s_desc: "Comunidad de fe, ritual colectivo, congregación"
+
+# Combinaciones de nodos: búsquedas que cruzan dos nodos culturales
+# (intersecciones), p. ej. "política económica" = POLITICA x ECONOMIA.
+combinaciones_nodos:
+  - nodos: ["POLITICA", "ECONOMIA"]
+    frases: ["política económica", "economía política"]
+  - nodos: ["EDUCACION", "SEXUALIDAD"]
+    frases: ["educación sexual"]
+  - nodos: ["POLITICA", "RELIGION"]
+    frases: ["política religiosa", "religión y política"]
+  - nodos: ["ECONOMIA", "TRABAJO"]
+    frases: ["economía del trabajo", "mercado laboral"]
+  - nodos: ["TECNOLOGIA", "EDUCACION"]
+    frases: ["tecnología educativa", "educación digital"]
+  - nodos: ["TECNOLOGIA", "ECONOMIA"]
+    frases: ["economía digital"]
+  - nodos: ["LENGUAJE", "POLITICA"]
+    frases: ["discurso político", "retórica política"]
+  - nodos: ["ETICA_ESTETICA", "TECNOLOGIA"]
+    frases: ["ética de la tecnología", "ética de la inteligencia artificial"]
+  - nodos: ["TRABAJO", "EDUCACION"]
+    frases: ["educación técnico-profesional", "formación laboral"]
+  - nodos: ["POLITICA", "EDUCACION"]
+    frases: ["política educacional", "reforma educacional"]
+  - nodos: ["ECONOMIA", "SEXUALIDAD"]
+    frases: ["mercantilización del cuerpo"]
+  - nodos: ["TECNOLOGIA", "TRABAJO"]
+    frases: ["automatización del empleo", "teletrabajo"]
+  - nodos: ["ETICA_ESTETICA", "RELIGION"]
+    frases: ["ética religiosa", "moral religiosa"]
+  - nodos: ["SEXUALIDAD", "RELIGION"]
+    frases: ["moral sexual", "sexualidad y religión"]
+  - nodos: ["LENGUAJE", "EDUCACION"]
+    frases: ["lenguaje educativo"]
+  - nodos: ["ETICA_ESTETICA", "ECONOMIA"]
+    frases: ["ética de los negocios", "consumo responsable"]
+  - nodos: ["POLITICA", "TECNOLOGIA"]
+    frases: ["gobernanza digital", "ciberseguridad"]
+  - nodos: ["TECNOLOGIA", "SEXUALIDAD"]
+    frases: ["tecnología y sexualidad"]
+  - nodos: ["ECONOMIA", "EDUCACION"]
+    frases: ["gratuidad universitaria", "financiamiento de la educación"]
+  - nodos: ["POLITICA", "TRABAJO"]
+    frases: ["política laboral", "reforma laboral"]
+  - nodos: ["ETICA_ESTETICA", "EDUCACION"]
+    frases: ["educación en valores", "formación ética"]
+  - nodos: ["RELIGION", "EDUCACION"]
+    frases: ["educación religiosa"]
+  - nodos: ["SEXUALIDAD", "POLITICA"]
+    frases: ["política de género", "política de igualdad"]
+  - nodos: ["TECNOLOGIA", "LENGUAJE"]
+    frases: ["lenguaje digital"]

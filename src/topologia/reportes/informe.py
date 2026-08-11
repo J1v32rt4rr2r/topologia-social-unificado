@@ -909,6 +909,64 @@ def _build_mirada(informe_redactor: InformeDiario | None) -> str:
   </div>"""
 
 
+def _build_destilado_27(
+    estado: EstadoCultural | None,
+    cobertura_dimensiones: dict[str, dict[str, int]] | None = None,
+) -> str:
+    """El producto destilado: las 27 coordenadas (nodo × m/l/s) con su score y cobertura."""
+    if not estado or not estado.nodos:
+        return ""
+
+    dims = {
+        "m": ("M", "Material", "dimension_m", "tendencia_m"),
+        "l": ("L", "Razón lógica", "dimension_l", "tendencia_l"),
+        "s": ("S", "Social", "dimension_s", "tendencia_s"),
+    }
+    fecha = estado.fecha.strftime("%d-%m-%Y")
+    filas = ""
+    total_cubiertas = 0
+    for ev in estado.nodos:
+        celdas = ""
+        for clave, (_, label, cam, tend) in dims.items():
+            score = getattr(ev, cam, 0.0)
+            tendencia = getattr(ev, tend, "estable")
+            n_items = (cobertura_dimensiones or {}).get(ev.nodo_id, {}).get(clave, 0)
+            if n_items > 0:
+                total_cubiertas += 1
+            tag = {
+                "sube": "&#9650;", "baja": "&#9660;", "estable": "",
+            }.get(str(tendencia), "")
+            celda = f"""<td title="{escape(label)}">
+              <span style="font-size:20px;font-weight:700;">{score:.1f}</span>
+              {tag}<br>
+              <span style="color:var(--text-secondary);font-size:12px;">{n_items} item{'s' if n_items != 1 else ''}</span>
+            </td>"""
+            celdas += celda
+        filas += f"""<tr>
+          <td style="text-align:left;font-weight:700;white-space:nowrap;">{escape(ev.nodo_nombre)}</td>
+          {celdas}
+        </tr>"""
+
+    return f"""<div class="historial-box">
+    <h3>Destilado 27 &mdash; coordenadas (nodo &times; m/l/s) al {fecha}</h3>
+    <p style="margin-bottom:12px;color:var(--text-secondary);">
+      Noticias crudas &rarr; separadas en las 27 dimensiones. Coordenadas cubiertas:
+      {total_cubiertas}/27 <span style="color:{'#2ecc71' if total_cubiertas >= 27 else '#e74c3c'};">
+      ({'completo' if total_cubiertas >= 27 else f'faltan {27 - total_cubiertas}'})</span>.
+      Cada score es el valor destilado de la dimensi&oacute;n (escala 1-9).
+    </p>
+    <table class="tabla-historial">
+      <tr>
+        <th style="text-align:left;">Nodo</th>
+        <th title="Material">M (material)</th>
+        <th title="Razón lógica / ideología">L (razón lógica)</th>
+        <th title="Social">S (social)</th>
+      </tr>
+      {filas}
+    </table>
+  </div>"""
+
+
 def _build_cobertura(brechas: dict[str, dict]) -> str:
     if not brechas:
         return ""
@@ -998,6 +1056,7 @@ TEMPLATE_PAGE = """<!DOCTYPE html>
 {historial}
 {alertas}
 {mirada}
+{destilado}
 {cobertura}
 <div class="footer">
   Generado por Topolog&iacute;a Social &mdash; Sistema multi-agente de observaci&oacute;n cultural
@@ -1016,6 +1075,7 @@ def generar_informe_html(
     items_por_nodo: dict[str, list[ItemInformativo]] | None = None,
     informe_redactor: InformeDiario | None = None,
     brechas: dict[str, dict] | None = None,
+    cobertura_dimensiones: dict[str, dict[str, int]] | None = None,
 ) -> str:
     store = FileStore()
     if estado is None:
@@ -1058,6 +1118,7 @@ def generar_informe_html(
         .replace("{historial}", _build_historial(sociedad)) \
         .replace("{alertas}", _build_alertas(informe_redactor)) \
         .replace("{mirada}", _build_mirada(informe_redactor)) \
+        .replace("{destilado}", _build_destilado_27(estado, cobertura_dimensiones)) \
         .replace("{cobertura}", _build_cobertura(brechas))
 
     ruta = get_reportes_dir()

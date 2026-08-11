@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import time
 from datetime import datetime
-from typing import Any
 
 from topologia.logger import logger
 from topologia.models.schemas import ItemInformativo
@@ -19,6 +18,14 @@ USER_AGENT = (
     "monitoreo de clima cultural chileno; "
     "https://github.com/J1v32rt4rr2r/topologia-social-unificado; "
     "contacto: j1v32rt4rr2r@proton.me)"
+)
+
+#: Dominios de referencia/enciclopedia: contenido atemporal sin fecha de
+#: publicación, no apto como evidencia del estado actual de la cultura.
+_DOMINIOS_REFERENCIA = (
+    "wikipedia.org", "wikisource.org", "wikidata.org", "britannica.com",
+    "bcn.cl", "leychile.cl", "memoriachilena.gob.cl", "rae.es",
+    "books.google.",
 )
 
 
@@ -46,17 +53,21 @@ def buscar(palabras_clave: str, max_resultados: int = 10) -> list[ItemInformativ
             for r in ddgs.text(palabras_clave, max_results=max_resultados):
                 titulo = r.get("title", "")
                 cuerpo = r.get("body", "")
+                url = r.get("href", "")
                 from topologia.web.rss import _RE_CHILE
                 if not _RE_CHILE.search(titulo + " " + (cuerpo or "")):
+                    continue
+                if any(dominio in url.lower() for dominio in _DOMINIOS_REFERENCIA):
                     continue
                 resultados.append(ItemInformativo(
                     id=f"search-{len(resultados)}",
                     titulo=titulo,
                     fuente="duckduckgo",
                     contenido=cuerpo,
-                    url=r.get("href", ""),
+                    url=url,
                     fecha=datetime.now(),
-                    tags=["search", palabras_clave],
+                    # DuckDuckGo no entrega fecha de publicación
+                    tags=["search", "sin_fecha", palabras_clave],
                 ))
     except ImportError:
         logger.warning("ddgs no instalado")

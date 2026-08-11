@@ -46,6 +46,14 @@ INSTRUCCIONES:
 5. ¿ESTÁS DE ACUERDO con las puntuaciones del Estadista y el Filósofo? Si no, ¿por qué?
    Tu desacuerdo no es un error — es información sobre la naturaleza del nodo.
 
+REGLA DE ACTUALIDAD:
+- Ignora artículos de referencia o enciclopédicos sin fecha de publicación
+  (p. ej. Wikipedia): NO son evidencia del estado actual del nodo.
+- Usa la fecha de cada item (campo 'Fecha') para juzgar si la información
+  es reciente. Si un item dice 'Fecha: no disponible', descuéntale peso.
+- Si solo hay contenido atemporal o sin fecha, puntúa cerca de 5.0
+  ("sin novedades relevantes") y señálalo en la justificación.
+
 FORMATO DE RESPUESTA (JSON):
 {
   "nodo": "{nodo}",

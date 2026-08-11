@@ -68,8 +68,8 @@ class TestObtenerItems:
             "rss": [{"url": "http://test.com/feed", "activo": True}]
         }
         mock_fetch.return_value = [
-            MagicMock(id="rss-0", titulo="Noticia 1", fuente="test", contenido="...", url="http://a.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
-            MagicMock(id="rss-1", titulo="Noticia 2", fuente="test", contenido="...", url="http://b.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
+            MagicMock(id="rss-0", titulo="Noticia 1", fuente="biobiochile", contenido="...", url="http://a.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
+            MagicMock(id="rss-1", titulo="Noticia 2", fuente="biobiochile", contenido="...", url="http://b.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
         ]
         items = obtener_items(limite=10, usar_cache=False)
         assert len(items) == 2
@@ -84,7 +84,7 @@ class TestObtenerItems:
             "rss": [{"url": "http://test.com/feed", "activo": True}]
         }
         mock_fetch.return_value = [
-            MagicMock(id="rss-0", titulo="N", fuente="t", contenido=".", url="http://a.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
+            MagicMock(id="rss-0", titulo="N", fuente="biobiochile", contenido=".", url="http://a.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
         ]
         obtener_items(limite=10, usar_cache=False)
         items2 = obtener_items(limite=10, usar_cache=True)
@@ -96,7 +96,7 @@ class TestObtenerItems:
             "rss": [{"url": "http://test.com/feed", "activo": True}]
         }
         mock_fetch.return_value = [
-            MagicMock(id="rss-0", titulo="N", fuente="t", contenido=".", url="http://a.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
+            MagicMock(id="rss-0", titulo="N", fuente="biobiochile", contenido=".", url="http://a.com", fecha=datetime.now(timezone.utc), tags=["rss"]),
         ]
         obtener_items(limite=5, usar_cache=False)
         obtener_items(limite=10, usar_cache=False)

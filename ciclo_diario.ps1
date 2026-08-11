@@ -1,5 +1,6 @@
 $env:PYTHONIOENCODING = "utf-8"
 $Ruta = $PSScriptRoot
+Set-Location -LiteralPath $Ruta
 $Log = "$Ruta\data\logs\ciclo_$(Get-Date -Format 'yyyy-MM-dd').log"
 $null = New-Item -ItemType Directory -Path (Split-Path $Log) -Force
 & "C:\Python314\python.exe" -m topologia.main daily *>> $Log

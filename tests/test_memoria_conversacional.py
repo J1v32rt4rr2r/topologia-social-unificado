@@ -1,7 +1,7 @@
 """Tests de MemoriaRedactor (memoria conversacional del Redactor)."""
 
 import tempfile
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 import pytest
@@ -72,6 +72,26 @@ class TestRegistroYContexto:
     def test_registrar_sin_informe_no_crash(self, memoria):
         memoria.registrar_dia(date(2026, 8, 1), _estado(date(2026, 8, 1)))
         assert memoria.metricas()["buffer_mensajes"] == 1
+
+    def test_registrar_dia_con_datetime_normaliza_fecha(self, memoria):
+        f = datetime(2026, 8, 2, 6, 0, 0)
+        memoria.registrar_dia(f, _estado(f), [], [], _informe("Informe día 2"))
+        assert memoria.ultima_fecha == "2026-08-02"
+        assert "Día 2026-08-02" in memoria.buffer[0]["content"]
+
+    def test_archivado_con_datetime_no_crash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            m = MemoriaRedactor(
+                sociedad="Test", ruta=Path(tmp) / "mem.json",
+                max_token_limit=2000, llm=_resumen_fake,
+            )
+            m.resumen_rodante = "Resumen de agosto: hitos del mes."
+            m.primer_dia_resumen = "2026-08-01"
+            f = datetime(2026, 9, 1, 6, 0, 0)
+            m.registrar_dia(f, _estado(f), [], [], _informe("Informe día 2"))
+            assert len(m.memoria_permanente) == 1
+            assert m.memoria_permanente[0]["hasta"] == "2026-09-01"
+            assert m.ultima_fecha == "2026-09-01"
 
     def test_round_trip_persistencia(self, memoria):
         with tempfile.TemporaryDirectory() as tmp:

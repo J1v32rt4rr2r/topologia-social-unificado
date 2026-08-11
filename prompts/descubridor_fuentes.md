@@ -5,7 +5,7 @@ El sistema necesita cubrir estos temas culturales para Chile:
 
 Los nodos con déficit de cobertura son: {nodos_deficit}
 
-Para CADA nodo con déficit, genera 2 consultas de búsqueda en español que encuentren sitios web chilenos especializados en ese tema. Las consultas deben apuntar a sitios con contenido original y actualizado (no agregadores).
+Para CADA nodo con déficit, genera 2 consultas de búsqueda en español que encuentren sitios web chilenos especializados en ese tema. Las consultas deben apuntar a sitios con contenido original y actualizado (no agregadores) y a NOTICIAS de los últimos días, no a artículos de referencia o enciclopedias.
 
 Además, para cada nodo sugiere al menos 1 sitio web chileno concreto (URL) que sepas que cubre ese tema y que probablemente tenga RSS.
 
@@ -22,3 +22,4 @@ Reglas:
 - Prioriza medios independientes, ONGs, centros culturales, ministerios, universidades
 - No repitas fuentes ya conocidas: {fuentes_conocidas}
 - Las URLs deben ser dominios principales (ej: https://ejemplo.cl)
+- Evita Wikipedia, sitios de referencia o enciclopedias (contenido atemporal sin fecha)

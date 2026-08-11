@@ -33,7 +33,16 @@ class LLMClient:
         api_key = os.getenv("DEEPSEEK_API_KEY", os.getenv("OPENAI_API_KEY", ""))
         base_url = os.getenv("LLM_BASE_URL", "https://api.deepseek.com")
         self.modelo = os.getenv("LLM_MODELO", "deepseek-chat")
-        self.client = OpenAI(api_key=api_key, base_url=base_url)
+        self.es_ollama = "11434" in base_url or "ollama" in base_url.lower()
+        # Timeout explícito: un proveedor lento no debe congelar el ciclo
+        # (los reintentos se gestionan en generar(); el SDK no reintenta).
+        timeout = float(os.getenv("LLM_TIMEOUT", "300"))
+        self.client = OpenAI(
+            api_key=api_key,
+            base_url=base_url,
+            timeout=timeout,
+            max_retries=0,
+        )
 
     def generar(
         self,
@@ -52,45 +61,41 @@ class LLMClient:
         if formato_json:
             kwargs["response_format"] = {"type": "json_object"}
 
-        def _intentar(con_thinking: bool) -> str:
-            payload = dict(kwargs)
-            if con_thinking:
-                # deepseek-v4-flash es modelo de razonamiento: gasta max_tokens en
-                # reasoning_content y puede devolver content vacío. Deshabilitarlo.
-                payload["extra_body"] = {"thinking": {"type": "disabled"}}
-            for intento in range(max_retries):
-                try:
-                    respuesta = self.client.chat.completions.create(**payload)
-                    contenido = respuesta.choices[0].message.content or ""
-                    if not contenido.strip():
-                        raise ValueError("respuesta vacía del LLM")
-                    return contenido
-                except APIStatusError as e:
-                    if con_thinking and e.status_code == 400:
-                        logger.warning("LLM: proveedor rechazó 'thinking' (HTTP 400), reintentando sin el parámetro")
-                        return None
-                    if intento < max_retries - 1:
-                        wait = 2 ** intento
-                        logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
-                        time.sleep(wait)
-                    else:
-                        raise
-                except Exception as e:
-                    if intento < max_retries - 1:
-                        wait = 2 ** intento
-                        logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
-                        time.sleep(wait)
-                    else:
-                        raise
+        # Modelos de razonamiento (p. ej. deepseek-v4-flash) gastan max_tokens en
+        # reasoning_content y pueden devolver content vacío. Deshabilitar el
+        # razonamiento cuando el proveedor lo soporte (DeepSeek); Ollama usa su
+        # propio flag 'think' y rechaza/ignora extra_body, por lo que se omite.
+        payload = dict(kwargs)
+        if not self.es_ollama and os.getenv("LLM_THINKING_DISABLED", "1") == "1":
+            payload["extra_body"] = {"thinking": {"type": "disabled"}}
 
-        try:
-            resultado = _intentar(con_thinking=True)
-        except Exception as e:
-            logger.warning(f"LLM con thinking disabled falló: {e}. Reintentando sin el parámetro...")
-            resultado = None
-        if resultado is None:
-            resultado = _intentar(con_thinking=False)
-        return resultado
+        for intento in range(max_retries):
+            try:
+                respuesta = self.client.chat.completions.create(**payload)
+                contenido = respuesta.choices[0].message.content or ""
+                if not contenido.strip():
+                    raise ValueError("respuesta vacía del LLM")
+                return contenido
+            except APIStatusError as e:
+                if e.status_code == 400 and "extra_body" in payload:
+                    logger.warning("LLM: proveedor rechazó 'thinking' (HTTP 400), reintentando sin el parámetro")
+                    del payload["extra_body"]
+                    continue
+                if intento < max_retries - 1:
+                    wait = 2 ** intento
+                    logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
+                    time.sleep(wait)
+                else:
+                    raise
+            except Exception as e:
+                if intento < max_retries - 1:
+                    wait = 2 ** intento
+                    logger.warning(f"LLM retry {intento + 1}/{max_retries} tras {wait}s: {e}")
+                    time.sleep(wait)
+                else:
+                    raise
+
+        raise RuntimeError("LLM falló tras reintentos")
 
     def generar_json(
         self,

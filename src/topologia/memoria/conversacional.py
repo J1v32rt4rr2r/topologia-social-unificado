@@ -21,7 +21,7 @@ import json
 import re
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import Callable
 
 from topologia.logger import logger
 from topologia.models.schemas import (
@@ -139,7 +139,9 @@ class MemoriaRedactor:
         return "\n".join(partes)
 
     @staticmethod
-    def _parsear_fecha(valor: str | date) -> date:
+    def _parsear_fecha(valor: str | datetime | date) -> date:
+        if isinstance(valor, datetime):
+            return valor.date()
         if isinstance(valor, date):
             return valor
         return date.fromisoformat(valor)

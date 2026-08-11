@@ -4,6 +4,7 @@ import json
 import math
 import os
 import shutil
+import sys
 from pathlib import Path
 
 from topologia.agents.arbitro import Arbitro
@@ -20,12 +21,10 @@ from topologia.math.torus import (
     coherencia_formas,
     coherencia_global,
     detectar_vuelco,
-    diferencia_angular,
     forma_cultural_compleja,
     forma_transversal,
     tension_sistema,
     theta_cultura,
-    theta_nodo,
 )
 from topologia.memoria.decisiones import DecisionDB
 from topologia.models.schemas import (
@@ -45,6 +44,10 @@ from topologia.web.brechas import (
 from topologia.web.rss import obtener_items as obtener_items_rss
 from topologia.web.search import buscar_para_estudio
 from topologia.web.bcn import obtener_items as obtener_items_bcn
+from topologia.web.bcentral import obtener_items as obtener_items_bcentral
+from topologia.web.bcentral import obtener_items_bde, obtener_items_bde_periodicos
+from topologia.web.ine import obtener_items as obtener_items_ine
+from topologia.web.ine import obtener_items_agenda as obtener_items_agenda_ine
 from topologia.web.resumen import obtener_items as obtener_items_resumen
 from topologia.web.youtube import buscar as buscar_youtube
 from topologia.web.espectro_b import obtener_items as obtener_items_espectro_b
@@ -73,6 +76,13 @@ class Orchestrator:
         self.redactor = Redactor()
         self.memoria = DecisionDB()
         self.store = FileStore()
+
+    @staticmethod
+    def _asegurar_ruta_scripts() -> None:
+        """Garantiza que la raíz del repo esté en sys.path para importar scripts/."""
+        raiz = Path(__file__).resolve().parents[2]
+        if str(raiz) not in sys.path:
+            sys.path.insert(0, str(raiz))
 
     def observar(self, sociedad: str = "Chile", items: list | None = None) -> EstadoCultural:
         logger.info(f"Iniciando observación: {sociedad}")
@@ -281,8 +291,14 @@ class Orchestrator:
         # PASO 1: Recolección clásica
         items_rss = obtener_items_rss(limite=20)
         items_bcn = obtener_items_bcn(limite=3)
+        items_bcentral = (
+            obtener_items_bcentral(limite=20)
+            + obtener_items_bde(limite=5)
+            + obtener_items_bde_periodicos(limite=3)
+        )
         items_resumen = obtener_items_resumen(limite=10)
-        items = items_rss + items_bcn + items_resumen
+        items_ine = obtener_items_ine(limite=9) + obtener_items_agenda_ine(limite=8)
+        items = items_rss + items_bcn + items_bcentral + items_resumen + items_ine
 
         items_espectro_b = obtener_items_espectro_b(limite_por_medio=3)
         if items_espectro_b:
@@ -338,6 +354,45 @@ class Orchestrator:
                 items.extend(items_descubiertos)
                 items = puntuar_relevancia(items, estrategia)
                 items_por_nodo = self._clasificar_items_por_nodo(items)
+
+        # PASO 6: Destilación en las 27 dimensiones (m/l/s por nodo)
+        try:
+            from topologia.web.dimensiones import (
+                asignar_dimensiones,
+                cobertura_por_dimension,
+                dimensiones_ciegas,
+            )
+
+            asignar_dimensiones(items)
+            self._cobertura_dimensiones = cobertura_por_dimension(items)
+            ciegas = dimensiones_ciegas(self._cobertura_dimensiones)
+            n_ciegas = sum(len(ds) for ds in ciegas.values())
+            if ciegas:
+                logger.info(f"Destilación 27: {27 - n_ciegas}/27 coordenadas cubiertas ({n_ciegas} ciegas)")
+
+            # Re-lectura local: llena ciegas con items ya existentes (sin búsquedas)
+            if ciegas:
+                try:
+                    from topologia.web.dimensiones import releer_ciegas
+
+                    n_rel = releer_ciegas(items, ciegas, self._cobertura_dimensiones)
+                    if n_rel:
+                        logger.info(f"Re-lectura LLM: {n_rel} coordenadas ciegas cubiertas")
+                        self._cobertura_dimensiones = cobertura_por_dimension(items)
+                        ciegas = dimensiones_ciegas(self._cobertura_dimensiones)
+                except Exception as exc:
+                    logger.warning(f"Re-lectura LLM no completada: {exc}")
+
+            if ciegas:
+                estrategia.dimensiones_con_brecha = ciegas
+                items, self._cobertura_dimensiones = self._redestilar_ciegas(
+                    ciegas, items, estrategia
+                )
+        except Exception as exc:
+            logger.warning(f"Destilación de dimensiones no completada: {exc}")
+            self._cobertura_dimensiones = {}
+
+        items_por_nodo = self._clasificar_items_por_nodo(items)
 
         paso1 = self.observar(sociedad, items=items)
         operaciones = detectar_operaciones(paso1)
@@ -418,6 +473,7 @@ class Orchestrator:
             except Exception as e:
                 logger.warning(f"Memoria Redactor: no se pudo registrar el día: {e}")
 
+        self._asegurar_ruta_scripts()
         try:
             from scripts.analisis_graficos import generar_todos
             generar_todos(sociedad, items_por_nodo=items_por_nodo)
@@ -452,6 +508,7 @@ class Orchestrator:
             items_por_nodo=items_por_nodo,
             informe_redactor=informe,
             brechas=brechas,
+            cobertura_dimensiones=getattr(self, "_cobertura_dimensiones", None),
         )
         logger.info(f"Informe generado: {ruta_informe}")
         logger.info(f"Resumen: {informe.resumen_ejecutivo}")
@@ -472,6 +529,47 @@ class Orchestrator:
 
     def _clasificar_items_por_nodo(self, items: list) -> dict[str, list]:
         return clasificar_items_por_nodo_semantico(items)
+
+    def _redestilar_ciegas(self, ciegas: dict[str, list], items: list, estrategia):
+        """Re-busca las dimensiones ciegas con queries dirigidas y re-etiqueta.
+
+        Retorna (items_actualizados, cobertura_actualizada). Una sola pasada
+        (sin bucles) y acotada por max_por_dim para no castigar el ciclo.
+        """
+        import os
+
+        if os.getenv("DIM_REDESTILAR", "1") != "1" or not ciegas:
+            return items, self._cobertura_dimensiones
+
+        from topologia.web.dimensiones import (
+            asignar_dimensiones,
+            cobertura_por_dimension,
+            queries_para_ciegas,
+        )
+        from topologia.web.relevancia import (
+            _queries_compuestas,
+            _queries_estaticas_dimensiones,
+            recolectar_por_queries,
+        )
+
+        # Enriquecer: varias queries por dimensión ciega + compuestos, con más resultados
+        queries: dict[str, list[str]] = {}
+        for nodo, dims in ciegas.items():
+            mezcla = list(_queries_estaticas_dimensiones(nodo)) + queries_para_ciegas({nodo: dims})[nodo]
+            mezclas = list(dict.fromkeys(mezcla))
+            mezclas += [q for q in _queries_compuestas(nodo) if q not in mezclas]
+            queries[nodo] = mezclas[:6]
+
+        nuevos = recolectar_por_queries(queries, estrategia, max_por_query=12)
+        if not nuevos:
+            return items, self._cobertura_dimensiones
+
+        logger.info(
+            f"Redestilación: {len(nuevos)} items nuevos para {sum(len(v) for v in ciegas.values())} ciegas"
+        )
+        items = puntuar_relevancia(items + nuevos, estrategia)
+        asignar_dimensiones(items)
+        return items, cobertura_por_dimension(items)
 
     def _actualizar_rendimiento_fuentes(self, items_por_nodo: dict[str, list]):
         import yaml
@@ -648,6 +746,74 @@ class Orchestrator:
                 estados.append(estado)
         return estados
 
+    def _aplicar_desarrollo_temporal(self, estado: EstadoCultural, sociedad: str) -> None:
+        """Axioma T: vector de desarrollo de las matrices lógicas M sobre
+        toda la serie histórica de estados (muestreo irregular → Lomb-Scargle).
+
+        El orquestador interpreta el vector de desarrollo como lo *esperado*;
+        si el valor actual difiere del modelo armónico por más del umbral z,
+        la diferencia se reporta como disrupción.
+        """
+        from topologia.math.armonicas import disrupcion_M, vector_desarrollo_M
+
+        fechas = self.store.listar_estados(sociedad)
+        t: list[float] = []
+        m_m: list[float] = []
+        m_l: list[float] = []
+        m_s: list[float] = []
+        ref = None
+        for f in fechas:
+            e = self.store.cargar_estado(sociedad, f)
+            if not e:
+                continue
+            fecha_iso = e.fecha.date()
+            if ref is None:
+                ref = fecha_iso
+            t.append((fecha_iso - ref).days)
+            m_m.append(e.m_m)
+            m_l.append(e.m_l)
+            m_s.append(e.m_s)
+
+        if len(t) < 3:
+            return
+
+        dev = vector_desarrollo_M(t, m_m, m_l, m_s)
+        estado.desarrollo_m = dev["m"]
+        estado.desarrollo_l = dev["l"]
+        estado.desarrollo_s = dev["s"]
+
+        disr = disrupcion_M(t, m_m, m_l, m_s)
+        estado.disrupcion_m = disr["m"]
+        estado.disrupcion_l = disr["l"]
+        estado.disrupcion_s = disr["s"]
+        estado.disrupcion_detectada = any(
+            v.get("es_disrupcion", False) for v in disr.values()
+        )
+        if estado.disrupcion_detectada:
+            logicas = [k for k, v in disr.items() if v.get("es_disrupcion", False)]
+            logger.warning(
+                f"Disrupción temporal detectada en lógicas {logicas}: "
+                f"el estado difiere del modelo armónico esperado"
+            )
+
+    @staticmethod
+    def _con_anadir_desarrollo(riesgo, estado: EstadoCultural) -> dict:
+        """Expone en el resultado el vector de desarrollo (lo esperado) y las
+        disrupciones (desvío de la observación actual frente a lo esperado)."""
+        res = riesgo.a_dict()
+        res["vector_desarrollo"] = {
+            "M": estado.desarrollo_m,
+            "L": estado.desarrollo_l,
+            "S": estado.desarrollo_s,
+        }
+        res["disrupciones"] = {
+            "M": estado.disrupcion_m,
+            "L": estado.disrupcion_l,
+            "S": estado.disrupcion_s,
+            "detectada": estado.disrupcion_detectada,
+        }
+        return res
+
     def _guardar_informe(self, sociedad: str, informe) -> None:
         fecha = informe.fecha.strftime("%Y-%m-%d")
         self.store.guardar_json(
@@ -776,9 +942,13 @@ class Orchestrator:
         historial = self._cargar_historial_lista(sociedad, max_dias=14)
         riesgo = _calc(estado, historial=historial)
 
+        self._aplicar_desarrollo_temporal(estado, sociedad)
+        self.store.guardar_estado(estado)
+        res = self._con_anadir_desarrollo(riesgo, estado)
+
         ruta_red = exportar_red(riesgo, estado, historial=historial)
 
-        res = riesgo.a_dict()
+        res = self._con_anadir_desarrollo(riesgo, estado)
         res["ruta_red"] = str(ruta_red)
         res["historial_tam"] = len(historial)
 

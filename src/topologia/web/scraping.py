@@ -8,6 +8,7 @@ import yaml
 from topologia.logger import logger
 from topologia.models.schemas import ItemInformativo
 from topologia.web.brechas import NODOS_CULTURALES
+from topologia.web.compuestos import actualizar_termino, frases_para_nodo
 from topologia.web.search import buscar
 
 
@@ -19,18 +20,29 @@ def _cargar_palabras_clave() -> dict:
         return yaml.safe_load(f)
 
 
+def _termino_actualizado(termino: str) -> str:
+    """Sesga la búsqueda hacia noticias recientes ('economía Chile' →
+    'economía Chile noticias agosto 2026'). Los motores de búsqueda
+    priorizan contenido con fecha cuando la consulta la incluye."""
+    return actualizar_termino(termino)
+
+
 def recolectar_para_nodo(nodo_id: str, max_items: int = 5) -> list[ItemInformativo]:
     data = _cargar_palabras_clave()
     nodos = data.get("nodos", {})
     info = nodos.get(nodo_id, {})
-    terminos = info.get("busqueda_externa", [])
+    terminos = list(info.get("busqueda_externa", []))
+    # Combinaciones de nodos (p. ej. "política económica" para POLITICA/ECONOMIA)
+    for frase in frases_para_nodo(nodo_id, max_frases=6):
+        if frase not in terminos:
+            terminos.append(frase)
 
     items: list[ItemInformativo] = []
     vistos: set[str] = set()
     for termino in terminos:
         if len(items) >= max_items:
             break
-        resultados = buscar(termino, max_resultados=max_items * 2)
+        resultados = buscar(_termino_actualizado(termino), max_resultados=max_items * 2)
         for r in resultados:
             if r.url and r.url not in vistos:
                 vistos.add(r.url)
