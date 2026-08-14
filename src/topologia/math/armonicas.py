@@ -103,13 +103,15 @@ def vector_desarrollo(
     """
     if len(t) < 3 or len(t) != len(y):
         return {"status": "insuficiente", "n": len(t), "periodo": None,
-                "fase": None, "potencia": 0.0, "dominancia": 0.0}
+                "fase": None, "potencia": 0.0, "dominancia": 0.0,
+                "r2": 0.0, "confianza_pct": None}
 
     f = frecuencias_candidatas(periodo_min, periodo_max, n_frecuencias)
     potencias = lomb_scargle(t, y, f)
     if not potencias:
         return {"status": "insuficiente", "n": len(t), "periodo": None,
-                "fase": None, "potencia": 0.0, "dominancia": 0.0}
+                "fase": None, "potencia": 0.0, "dominancia": 0.0,
+                "r2": 0.0, "confianza_pct": None}
 
     k_max = max(range(len(potencias)), key=lambda k: potencias[k])
     p_max = potencias[k_max]
@@ -124,6 +126,22 @@ def vector_desarrollo(
 
     potencia_total = sum(potencias) or 1.0
     status = "preliminar" if len(t) < 45 else "estable"
+    dominancia = p_max / potencia_total
+
+    # Ajuste a la frecuencia dominante para medir la calidad del modelo armónico.
+    modelo = modelo_esperado(t, y, f_pico)
+    media = sum(y) / len(y)
+    ss_tot = sum((v - media) ** 2 for v in y) or 1e-12
+    ss_res = sum((v - e) ** 2 for v, e in zip(y, modelo["esperado"]))
+    r2 = max(0.0, 1.0 - ss_res / ss_tot)
+
+    # Confianza de la proyección: pilar la calidad del ajuste (r²), penalizada
+    # por falta de muestras (n<45 es preliminar) y por falta de señal rítmica
+    # (serie plana → no hay ciclo que proyectar).
+    rango = (max(y) - min(y)) or 1e-9
+    signal = min(rango / 2.0, 1.0)
+    factor_n = min(len(t) / 45.0, 1.0)
+    confianza = max(0.0, min(1.0, r2 * factor_n * signal))
 
     return {
         "status": status,
@@ -131,7 +149,9 @@ def vector_desarrollo(
         "periodo": round(1.0 / f_pico, 2),
         "fase": round(fase, 4),
         "potencia": round(p_max, 4),
-        "dominancia": round(p_max / potencia_total, 4),
+        "dominancia": round(dominancia, 4),
+        "r2": round(r2, 4),
+        "confianza_pct": round(confianza * 100),
     }
 
 
@@ -224,13 +244,15 @@ def disrupcion_temporal(
     """
     if len(t) < 4 or len(t) != len(y):
         return {"status": "insuficiente", "esperado": None, "actual": None,
-                "residuo": None, "desvio_normalizado": None, "es_disrupcion": False}
+                "residuo": None, "desvio_normalizado": None, "es_disrupcion": False,
+                "r2": 0.0, "dominancia": 0.0, "confianza_proyeccion_pct": None}
 
     f = frecuencias_candidatas(periodo_min, periodo_max, n_frecuencias)
     potencias = lomb_scargle(t, y, f)
     if not potencias:
         return {"status": "insuficiente", "esperado": None, "actual": None,
-                "residuo": None, "desvio_normalizado": None, "es_disrupcion": False}
+                "residuo": None, "desvio_normalizado": None, "es_disrupcion": False,
+                "r2": 0.0, "dominancia": 0.0, "confianza_proyeccion_pct": None}
 
     f_pico = _refinar_pico(potencias, f)
     modelo = modelo_esperado(t, y, f_pico)
@@ -249,6 +271,23 @@ def disrupcion_temporal(
     residuo = actual - esperado
     z = residuo / sigma
 
+    # Calidad del modelo armónico a la frecuencia pico.
+    media = sum(y) / len(y)
+    ss_tot = sum((v - media) ** 2 for v in y) or 1e-12
+    ss_res = sum((v - e) ** 2 for v, e in zip(y, modelo["esperado"]))
+    r2 = max(0.0, 1.0 - ss_res / ss_tot)
+    potencia_total = sum(potencias) or 1.0
+    p_max = max(potencias)
+    dominancia = p_max / potencia_total
+
+    # Confianza de la proyección: pilar la calidad del ajuste (r²), penalizada
+    # por falta de muestras (n<45 es preliminar) y por falta de señal rítmica
+    # (serie plana → no hay ciclo que proyectar).
+    rango = (max(y) - min(y)) or 1e-9
+    signal = min(rango / 2.0, 1.0)
+    factor_n = min(len(t) / 45.0, 1.0)
+    confianza = max(0.0, min(1.0, r2 * factor_n * signal))
+
     status = "preliminar" if len(t) < 45 else "estable"
     return {
         "status": status,
@@ -259,6 +298,9 @@ def disrupcion_temporal(
         "sigma": round(sigma, 4),
         "desvio_normalizado": round(z, 4),
         "es_disrupcion": abs(z) > z_umbral,
+        "r2": round(r2, 4),
+        "dominancia": round(dominancia, 4),
+        "confianza_proyeccion_pct": round(confianza * 100),
     }
 
 

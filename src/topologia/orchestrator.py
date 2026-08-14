@@ -799,17 +799,42 @@ class Orchestrator:
     @staticmethod
     def _con_anadir_desarrollo(riesgo, estado: EstadoCultural) -> dict:
         """Expone en el resultado el vector de desarrollo (lo esperado) y las
-        disrupciones (desvío de la observación actual frente a lo esperado)."""
+        disrupciones (desvío de la observación actual frente a lo esperado).
+
+        Cada lógica distingue explícitamente:
+          - proyectado_*: lo que el modelo armónico esperaba (vector de desarrollo);
+          - observado_*: el valor real observado (serie m_* de la forma transversal);
+          - confianza_proyeccion_pct: fiabilidad 0-100 del ajuste armónico.
+        """
+        escala_ts = "m_* (forma transversal, Σ(v/9.9))"
+
+        def _arma_logica(disr: dict, dev: dict) -> dict:
+            res = {**disr}
+            res["observado_escala"] = escala_ts
+            res["observado"] = disr.get("actual")
+            res["proyectado"] = disr.get("esperado")
+            res["residuo_abs"] = disr.get("residuo")
+            res["confianza_proyeccion_pct"] = disr.get("confianza_proyeccion_pct")
+            res["r2"] = disr.get("r2")
+            res["desarrollo"] = dev or {}
+            return res
+
+        def _arma_desarrollo(dev: dict) -> dict:
+            res = {**dev} if dev else {}
+            res.setdefault("confianza_pct", dev.get("confianza_pct") if dev else None)
+            res.setdefault("r2", dev.get("r2") if dev else 0.0)
+            return res
+
         res = riesgo.a_dict()
         res["vector_desarrollo"] = {
-            "M": estado.desarrollo_m,
-            "L": estado.desarrollo_l,
-            "S": estado.desarrollo_s,
+            "M": _arma_desarrollo(estado.desarrollo_m),
+            "L": _arma_desarrollo(estado.desarrollo_l),
+            "S": _arma_desarrollo(estado.desarrollo_s),
         }
         res["disrupciones"] = {
-            "M": estado.disrupcion_m,
-            "L": estado.disrupcion_l,
-            "S": estado.disrupcion_s,
+            "M": _arma_logica(estado.disrupcion_m, estado.desarrollo_m),
+            "L": _arma_logica(estado.disrupcion_l, estado.desarrollo_l),
+            "S": _arma_logica(estado.disrupcion_s, estado.desarrollo_s),
             "detectada": estado.disrupcion_detectada,
         }
         return res

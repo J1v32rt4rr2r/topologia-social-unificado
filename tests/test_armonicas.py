@@ -87,10 +87,30 @@ class TestVectorDesarrollo:
         dev = vector_desarrollo(t, y)
         assert dev["status"] == "estable"  # n >= 45
 
+    def test_confianza_series_limpias_altas(self):
+        t, y = _serie_sintetica(periodo=8.0, n=60)
+        dev = vector_desarrollo(t, y)
+        assert dev["r2"] > 0.8
+        assert dev["confianza_pct"] >= 70
+
+    def test_confianza_preliminar_penalizada(self):
+        t, y = _serie_sintetica(periodo=8.0, n=10)
+        dev = vector_desarrollo(t, y)
+        assert dev["status"] == "preliminar"
+        assert dev["confianza_pct"] < 50
+        assert 0 <= dev["confianza_pct"] <= 100
+
+    def test_serie_plana_sin_senal(self):
+        t = list(range(20))
+        y = [5.0] * 20
+        dev = vector_desarrollo(t, y)
+        assert dev["confianza_pct"] == 0
+
     def test_insuficiente(self):
         dev = vector_desarrollo([1.0], [3.0])
         assert dev["status"] == "insuficiente"
         assert dev["periodo"] is None
+        assert dev["confianza_pct"] is None
 
 
 class TestVectorDesarrolloM:
@@ -130,10 +150,29 @@ class TestDisrupcionTemporal:
         assert d["es_disrupcion"] is True
         assert d["desvio_normalizado"] > 2.0
 
+    def test_confianza_series_limpias_altas(self):
+        t, y = _serie_sintetica(periodo=12.0)
+        d = disrupcion_temporal(t, y)
+        assert d["r2"] > 0.8
+        assert d["confianza_proyeccion_pct"] >= 70
+
+    def test_confianza_preliminar_penalizada(self):
+        t, y = _serie_sintetica(periodo=12.0, n=10)
+        d = disrupcion_temporal(t, y)
+        assert d["status"] == "preliminar"
+        assert d["confianza_proyeccion_pct"] < 50
+
+    def test_serie_plana_sin_senal(self):
+        t = list(range(20))
+        y = [5.0] * 20
+        d = disrupcion_temporal(t, y)
+        assert d["confianza_proyeccion_pct"] == 0
+
     def test_insuficiente(self):
         d = disrupcion_temporal([1.0], [3.0])
         assert d["status"] == "insuficiente"
         assert d["es_disrupcion"] is False
+        assert d["confianza_proyeccion_pct"] is None
 
     def test_umbral_personalizado(self):
         t, y = _serie_sintetica(periodo=12.0, n=30)
