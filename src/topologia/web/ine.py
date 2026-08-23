@@ -121,12 +121,17 @@ def _nodo_para(titulo: str) -> str:
         "consumidor", "precio", "remuneraci", "desocupaci", "empleo",
         "producci", "ventas", "industrial", "comercio", "inflaci",
         "ferias", "transporte", "tur", "inventarios", "vitales", "matadero",
+        "vivienda",
     )):
         return "ECONOMIA"
-    if any(k in t for k in (
-        "poblaci", "esperanza", "denuncia", "seguridad", "vivienda",
-    )):
-        return "SOCIEDAD"
+    if any(k in t for k in ("seguridad", "denuncia")):
+        return "POLITICA"
+    # Población y esperanza de vida no tienen nodo cultural directo. Antes se
+    # etiquetaban "SOCIEDAD" (nodo inexistente) y quedaban fuera de cobertura;
+    # ahora se dejan sin nodo sugerido para que la clasificación semántica los
+    # asigne, en vez de perderlos en un bucket fantasma.
+    if any(k in t for k in ("poblaci", "esperanza")):
+        return ""
     return "ECONOMIA"
 
 

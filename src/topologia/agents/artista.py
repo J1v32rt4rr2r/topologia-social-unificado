@@ -113,15 +113,30 @@ class Artista(Agent):
 
         especulaciones = []
         for i, r in enumerate(resultado):
-            esp = Especulacion(
-                id=f"ESP-{i+1:04d}",
-                patron_id=r.get("patron_id", "P-???"),
-                items_relacionados=r.get("items", []),
-                confianza=float(r.get("confianza", 0.5)),
-                argumento=r.get("argumento", ""),
-                nodos_sugeridos=r.get("nodos_sugeridos", []),
-                pregunta_abierta=r.get("pregunta_abierta", ""),
-            )
+            # Un item malformado (p. ej. confianza no numérica o fuera de
+            # [0,1]) no debe tumbar el ciclo diario: se omite con warning.
+            if not isinstance(r, dict):
+                logger.warning(f"Artista: especulación {i+1} no es objeto, se omite")
+                continue
+            try:
+                confianza = float(r.get("confianza", 0.5))
+                confianza = max(0.0, min(1.0, confianza))
+            except (TypeError, ValueError):
+                logger.warning(f"Artista: confianza inválida en especulación {i+1}, se omite")
+                continue
+            try:
+                esp = Especulacion(
+                    id=f"ESP-{i+1:04d}",
+                    patron_id=r.get("patron_id", "P-???"),
+                    items_relacionados=r.get("items", []),
+                    confianza=confianza,
+                    argumento=r.get("argumento", ""),
+                    nodos_sugeridos=r.get("nodos_sugeridos", []),
+                    pregunta_abierta=r.get("pregunta_abierta", ""),
+                )
+            except Exception as e:
+                logger.warning(f"Artista: especulación {i+1} inválida, se omite: {e}")
+                continue
             especulaciones.append(esp)
             self.memoria.registrar("pattern", f"Especulación: {esp.argumento}", tags=[esp.patron_id])
 

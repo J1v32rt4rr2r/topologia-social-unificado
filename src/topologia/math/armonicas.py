@@ -67,8 +67,17 @@ def lomb_scargle(
         ) / w
         cs = [math.cos(w * (ti - tau)) for ti in t]
         sn = [math.sin(w * (ti - tau)) for ti in t]
-        nom = (_sumsq(d * c for d, c in zip(dy, cs)) ** 2 / _sumsq(cs)
-               + _sumsq(d * s for d, s in zip(dy, sn)) ** 2 / _sumsq(sn))
+        # Denominadores degenerados: con muestreo en días enteros y periodo 2
+        # (f=0.5, siempre en la grilla) Σsin² queda ~1e-28 por ruido de coma
+        # flotante; dividir amplificaría ese ruido en un pico espurio. Esa
+        # frecuencia se descarta (potencia 0) en vez de explotar.
+        den_cs = _sumsq(cs)
+        den_sn = _sumsq(sn)
+        if den_cs < 1e-12 or den_sn < 1e-12:
+            potencias.append(0.0)
+            continue
+        nom = (_sumsq(d * c for d, c in zip(dy, cs)) ** 2 / den_cs
+               + _sumsq(d * s for d, s in zip(dy, sn)) ** 2 / den_sn)
         potencias.append(nom / (2.0 * var))
     return potencias
 
@@ -80,7 +89,10 @@ def _refinar_pico(potencias: Sequence[float], frecuencias: Sequence[float]) -> f
         return frecuencias[kmax]
     f0, fm, f1 = frecuencias[kmax - 1], frecuencias[kmax], frecuencias[kmax + 1]
     p0, pm, p1 = potencias[kmax - 1], potencias[kmax], potencias[kmax + 1]
-    lp0, lpm, lp1 = math.log(p0), math.log(pm), math.log(p1)
+    # Potencias exactamente 0 (ortogonalidad exacta en una frecuencia de la
+    # grilla) harían log(0) → ValueError; se pisa a un mínimo numérico.
+    lp0, lpm, lp1 = (math.log(max(p0, 1e-300)), math.log(max(pm, 1e-300)),
+                     math.log(max(p1, 1e-300)))
     denom = lp0 - 2 * lpm + lp1
     if abs(denom) < 1e-12:
         return fm
@@ -238,6 +250,11 @@ def disrupcion_temporal(
     valor actual (última muestra) se desvía del modelo por más de `z_umbral`
     desviaciones típicas, se marca como disrupción.
 
+    El modelo se ajusta OUT-OF-SAMPLE: la última observación se excluye del
+    ajuste (Lomb-Scargle + mínimos cuadrados) y se compara contra la predicción
+    en su instante. Si se incluyera, el residuo que mide la disrupción se
+    minimizaría por construcción y la disrupción se subestimaría.
+
     Returns
     -------
     dict: {status, esperado, actual, residuo, sigma, desvion_normalizada, es_disrupcion}
@@ -247,17 +264,23 @@ def disrupcion_temporal(
                 "residuo": None, "desvio_normalizado": None, "es_disrupcion": False,
                 "r2": 0.0, "dominancia": 0.0, "confianza_proyeccion_pct": None}
 
+    t_fit, y_fit = t[:-1], y[:-1]
+    if len(t_fit) < 3:
+        return {"status": "insuficiente", "esperado": None, "actual": None,
+                "residuo": None, "desvio_normalizado": None, "es_disrupcion": False,
+                "r2": 0.0, "dominancia": 0.0, "confianza_proyeccion_pct": None}
+
     f = frecuencias_candidatas(periodo_min, periodo_max, n_frecuencias)
-    potencias = lomb_scargle(t, y, f)
+    potencias = lomb_scargle(t_fit, y_fit, f)
     if not potencias:
         return {"status": "insuficiente", "esperado": None, "actual": None,
                 "residuo": None, "desvio_normalizado": None, "es_disrupcion": False,
                 "r2": 0.0, "dominancia": 0.0, "confianza_proyeccion_pct": None}
 
     f_pico = _refinar_pico(potencias, f)
-    modelo = modelo_esperado(t, y, f_pico)
+    modelo = modelo_esperado(t_fit, y_fit, f_pico)
 
-    residuos = [v - e for v, e in zip(y, modelo["esperado"])]
+    residuos = [v - e for v, e in zip(y_fit, modelo["esperado"])]
     sigma_residual = math.sqrt(sum(r * r for r in residuos) / len(residuos)) or 1e-9
 
     # Suelo robusto: la desviación mínima interpretable es el 5% del rango de la
@@ -266,15 +289,18 @@ def disrupcion_temporal(
     rango = (max(y) - min(y)) or 1e-9
     sigma = max(sigma_residual, 0.05 * rango)
 
+    # Predicción del último instante con los coeficientes ajustados sin él.
     actual = y[-1]
-    esperado = modelo["esperado"][-1]
+    c, a, b = modelo["coef"]
+    w = 2.0 * math.pi * f_pico
+    esperado = c + a * math.cos(w * t[-1]) + b * math.sin(w * t[-1])
     residuo = actual - esperado
     z = residuo / sigma
 
-    # Calidad del modelo armónico a la frecuencia pico.
-    media = sum(y) / len(y)
-    ss_tot = sum((v - media) ** 2 for v in y) or 1e-12
-    ss_res = sum((v - e) ** 2 for v, e in zip(y, modelo["esperado"]))
+    # Calidad del modelo armónico a la frecuencia pico (sobre el set de ajuste).
+    media = sum(y_fit) / len(y_fit)
+    ss_tot = sum((v - media) ** 2 for v in y_fit) or 1e-12
+    ss_res = sum((v - e) ** 2 for v, e in zip(y_fit, modelo["esperado"]))
     r2 = max(0.0, 1.0 - ss_res / ss_tot)
     potencia_total = sum(potencias) or 1.0
     p_max = max(potencias)
@@ -283,7 +309,6 @@ def disrupcion_temporal(
     # Confianza de la proyección: pilar la calidad del ajuste (r²), penalizada
     # por falta de muestras (n<45 es preliminar) y por falta de señal rítmica
     # (serie plana → no hay ciclo que proyectar).
-    rango = (max(y) - min(y)) or 1e-9
     signal = min(rango / 2.0, 1.0)
     factor_n = min(len(t) / 45.0, 1.0)
     confianza = max(0.0, min(1.0, r2 * factor_n * signal))

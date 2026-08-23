@@ -148,4 +148,19 @@ class Estadista(Agent):
                 "conclusion": "Error en investigación",
             }
 
-        return AnalisisDim(**resultado)
+        if isinstance(resultado, list):
+            resultado = resultado[0] if resultado else {}
+        if not isinstance(resultado, dict):
+            resultado = {}
+        try:
+            return AnalisisDim(**resultado)
+        except Exception as e:
+            logger.warning(f"[{self.config.nombre}] resultado inválido en validar_estudio: {e}")
+            return AnalisisDim(
+                dimension="M_m",
+                patron_id=kwargs.get("patron_id", "P-???"),
+                confianza=0.0,
+                evidencia="",
+                hallazgo="",
+                conclusion="Error en investigación",
+            )

@@ -72,7 +72,14 @@ class Redactor(Agent):
                 logger.error(f"Error en Redactor (intento 2): {e2}")
                 return self._fallback(estado, operaciones)
 
-        return self._parsear_resultado(resultado, estado, operaciones)
+        # El LLM puede devolver JSON con forma inesperada (lista, texto, campos
+        # anidados): cualquier error de parseo debe degradar a fallback, no
+        # tumbar el ciclo diario (que ya guardó el estado en este punto).
+        try:
+            return self._parsear_resultado(resultado, estado, operaciones)
+        except Exception as e:
+            logger.error(f"Redactor: JSON con forma inesperada, usando fallback: {e}")
+            return self._fallback(estado, operaciones)
 
     def _formatear_estado(self, estado: EstadoCultural) -> str:
         lineas = [f"Sociedad: {estado.sociedad}"]
@@ -165,9 +172,18 @@ class Redactor(Agent):
         return "\n".join(lineas)
 
     def _parsear_resultado(self, resultado: dict, estado: EstadoCultural, operaciones: list[OperacionCinetica]) -> InformeDiario:
+        # `generar_json` puede devolver una lista o escalares: el contrato del
+        # Redactor es un objeto, cualquier otra forma es un error de parseo.
+        if not isinstance(resultado, dict):
+            raise ValueError(f"JSON del Redactor no es objeto: {type(resultado).__name__}")
+
         alertas_data = resultado.get("alertas", [])
+        if not isinstance(alertas_data, list):
+            alertas_data = []
         alertas = []
         for a in alertas_data:
+            if not isinstance(a, dict):
+                continue
             try:
                 tipo = TipoAlerta(a.get("tipo", "riesgo_estructural"))
             except ValueError:
@@ -175,6 +191,8 @@ class Redactor(Agent):
             alertas.append(Alerta(tipo=tipo, mensaje=a.get("mensaje", "")))
 
         dash_data = resultado.get("dashboard", {})
+        if not isinstance(dash_data, dict):
+            dash_data = {}
 
         return InformeDiario(
             panorama=resultado.get("panorama", ""),

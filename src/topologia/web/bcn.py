@@ -22,7 +22,7 @@ TIMEOUT = 15
 
 FUENTES_BCN: list[dict[str, Any]] = [
     {
-        "url": "https://www.bcn.cl/leychice",
+        "url": "https://www.bcn.cl/leychile",
         "categoria": "POLITICA",
         "nombre": "Ley Chile",
         "tags": ["bcn", "leyes", "politica"],

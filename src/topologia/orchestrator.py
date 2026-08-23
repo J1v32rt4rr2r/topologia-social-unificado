@@ -240,7 +240,9 @@ class Orchestrator:
             era_k=era_k,
             theta_cultura=round(t_cultura, 1),
             tension_total=round(tension, 1),
-            vuelco_detectado=era_k > (ultimo_estado.era_k if ultimo_estado else 0),
+            # Sin estado previo no puede haber vuelco: la primera observación
+            # de una sociedad siempre arranca en era_k=1 sin transición.
+            vuelco_detectado=bool(ultimo_estado) and era_k > ultimo_estado.era_k,
             tension_observacional_promedio=tension_data.get("tension_promedio", 0.0),
             alertas_arbitro=[
                 f"[{a.get('nodo','?')}] tensión {a.get('tension',0):.2f}: {a.get('diagnostico','')}"

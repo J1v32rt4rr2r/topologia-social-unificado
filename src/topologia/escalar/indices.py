@@ -107,20 +107,28 @@ def co_sincronia(historial: list[EstadoCultural]) -> float:
     nodos_sync = cfg["componentes"][5]["parametros"]["nodos"]
     if len(historial) < ventana:
         return 0.0
-    series = {nid: [] for nid in nodos_sync}
+    # Series por fecha: un nodo ausente en algunos estados no debe desalinear
+    # las series (cada par se correlaciona solo sobre fechas comunes).
+    series = {nid: {} for nid in nodos_sync}
     for est in historial:
+        fecha = est.fecha.date().isoformat() if hasattr(est.fecha, "date") else str(est.fecha)
         for n in est.nodos:
             if n.nodo_id in series:
-                series[n.nodo_id].append(n.delta)
+                series[n.nodo_id][fecha] = n.delta
     corrs = []
     for i in range(len(nodos_sync)):
         for j in range(i + 1, len(nodos_sync)):
             a = series[nodos_sync[i]]
             b = series[nodos_sync[j]]
-            n = len(a)
-            ma, mb = sum(a) / n, sum(b) / n
-            num = sum((x - ma) * (y - mb) for x, y in zip(a, b))
-            den = math.sqrt(sum((x - ma) ** 2 for x in a)) * math.sqrt(sum((y - mb) ** 2 for y in b))
+            fechas_comunes = sorted(set(a) & set(b))
+            if len(fechas_comunes) < 2:
+                continue
+            va = [a[f] for f in fechas_comunes]
+            vb = [b[f] for f in fechas_comunes]
+            n = len(va)
+            ma, mb = sum(va) / n, sum(vb) / n
+            num = sum((x - ma) * (y - mb) for x, y in zip(va, vb))
+            den = math.sqrt(sum((x - ma) ** 2 for x in va)) * math.sqrt(sum((y - mb) ** 2 for y in vb))
             if den:
                 corrs.append(abs(num / den))
     return sum(corrs) / len(corrs) if corrs else 0.0

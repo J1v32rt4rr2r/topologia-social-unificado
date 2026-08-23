@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 
 from topologia.logger import logger
@@ -49,7 +50,11 @@ def diagnosticar(sociedad: str = "Chile") -> EstrategiaRecoleccion:
         logger.info("Sin historial, usando estrategia por defecto")
         return EstrategiaRecoleccion(sociedad=sociedad)
 
-    solo_chile = [r for r in timeline if r.get("fecha", "").startswith("2026")]
+    # Año actual: evita que el diagnóstico se degrade en silencio al cambiar
+    # de año (antes el filtro fijaba "2026" y en 2027 devolvía la estrategia
+    # por defecto sin aviso).
+    anio_actual = str(datetime.now().year)
+    solo_chile = [r for r in timeline if r.get("fecha", "").startswith(anio_actual)]
     if not solo_chile:
         return EstrategiaRecoleccion(sociedad=sociedad)
 

@@ -92,12 +92,15 @@ def exportar_red(
     sync_nodes = ["ECONOMIA", "TRABAJO", "SEXUALIDAD"]
     for i in range(len(sync_nodes)):
         for j in range(i + 1, len(sync_nodes)):
-            edges.append({
-                "source": f"co_sincronia",
-                "target": sync_nodes[j],
-                "weight": 0.5,
-                "tipo": "sincronia_parcial",
-            })
+            # Cada nodo del par recibe su arista de sincronía (antes solo el
+            # segundo, dejando a ECONOMIA sin arista y duplicando SEXUALIDAD).
+            for nodo in (sync_nodes[i], sync_nodes[j]):
+                edges.append({
+                    "source": "co_sincronia",
+                    "target": nodo,
+                    "weight": 0.5,
+                    "tipo": "sincronia_parcial",
+                })
 
     for n in actual.nodos:
         if n.nodo_id in NODOS_ACTIVOS and n.delta > 5:
