@@ -46,6 +46,23 @@ ETIQUETAS = {
 TRANSVERSALES = ("m", "l", "s")
 
 
+def _recorte_dinamico(ax, puntos: list[complex], margen: float = 0.28) -> None:
+    """Ajusta los límites de lo ejes al rango real de los puntos.
+
+    Las formas e^(2πi/M) viven en un arco estrecho del cuadrante superior
+    (M∈[0,9] → θ≈40°–120°); un marco fijo ±1.5 dejaba la mayor parte del
+    gráfico vacía. Se centra en los datos con un margen.
+    """
+    reals = [p.real for p in puntos]
+    imags = [p.imag for p in puntos]
+    cx = (min(reals) + max(reals)) / 2
+    cy = (min(imags) + max(imags)) / 2
+    half = max(max(reals) - min(reals), max(imags) - min(imags)) / 2
+    half = max(half * (1 + margen), 0.3)
+    ax.set_xlim(cx - half, cx + half)
+    ax.set_ylim(cy - half, cy + half)
+
+
 def cargar_datos(
     sociedad: str = "Chile",
     fecha_antes: str | None = None,
@@ -126,14 +143,15 @@ def grafico_plano_complejo(f_antes: dict, f_despues: dict, fechas: tuple[str, st
         context_global = (contexto or {}).get("_global", {})
         keywords = context_global.get("keywords", [])
         if keywords:
-            ax.text(1.3, -1.2, "\n".join(keywords[:4]),
-                    fontsize=7, color="#ffd700", alpha=0.6, ha="right",
+            ax.text(0.98, 0.03, "\n".join(keywords[:4]),
+                    transform=ax.transAxes, fontsize=7, color="#ffd700", alpha=0.6,
+                    ha="right", va="bottom",
                     bbox=dict(boxstyle="round", facecolor="#111", edgecolor="#ffd700", alpha=0.5))
-            ax.annotate("Términos clave del período", xy=(0.9, -1.1),
-                        fontsize=6, color="#666", style="italic")
+            ax.annotate("Términos clave del período", xy=(0.02, 0.03),
+                        xycoords=ax.transAxes, fontsize=6, color="#666",
+                        style="italic", ha="left", va="bottom")
 
-        ax.set_xlim(-1.3, 1.3)
-        ax.set_ylim(-1.3, 1.3)
+        _recorte_dinamico(ax, [datos[k]["F"] for k in TRANSVERSALES])
         ax.set_aspect("equal")
         ax.set_title(titulo, fontsize=14, fontweight="bold", color="#e0e0e0", pad=20)
         ax.set_xlabel("Parte Real (coherencia estructural)", fontsize=11)
@@ -157,7 +175,7 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
     ax.axvline(x=0, color="#444444", lw=1)
 
     markers = {"m": "o", "l": "^", "s": "s"}
-    radios = {"m": 1.4, "l": 1.8, "s": 1.6}
+    radios = {"m": 1.05, "l": 1.18, "s": 1.11}
 
     for key in TRANSVERSALES:
         Fa = f_antes[key]
@@ -170,9 +188,17 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
                    edgecolors="white", linewidths=3, marker=markers[key])
 
         r = radios[key]
+        # Arco por el camino corto: si t1 > t2, matplotlib barre el camino
+        # largo (≈305°) y el arco cruza la parte inferior. Se normaliza.
+        t1 = np.degrees(Fa["ang"])
+        t2 = np.degrees(Fd["ang"])
+        if t2 < t1:
+            t1, t2 = t2, t1
+        if t2 - t1 > 180:
+            t1 += 360
         ax.add_patch(mpatches.Arc(
             (0, 0), r, r, angle=0,
-            theta1=np.degrees(Fa["ang"]), theta2=np.degrees(Fd["ang"]),
+            theta1=t1, theta2=t2,
             color=COLORES[key], lw=4, alpha=0.8,
         ))
 
@@ -204,8 +230,9 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
     if delta_prom > 90:
         diag += "\n> \u03c0/2 — Rotaci\u00f3n significativa"
     ax.text(
-        1.4, -1.4, diag,
-        fontsize=11, color="#ff4444", fontweight="bold", ha="right",
+        0.03, 0.03, diag,
+        transform=ax.transAxes, fontsize=11, color="#ff4444", fontweight="bold",
+        ha="left", va="bottom",
         bbox=dict(boxstyle="round,pad=0.5", facecolor="#1a1a1a",
                   edgecolor="#ff4444", alpha=0.9),
     )
@@ -213,8 +240,9 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
     context_global = (contexto or {}).get("_global", {})
     keywords = context_global.get("keywords", [])
     if keywords:
-        ax.text(1.3, -1.0, "\n".join(keywords[:4]),
-                fontsize=7, color="#ffd700", alpha=0.6, ha="right",
+        ax.text(0.98, 0.03, "\n".join(keywords[:4]),
+                transform=ax.transAxes, fontsize=7, color="#ffd700", alpha=0.6,
+                ha="right", va="bottom",
                 bbox=dict(boxstyle="round", facecolor="#111", edgecolor="#ffd700", alpha=0.5))
 
     legend_elements = [
@@ -232,8 +260,9 @@ def grafico_rotacion_angular(f_antes: dict, f_despues: dict, fechas: tuple[str, 
     ax.legend(handles=legend_elements, loc="upper left", fontsize=10,
               facecolor="#1a1a1a", edgecolor="#444444", labelcolor="#e0e0e0")
 
-    ax.set_xlim(-1.5, 1.5)
-    ax.set_ylim(-1.5, 1.5)
+    # Recorte dinámico a los datos (antes/después) — evita el marco fijo ±1.5
+    # que dejaba la mitad inferior vacía.
+    _recorte_dinamico(ax, [f_antes[k]["F"] for k in TRANSVERSALES] + [f_despues[k]["F"] for k in TRANSVERSALES])
     ax.set_aspect("equal")
     ax.set_title(
         f"ROTACI\u00d3N ANGULAR CULTURAL\ne^(2\u03c0i/M)  |  {fechas[0]} \u2192 {fechas[1]}",
@@ -314,18 +343,19 @@ def grafico_triangulo_coherencia(f_antes: dict, f_despues: dict, fechas: tuple[s
 
         coh = coherencia_formas([datos[k]["F"] for k in TRANSVERSALES])
         ax.text(
-            -1.2, -1.2,
+            0.03, 0.03,
             f"\u00c1rea: {area:.3f}\nCoherencia: {np.degrees(coh):.1f}\u00b0",
-            color=color_tri, fontsize=10, fontweight="bold",
+            transform=ax.transAxes, color=color_tri, fontsize=10, fontweight="bold",
+            ha="left", va="bottom",
         )
 
         if keywords and es_despues:
-            ax.text(1.1, -1.1, "\n".join(keywords[:4]),
-                    fontsize=7, color="#ffd700", alpha=0.6, ha="right",
+            ax.text(0.98, 0.03, "\n".join(keywords[:4]),
+                    transform=ax.transAxes, fontsize=7, color="#ffd700", alpha=0.6,
+                    ha="right", va="bottom",
                     bbox=dict(boxstyle="round", facecolor="#111", edgecolor="#ffd700", alpha=0.5))
 
-        ax.set_xlim(-1.3, 1.3)
-        ax.set_ylim(-1.3, 1.3)
+        _recorte_dinamico(ax, [datos[k]["F"] for k in TRANSVERSALES])
         ax.set_aspect("equal")
         ax.set_title(titulo, fontsize=14, fontweight="bold", color="#e0e0e0", pad=15)
         ax.set_xlabel("Parte Real", fontsize=11)
@@ -399,7 +429,11 @@ def grafico_mapa_calor(antes_vals: dict, despues_vals: dict, fechas: tuple[str, 
             heatmap_data[i, offset + 1] = v_desp
             heatmap_data[i, offset + 2] = v_desp - v_ant
 
-    im = ax.imshow(heatmap_data, cmap="RdYlGn_r", aspect="auto", vmin=-0.5, vmax=0.5)
+    # Contraste: la matriz mezcla valores (0-1) y deltas (Δ); un rango fijo
+    # ±0.5 aplanaba los datos. Se normaliza al rango real (percentiles 5-95).
+    im = ax.imshow(heatmap_data, cmap="RdYlGn_r", aspect="auto",
+                   vmin=float(np.percentile(heatmap_data, 5)),
+                   vmax=float(np.percentile(heatmap_data, 95)))
 
     ax.set_xticks(range(9))
     ax.set_xticklabels([
