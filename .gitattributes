@@ -1,0 +1,11 @@
+# Normalización de fin de línea: el repo guarda LF;
+# git convierte CRLF→LF al añadir, en cualquier plataforma.
+* text=auto eol=lf
+
+# Binarios explícitos (por si aparecen en el futuro)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
