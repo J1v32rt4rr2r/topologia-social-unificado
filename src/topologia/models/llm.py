@@ -14,6 +14,74 @@ from topologia.logger import logger
 load_dotenv()
 
 
+_PARES_JSON = {"{": "}", "[": "]"}
+
+
+def _extraer_json(texto: str) -> str:
+    texto = texto.strip()
+    bloque = re.search(r"```(?:json)?\s*(.*?)```", texto, re.DOTALL)
+    if bloque:
+        return bloque.group(1).strip()
+    primer_json = re.search(r"[\[\{]", texto)
+    if primer_json:
+        return texto[primer_json.start():].strip()
+    return texto
+
+
+def _recortar_balanceado(texto: str, apertura: str) -> str | None:
+    pila = [_PARES_JSON[apertura]]
+    en_string = False
+    escape = False
+    for i, ch in enumerate(texto[1:], start=1):
+        if en_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                en_string = False
+            continue
+        if ch == '"':
+            en_string = True
+        elif ch == "{":
+            pila.append("}")
+        elif ch == "[":
+            pila.append("]")
+        elif ch in "}]":
+            if not pila or ch != pila[-1]:
+                return None
+            pila.pop()
+            if not pila:
+                return texto[:i + 1]
+    return None
+
+
+def _parsear_json(texto: str) -> dict | list:
+    contenido = _extraer_json(texto)
+    try:
+        return json.loads(contenido)
+    except json.JSONDecodeError:
+        pass
+    decodificador = json.JSONDecoder()
+    try:
+        valor, _ = decodificador.raw_decode(contenido)
+        return valor
+    except json.JSONDecodeError:
+        pass
+    for apertura in _PARES_JSON:
+        inicio = contenido.find(apertura)
+        if inicio == -1:
+            continue
+        fragmento = _recortar_balanceado(contenido[inicio:], apertura)
+        if fragmento is None:
+            continue
+        try:
+            return json.loads(fragmento)
+        except json.JSONDecodeError:
+            pass
+    raise ValueError("respuesta del LLM no contiene JSON parseable")
+
+
 class LLMClient:
     _instance = None
     _initialized = False
@@ -102,16 +170,25 @@ class LLMClient:
         prompt: str,
         temperatura: float = 0.2,
         max_tokens: int = 2048,
-    ) -> dict:
-        texto = self.generar(prompt, temperatura, max_tokens, formato_json=True)
-        texto_limpio = re.sub(r"^```(?:json)?\s*|\s*```$", "", texto.strip())
-        try:
-            return json.loads(texto_limpio)
-        except json.JSONDecodeError:
-            match = re.search(r"\{.*\}", texto_limpio, re.DOTALL)
-            if match:
-                return json.loads(match.group())
-            raise
+        max_parse_intentos: int = 3,
+    ) -> dict | list:
+        ultimo_error: Exception | None = None
+        for intento in range(max_parse_intentos):
+            try:
+                texto = self.generar(prompt, temperatura, max_tokens, formato_json=True)
+                valor = _parsear_json(texto)
+                if not isinstance(valor, (dict, list)):
+                    raise ValueError(
+                        f"JSON no es objeto ni lista: {type(valor).__name__}"
+                    )
+                return valor
+            except (json.JSONDecodeError, ValueError) as e:
+                ultimo_error = e
+                if intento < max_parse_intentos - 1:
+                    logger.warning(
+                        f"JSON no parseable (intento {intento + 1}/{max_parse_intentos}): {e}"
+                    )
+        raise ultimo_error
 
     def generar_numero(
         self,

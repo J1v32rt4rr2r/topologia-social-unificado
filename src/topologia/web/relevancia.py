@@ -10,6 +10,7 @@ from topologia.logger import logger
 from topologia.models.llm import LLMClient
 from topologia.models.schemas import EstrategiaRecoleccion, ItemInformativo
 from topologia.web.compuestos import actualizar_termino, frases_para_nodo
+from topologia.web.rss import _FUENTES_CHILENAS, _RE_CHILE
 from topologia.web.search import buscar as buscar_ddg
 
 _MESES = [
@@ -22,8 +23,16 @@ _DIMENSIONES = ("m", "l", "s")
 _IGNORAR_TERMINOS = [
     "nueva york", "trump", "biden", "putin", "ucrania", "rusia",
     "premier league", "nba", "nfl", "bitcoin", "dr. cong",
-    "elecciones ee.uu", "guerra en ucrania", "casa blanca",
+    "guerra en ucrania", "casa blanca",
     "pentágono", "otan", "gaza", "israel", "hamás",
+    # Conceptos internacionales no vinculados a Chile (evita sobre-filtrar
+    # términos chilenos genéricos como "congreso" o "partido republicano").
+    "iran", "irán", "harris",
+    "elecciones ee.uu", "elecciones en estados unidos",
+    "elecciones de estados unidos", "elecciones en ee.uu",
+    "elecciones de ee.uu", "elecciones eeuu",
+    "presidenciales en estados unidos", "presidenciales de estados unidos",
+    "presidenciales de eeuu", "presidenciales en eeuu",
 ]
 
 _IGNORAR_FUENTES = [
@@ -66,6 +75,17 @@ def puntuar_relevancia(
             continue
         if _fuente_ignorada(item):
             continue
+
+        # Gate "Chile fuerte": los ítems de fuentes no chilenas deben traer
+        # una señal geográfica/lingüística chilena (país, ciudades, políticos);
+        # evita que cables internacionales (EEUU, Medio Oriente) entren aunque
+        # mencionen palabras genéricas como "congreso".
+        fuente_item = (item.fuente or "").lower()
+        fuente_chilena = any(f in fuente_item for f in _FUENTES_CHILENAS)
+        if not fuente_chilena:
+            texto_chile = (f"{item.titulo} {item.contenido or ''}").lower()
+            if not _RE_CHILE.search(texto_chile):
+                continue
 
         # Score base: 0.5
         score = 0.5

@@ -525,6 +525,15 @@ class Orchestrator:
         except Exception as e:
             logger.warning(f"No se pudo actualizar rendimiento de fuentes: {e}")
 
+        # Biblioteca diaria: snapshot de ítems crudos + consolidación del día
+        try:
+            from topologia.biblioteca import consolidar_dia, guardar_items_crudos
+
+            guardar_items_crudos(items, estrategia, paso1.fecha.date(), sociedad)
+            consolidar_dia(paso1.fecha.date(), sociedad)
+        except Exception as e:
+            logger.warning(f"Biblioteca: no se pudo consolidar el día: {e}")
+
         return informe
 
     def _clasificar_items_por_nodo(self, items: list) -> dict[str, list]:

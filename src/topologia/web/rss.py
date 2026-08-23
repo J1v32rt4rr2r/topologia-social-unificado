@@ -32,16 +32,20 @@ _FUENTES_CHILENAS = [
     "elciudadano", "uchile", "trendtic", "gerencia",
     "emol", "latercera", "biobio", "meganoticias",
     "tvn", "canal13", "24horas",
+    "resumen.cl", "educacion2020.cl", "mileschile.cl",
 ]
+# Tokens fuertemente chilenos. Se omiten a propósito palabras que también
+# aparecen en cobertura internacional ("congreso", "constitucion", etc.)
+# para no dejar pasar cables extranjeros con menciones genéricas.
 _RE_CHILE = re.compile(
     r"\bchile\b|\bchilen[ao]s?\b|"
     r"\bsantiago\b|\bvalpara[ií]so\b|\bconcepci[oó]n\b|"
     r"\bboric\b|\bkast\b|\bmatthei\b|\bprovoste\b|"
-    r"\blamoneda\b|\bcongreso\b|\bplebiscito\b|"
+    r"\blamoneda\b|\bplebiscito\b|"
     r"\bestallido\b|\bantofagasta\b|\btemuco\b|"
     r"\baraucan[ií]a\b|\bcoquimbo\b|\bmaip[uú]\b|"
     r"\bpudahuel\b|\bvi[ñn]a\b|\biquique\b|"
-    r"\bpuntaarenas\b|\bpuertomontt\b|\bconstitucion\b",
+    r"\bpuntaarenas\b|\bpuertomontt\b",
     re.IGNORECASE,
 )
 
@@ -153,7 +157,7 @@ def _leer_fuente_local(cfg: dict) -> list[ItemInformativo]:
         return []
     try:
         texto = ruta.read_text(encoding="utf-8")
-        lineas = [l.strip() for l in texto.split("\n") if l.strip()]
+        lineas = [ln.strip() for ln in texto.split("\n") if ln.strip()]
         items = []
         for i, linea in enumerate(lineas):
             items.append(ItemInformativo(
