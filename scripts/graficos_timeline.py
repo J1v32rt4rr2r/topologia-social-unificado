@@ -51,6 +51,22 @@ TRANS = {"m": C_Mm, "l": C_Ml, "s": C_Ms}
 TRANS_LABEL = {"m": "M_m · Existencia (Material)", "l": "M_l · Comprensión (Lógico-valórico)", "s": "M_s · Acción (Social)"}
 TRANS_LIST = ("m", "l", "s")
 
+#: "CONTINUIDAD" es el nombre viejo del nodo SEXUALIDAD (renombrado en 3320ccf).
+#: Las filas antiguas del timeline traen CONTINUIDAD; se normaliza a SEXUALIDAD
+#: para no perder el dato ni mostrar un nodo fantasma.
+_ALIAS_NODO = {"SEXUALIDAD": "CONTINUIDAD"}
+
+
+def _nodo_row(fila: dict, nid: str) -> dict:
+    """Lee el bloque del nodo, resolviendo el alias de nombres viejos."""
+    if nid in fila:
+        return fila[nid]
+    alias = _ALIAS_NODO.get(nid)
+    if alias and alias in fila:
+        return fila[alias]
+    return {}
+
+
 REPORTES_DIR = get_reportes_dir()
 DESKTOP = Path.home() / "Desktop"
 
@@ -68,7 +84,7 @@ def preparar_formas(data: list[dict]) -> list[dict]:
     for r in data:
         vals = {"m": {}, "l": {}, "s": {}}
         for nid in NODOS:
-            nd = r.get(nid, {})
+            nd = _nodo_row(r, nid)
             vals["m"][nid] = nd.get("m", 5.0) / 9.9
             vals["l"][nid] = nd.get("l", 5.0) / 9.9
             vals["s"][nid] = nd.get("s", 5.0) / 9.9
@@ -86,7 +102,7 @@ def preparar_formas(data: list[dict]) -> list[dict]:
             "theta": r["theta_cultura"],
             "coherente": r["coherente"],
             "gap": r["gap"],
-            "fragiles": [n for n in NODOS if r.get(n, {}).get("fragil") == "!"],
+            "fragiles": [n for n in NODOS if _nodo_row(r, n).get("fragil") == "!"],
             "M_m": r["M_m"],
             "M_l": r["M_l"],
             "M_s": r["M_s"],
@@ -137,9 +153,19 @@ def grafico_orbita_temporal(estados: list[dict], path: Path, contexto: dict | No
         ax.annotate("", xy=(last["F"].real, last["F"].imag), xytext=(0, 0),
                     arrowprops=dict(arrowstyle="->", color=TRANS[key], lw=3))
 
-    # Anotación teórica
-    ax.text(0, -1.35, "Ω_k(t) = e^(2πki / ‖W·M(t)‖)",
-            fontsize=9, color="#666", ha="center", style="italic")
+    # Anotación teórica (coordenadas de ejes, para que no quede fuera del recorte)
+    ax.text(0.5, 0.02, "Ω_k(t) = e^(2πki / ‖W·M(t)‖)",
+            transform=ax.transAxes, fontsize=8, color="#666", ha="center", style="italic")
+
+    # Anotar M y θ del último estado por dimensión
+    ult = estados[-1]
+    for key in TRANS_LIST:
+        F = ult["formas"][key]["F"]
+        ax.text(F.real + 0.06, F.imag + 0.06,
+                f"{key.upper()}\nM={ult['formas'][key]['M']:.2f}\nθ={np.degrees(ult['formas'][key]['ang']):.1f}°",
+                color=TRANS[key], fontsize=9, fontweight="bold",
+                bbox=dict(boxstyle="round,pad=0.25", facecolor="#0a0a0a",
+                          edgecolor=TRANS[key], alpha=0.9))
 
     leyenda = [
         plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=C_Mm, markersize=10,
@@ -152,8 +178,17 @@ def grafico_orbita_temporal(estados: list[dict], path: Path, contexto: dict | No
     ax.legend(handles=leyenda, loc="upper left", fontsize=8,
               facecolor="#1a1a1a", edgecolor="#444", labelcolor="#e0e0e0")
 
-    ax.set_xlim(-1.5, 1.5)
-    ax.set_ylim(-1.5, 1.5)
+    # Recorte dinámico: las formas e^(2πi/M) viven en un arco estrecho del
+    # cuadrante superior (M∈[0,9] → θ∈40°–120°), así que un marco fijo ±1.5
+    # dejaba ¾ del gráfico vacío. Se centra en los datos con margen.
+    todos_real = [e["formas"][k]["F"].real for e in estados for k in TRANS_LIST]
+    todos_imag = [e["formas"][k]["F"].imag for e in estados for k in TRANS_LIST]
+    cx = (min(todos_real) + max(todos_real)) / 2
+    cy = (min(todos_imag) + max(todos_imag)) / 2
+    media_half = max(max(todos_real) - min(todos_real), max(todos_imag) - min(todos_imag)) / 2
+    media_half = max(media_half * 1.25, 0.35)
+    ax.set_xlim(cx - media_half, cx + media_half)
+    ax.set_ylim(cy - media_half, cy + media_half)
     ax.set_aspect("equal")
     ax.set_title("ÓRBITA TEMPORAL — Ω_k(t) en el plano complejo\n"
                  f"{estados[0]['fecha']} → {estados[-1]['fecha']}  ({len(estados)} estados)",
@@ -167,8 +202,10 @@ def grafico_orbita_temporal(estados: list[dict], path: Path, contexto: dict | No
         pico = max(estados, key=lambda e: e["delta"])
         ctx = contexto.get("_global", {}).get("resumen", "")
         if ctx:
-            ax.text(-1.4, -1.0, f"[N] Pico δ={pico['delta']}° ({pico['fecha_label']}):\n{ctx[:80]}",
-                    fontsize=7, color="#ffd700", alpha=0.7)
+            ax.text(0.98, 0.02, f"[N] Pico δ={pico['delta']}° ({pico['fecha_label']}):\n{ctx[:80]}",
+                    transform=ax.transAxes, fontsize=7, color="#ffd700", alpha=0.7,
+                    ha="right", va="bottom", bbox=dict(boxstyle="round,pad=0.3",
+                                                       facecolor="#111", edgecolor="#ffd700", alpha=0.5))
 
     fig.tight_layout()
     fig.savefig(path, dpi=150, bbox_inches="tight")
@@ -227,11 +264,19 @@ def grafico_triada_evolutiva(estados: list[dict], path: Path, contexto: dict | N
     cbar.set_ticks(range(0, n, max(1, n // 5)))
     cbar.set_ticklabels([estados[i]["fecha_label"] for i in range(0, n, max(1, n // 5))])
 
-    ax.text(0, -1.35, "Centro de masa cultural — cuanto más centrado, mayor coherencia estructural",
-            fontsize=8, color="#666", ha="center", style="italic")
+    ax.text(0.5, 0.02, "Centro de masa cultural — cuanto más centrado, mayor coherencia estructural",
+            transform=ax.transAxes, fontsize=8, color="#666", ha="center", style="italic")
 
-    ax.set_xlim(-1.5, 1.5)
-    ax.set_ylim(-1.5, 1.5)
+    # Recorte dinámico (mismo criterio que la órbita: los vértices viven en un
+    # arco estrecho del cuadrante superior, no alrededor de todo el círculo).
+    todos_real = [e["formas"][k]["F"].real for e in estados for k in TRANS_LIST]
+    todos_imag = [e["formas"][k]["F"].imag for e in estados for k in TRANS_LIST]
+    cx = (min(todos_real) + max(todos_real)) / 2
+    cy = (min(todos_imag) + max(todos_imag)) / 2
+    media_half = max(max(todos_real) - min(todos_real), max(todos_imag) - min(todos_imag)) / 2
+    media_half = max(media_half * 1.25, 0.35)
+    ax.set_xlim(cx - media_half, cx + media_half)
+    ax.set_ylim(cy - media_half, cy + media_half)
     ax.set_aspect("equal")
     ax.set_title("TRÍADA EVOLUTIVA — Triángulo M_m–M_s–M_l\n"
                  "Cada era k genera una constelación distinta de las 3 lógicas primarias",
@@ -312,7 +357,11 @@ def grafico_nodos_heatmap(estados: list[dict], path: Path, contexto: dict | None
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.set_facecolor("#0a0a0a")
 
-    im = ax.imshow(delta_mat, cmap="inferno", aspect="auto", vmin=0, vmax=10)
+    # Contraste: los valores se concentran en 1.5–5, así que fijar 0–10 los
+    # aplana a violeta. Se normaliza al rango real (percentiles 5–95).
+    vmin = float(np.percentile(delta_mat, 5))
+    vmax = float(np.percentile(delta_mat, 95))
+    im = ax.imshow(delta_mat, cmap="inferno", aspect="auto", vmin=vmin, vmax=vmax)
 
     ax.set_xticks(range(len(estados)))
     ax.set_xticklabels(fechas, rotation=45, ha="right", fontsize=9)
@@ -322,7 +371,8 @@ def grafico_nodos_heatmap(estados: list[dict], path: Path, contexto: dict | None
     for i in range(len(NODOS)):
         for j in range(len(estados)):
             v = delta_mat[i, j]
-            color = "white" if v < 5 else "#111"
+            # Texto sobre celda: se decide con la nueva escala (no fija 5)
+            color = "#111" if 0.35 < (v - vmin) / (vmax - vmin) < 0.8 else "white"
             val_str = f"{v:.1f}"
             # Anotación de contexto noticioso en celdas críticas
             if v < 1.5 and contexto:
@@ -333,14 +383,16 @@ def grafico_nodos_heatmap(estados: list[dict], path: Path, contexto: dict | None
     for j, (e, c) in enumerate(zip(estados, era_colors)):
         ax.plot(j, -0.4, marker="s", color=c, markersize=8, transform=ax.get_xaxis_transform(),
                 clip_on=False, zorder=10)
+    ax.text(-1.2, -0.4, "Era k:", transform=ax.get_xaxis_transform(),
+            fontsize=7, color="#888", ha="right", va="center")
 
     cbar = fig.colorbar(im, ax=ax, shrink=0.7)
-    cbar.set_label("Magnitud (0-10) — frontera asintótica ]0, 1[", rotation=270, labelpad=20, color="white")
+    cbar.set_label("Magnitud M_m (0–10, escala por percentiles)", rotation=270, labelpad=20, color="white")
     cbar.ax.yaxis.set_tick_params(color="white")
     plt.setp(plt.getp(cbar.ax.axes, "yticklabels"), color="white")
 
-    ax.set_title("MAPA DE CALOR — ‖W·M(t)‖ por nodo\n"
-                 "Valores cercanos a 0 = degradación · cercanos a 10 = saturación",
+    ax.set_title("MAPA DE CALOR — Magnitud M_m por nodo y fecha\n"
+                 "■ = Era k (color viridis) · valores bajos = degradación, altos = saturación",
                  fontsize=13, fontweight="bold", color="#e0e0e0", pad=15)
 
     fig.tight_layout()
@@ -357,10 +409,15 @@ def grafico_radar_nodos(estados: list[dict], path: Path, contexto: dict | None =
 
     eras_list = sorted(eras_agrupadas.keys())
     n_eras = len(eras_list)
-    cols = min(n_eras, 3)
-    rows = math.ceil(n_eras / cols)
+    # Grilla que no deja huecos: 2 columnas a partir de 5 eras (8 → 2×4),
+    # 1 fila para pocas eras. Ajusta el alto de cada panel según el total.
+    if n_eras <= 4:
+        cols, rows = n_eras, 1
+    else:
+        cols = 2
+        rows = math.ceil(n_eras / 2)  # 8 → 2×4, sin huecos
 
-    fig, axes = plt.subplots(rows, cols, figsize=(6 * cols, 6 * rows),
+    fig, axes = plt.subplots(rows, cols, figsize=(6 * cols, 4.4 * rows),
                              subplot_kw=dict(projection="polar"))
     axes = axes.flatten() if n_eras > 1 else [axes]
 
@@ -380,8 +437,8 @@ def grafico_radar_nodos(estados: list[dict], path: Path, contexto: dict | None =
 
         for v, c, lbl in [(valores_m, C_Mm, "M_m"), (valores_l, C_Ml, "M_l"), (valores_s, C_Ms, "M_s")]:
             v += v[:1]
-            ax.plot(angles, v, "o-", lw=2, color=c, alpha=0.7, label=lbl)
-            ax.fill(angles, v, alpha=0.08, color=c)
+            ax.plot(angles, v, "o-", lw=2, color=c, alpha=0.85, label=lbl)
+            ax.fill(angles, v, alpha=0.05, color=c)
 
         # Anillos asintóticos
         ax.add_patch(plt.Circle((0, 0), 0.5, fill=False, color="#ff4444", ls=":", lw=0.5, alpha=0.3))
@@ -390,7 +447,7 @@ def grafico_radar_nodos(estados: list[dict], path: Path, contexto: dict | None =
         ax.text(0, 9.3, "Frontera ]1[", fontsize=5, color="#ff4444", alpha=0.4, ha="center")
 
         ax.set_xticks(angles[:-1])
-        ax.set_xticklabels(NODOS, fontsize=6)
+        ax.set_xticklabels(NODOS, fontsize=7)
         ax.set_ylim(0, 10)
         ax.set_title(f"Ω_k(t) — Era {era}  |  {grupo[0]['fecha_label']}–{ultimo['fecha_label']}",
                      fontsize=12, fontweight="bold", color="#e0e0e0", pad=20)
@@ -452,11 +509,18 @@ def grafico_delta_evolucion(estados: list[dict], path: Path, contexto: dict | No
     ax.set_xticklabels(fechas, fontsize=9)
     ax.set_ylabel("δ (grados) — Divergencia entre lógicas primarias", fontsize=10)
     ax.set_title("EVOLUCIÓN DE δ — Cizallamiento torsional del sistema\n"
-                 f"Máx: {max(deltas):.0f}°  ·  Mín: {min(deltas):.0f}°  ·  Actual: {deltas[-1]:.0f}°",
+                 f"Máx: {max(deltas):.0f}°  ·  Último: {deltas[-1]:.0f}°  ·  N: {len(estados)} estados",
                  fontsize=13, fontweight="bold", color="#e0e0e0", pad=15)
     ax.legend(fontsize=8, facecolor="#1a1a1a", edgecolor="#444", labelcolor="#e0e0e0")
-    ax.set_ylim(0, max(deltas) * 1.4)
+    ax.set_ylim(0, max(deltas) * 1.25)
     ax.grid(True, alpha=0.15, color="#444")
+
+    # Sombreado de los días sin observación (gap > 36 h): la interpolación entre
+    # estados separados por días no debe leerse como continuidad diaria.
+    for i in range(1, len(estados)):
+        gap_h = estados[i].get("gap", 0) or 0
+        if gap_h > 36:
+            ax.axvspan(i - 0.5, i + 0.5, color="#333333", alpha=0.45, zorder=0)
 
     fig.tight_layout()
     fig.savefig(path, dpi=150, bbox_inches="tight")

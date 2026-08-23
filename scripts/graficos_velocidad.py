@@ -138,12 +138,10 @@ def grafico_velocidad_barras(hitos: list[dict], path: Path):
 
 def grafico_vector_field(hitos: list[dict], path: Path):
     hs = hitos_con_serie(hitos)
-    fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+    fig, axes = plt.subplots(3, 3, figsize=(18, 12))
     fig.suptitle("ACELERACIÓN vs VELOCIDAD MEDIA por nodo", fontsize=14, fontweight="bold", color="#e0e0e0", y=0.98)
 
     for idx, nodo in enumerate(NODOS):
-        if idx >= 6:
-            break
         ax = axes[idx // 3][idx % 3]
         ax.set_facecolor("#0a0a0a")
 
