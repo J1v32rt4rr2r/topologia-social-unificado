@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter
 
 from topologia.memoria.bloques import BloquesMemoria
@@ -8,6 +10,9 @@ from topologia.memoria.decisiones import DecisionDB
 router = APIRouter()
 memoria = DecisionDB()
 bloques = BloquesMemoria()
+
+#: Solo nombres de bloque simples; bloquea path traversal (../, %2F, etc.).
+_NOMBRE_BLOQUE_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 
 
 @router.get("/decisions")
@@ -27,6 +32,8 @@ async def api_blocks():
 
 @router.get("/blocks/{nombre}")
 async def api_block(nombre: str):
+    if not _NOMBRE_BLOQUE_RE.match(nombre):
+        return {"error": "Bloque no encontrado"}
     contenido = bloques.leer(nombre)
     if not contenido:
         return {"error": "Bloque no encontrado"}

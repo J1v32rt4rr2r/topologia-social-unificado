@@ -14,7 +14,16 @@ router = APIRouter()
 
 base = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(base / "frontend" / "templates"))
-store = FileStore()
+
+_store: FileStore | None = None
+
+
+def _get_store() -> FileStore:
+    """FileStore perezoso: no crea directorios reales al importar el módulo."""
+    global _store
+    if _store is None:
+        _store = FileStore()
+    return _store
 
 _SOCIEDAD_RE = re.compile(r"^[a-zA-Z\u00C0-\u024F][\w\- ]{0,48}[a-zA-Z\u00C0-\u024F\w]$")
 
@@ -32,6 +41,7 @@ async def dashboard_page(request: Request):
 
 @router.get("/api/dashboard/data")
 async def dashboard_data(sociedad: str = "Chile"):
+    store = _get_store()
     sociedad = _sanitizar_sociedad(sociedad)
     estado = store.cargar_estado(sociedad)
     if estado is None:

@@ -20,8 +20,8 @@ data/s19/
 data/proyecciones/
 data/sesiones/
 data/alumno/
-reportes/
-informe.html
+/reportes/
+/informe.html
 infor/
 scripts/check_*
 scripts/debug_*

@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import re
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 
 from topologia.math.operations import detectar_operaciones
 from topologia.orchestrator import Orchestrator
+from topologia.server.auth import requerir_api_key
 from topologia.storage.store import FileStore
 
 router = APIRouter()
@@ -21,8 +22,9 @@ def _sanitizar_sociedad(s: str) -> str:
     return s.strip()
 
 
-@router.get("/observe")
-async def api_observe(sociedad: str = Query("Chile")):
+@router.get("/observe", dependencies=[Depends(requerir_api_key)])
+def api_observe(sociedad: str = Query("Chile")):
+    """Observación completa (LLM costoso): requiere API key."""
     sociedad = _sanitizar_sociedad(sociedad)
     estado = orch.observar(sociedad)
     operaciones = detectar_operaciones(estado)
@@ -61,8 +63,9 @@ async def api_observe(sociedad: str = Query("Chile")):
     }
 
 
-@router.get("/daily")
-async def api_daily(sociedad: str = Query("Chile")):
+@router.get("/daily", dependencies=[Depends(requerir_api_key)])
+def api_daily(sociedad: str = Query("Chile")):
+    """Ciclo diario completo (LLM costoso): requiere API key."""
     sociedad = _sanitizar_sociedad(sociedad)
     informe = orch.ciclo_diario(sociedad)
     return {

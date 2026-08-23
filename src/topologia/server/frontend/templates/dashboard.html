@@ -113,6 +113,15 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f1a; c
   </div>
 </div>
 
+<script>
+// Escapa texto de terceros (noticias/LLM) antes de inyectarlo con innerHTML.
+// Script clásico: disponible para el script module (diferido) y el resto.
+window.escapeHtml = function (s) {
+  return String(s ?? '').replace(/[&<>"']/g, function (c) {
+    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c];
+  });
+};
+</script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -394,9 +403,9 @@ window.mostrarInfoNodo = function(nodoId) {
   document.getElementById('nodo-info-dims').innerHTML =
     `M_m: ${n.m.toFixed(1)} (${n.tend_m}) | M_l: ${n.l.toFixed(1)} (${n.tend_l}) | M_s: ${n.s.toFixed(1)} (${n.tend_s}) | δ = ${n.delta.toFixed(1)}°`;
   let justHtml = '';
-  if (n.just_m) justHtml += `<p><strong>M_m:</strong> ${n.just_m}</p>`;
-  if (n.just_l) justHtml += `<p><strong>M_l:</strong> ${n.just_l}</p>`;
-  if (n.just_s) justHtml += `<p><strong>M_s:</strong> ${n.just_s}</p>`;
+  if (n.just_m) justHtml += `<p><strong>M_m:</strong> ${window.escapeHtml(n.just_m)}</p>`;
+  if (n.just_l) justHtml += `<p><strong>M_l:</strong> ${window.escapeHtml(n.just_l)}</p>`;
+  if (n.just_s) justHtml += `<p><strong>M_s:</strong> ${window.escapeHtml(n.just_s)}</p>`;
   document.getElementById('nodo-info-just').innerHTML = justHtml;
 };
 
@@ -456,7 +465,7 @@ async function cargarDatos() {
     data.nodos.forEach(n => {
       const card = document.createElement('div');
       card.className = `nodo-card${n.fragil ? ' fragil' : ''}`;
-      card.innerHTML = `<h4>${n.id}</h4>
+      card.innerHTML = `<h4>${window.escapeHtml(n.id)}</h4>
         <div class="dims">M_m: ${n.m.toFixed(1)} · M_l: ${n.l.toFixed(1)} · M_s: ${n.s.toFixed(1)}</div>
         <div class="delta" style="color:${n.fragil ? '#e94560' : '#888'}">δ = ${n.delta.toFixed(1)}°</div>`;
       nodosGrid.appendChild(card);
@@ -468,7 +477,7 @@ async function cargarDatos() {
     if (data.operaciones.length === 0) opsList.innerHTML = '<li style="color:#888;">Ninguna operación activa</li>';
     data.operaciones.forEach(o => {
       const li = document.createElement('li');
-      li.innerHTML = `<strong>${o.codigo}</strong> ${o.nombre} <span style="float:right;color:${o.intensidad > 0.5 ? '#e94560' : '#888'};font-size:0.85em;">${(o.intensidad*100).toFixed(0)}%</span><br><span style="font-size:0.8em;color:#888;">${o.descripcion}</span>`;
+      li.innerHTML = `<strong>${window.escapeHtml(o.codigo)}</strong> ${window.escapeHtml(o.nombre)} <span style="float:right;color:${o.intensidad > 0.5 ? '#e94560' : '#888'};font-size:0.85em;">${(o.intensidad*100).toFixed(0)}%</span><br><span style="font-size:0.8em;color:#888;">${window.escapeHtml(o.descripcion)}</span>`;
       opsList.appendChild(li);
     });
 

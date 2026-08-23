@@ -1,7 +1,8 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from datetime import datetime
+from html import escape as _html_escape
 
 from topologia.math.operations import detectar_operaciones
 from topologia.math.torus import theta_cultura, theta_nodo
@@ -15,6 +16,11 @@ from topologia.models.schemas import (
 )
 from topologia.paths import get_reportes_dir
 from topologia.storage.store import FileStore
+
+
+def _esc(texto: object) -> str:
+    """Escapa texto de terceros (noticias/LLM) antes de insertarlo en HTML."""
+    return _html_escape(str(texto), quote=True)
 
 
 TEMPLATE_PANEL = """<!DOCTYPE html>
@@ -617,14 +623,14 @@ def generar_panel(
         partes = []
         for a in informe_redactor.alertas:
             cls = "alert-critical" if a.tipo.value == "reconfiguracion" else "alert-warning"
-            partes.append(f'<div class="{cls}">{a.mensaje}</div>')
+            partes.append(f'<div class="{cls}">{_esc(a.mensaje)}</div>')
         if partes:
             alertas_html = '<div class="card" style="margin-bottom:16px;">' + "".join(partes) + "</div>"
 
     # Resumen
     resumen_html = ""
     if informe_redactor and informe_redactor.resumen_ejecutivo:
-        resumen_html = f'<div class="resumen"><strong>Resumen:</strong> {informe_redactor.resumen_ejecutivo}</div>'
+        resumen_html = f'<div class="resumen"><strong>Resumen:</strong> {_esc(informe_redactor.resumen_ejecutivo)}</div>'
 
     # Nodos
     nodos_parts = []
@@ -637,9 +643,9 @@ def generar_panel(
             items_list = []
             for it in fuentes[:5]:
                 if it.url:
-                    items_list.append(f'<a href="{it.url}" target="_blank" rel="noopener">{it.titulo}</a>')
+                    items_list.append(f'<a href="{_esc(it.url)}" target="_blank" rel="noopener">{_esc(it.titulo)}</a>')
                 else:
-                    items_list.append(f'<span>{it.titulo} ({it.fuente})</span>')
+                    items_list.append(f'<span>{_esc(it.titulo)} ({_esc(it.fuente)})</span>')
             fuentes_html = f"""
             <div class="fuentes">
               <details><summary>Fuentes ({len(fuentes)})</summary>
@@ -648,8 +654,8 @@ def generar_panel(
             </div>"""
         tn = theta_nodo(n.dimension_l)
         tc = theta_cultura([nd.dimension_l for nd in estado.nodos])
-        nodos_parts.append(f"""<div class="nodo-card {cls}" id="nodo-card-{n.nodo_id}">
-  <h4>{n.nodo_id} <span style="float:right;font-size:0.8em;color:{'#e94560' if n.fragil else '#888'};">θ<sub>n</sub>={tn:.0f}° Δθ={abs(tc-tn):.0f}°</span></h4>
+        nodos_parts.append(f"""<div class="nodo-card {cls}" id="nodo-card-{_esc(n.nodo_id)}">
+  <h4>{_esc(n.nodo_id)} <span style="float:right;font-size:0.8em;color:{'#e94560' if n.fragil else '#888'};">θ<sub>n</sub>={tn:.0f}° Δθ={abs(tc-tn):.0f}°</span></h4>
   <table>
     <tr><td>M_m</td><td>{n.dimension_m:.1f}</td><td style="color:#888;">peso</td></tr>
     <tr><td>M_l</td><td>{n.dimension_l:.1f}</td><td style="color:#888;">θ={tn:.0f}°</td></tr>
@@ -665,7 +671,7 @@ def generar_panel(
         for o in operaciones:
             pct = int(o.intensidad * 100)
             barra = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
-            items.append(f'<li><strong>{o.codigo}</strong> {o.nombre} <span style="float:right;color:{"#e94560" if o.intensidad > 0.5 else "#888"};">{barra} {pct}%</span><br><span style="font-size:0.8em;color:#888;">Nodos: {", ".join(o.nodos_implicados)} | {o.descripcion}</span></li>')
+            items.append(f'<li><strong>{_esc(o.codigo)}</strong> {_esc(o.nombre)} <span style="float:right;color:{"#e94560" if o.intensidad > 0.5 else "#888"};">{barra} {pct}%</span><br><span style="font-size:0.8em;color:#888;">Nodos: {_esc(", ".join(o.nodos_implicados))} | {_esc(o.descripcion)}</span></li>')
         operaciones_html = f'<div class="card"><h2>Operaciones Activas</h2><ul class="ops-list">{"".join(items)}</ul></div>'
 
     # Especulaciones
@@ -674,10 +680,10 @@ def generar_panel(
         items = []
         for e in especulaciones:
             items.append(f"""<div class="spec-card">
-  <strong>{e.patron_id}</strong> <span style="float:right;color:#888;">confianza: {e.confianza:.0%}</span>
-  <p style="margin:4px 0;font-size:0.85em;">{e.argumento[:200]}</p>
-  {f'<span style="font-size:0.8em;color:#888;">Nodos: {", ".join(e.nodos_sugeridos)}</span>' if e.nodos_sugeridos else ''}
-  {f'<details style="font-size:0.8em;margin-top:4px;"><summary>Pregunta abierta</summary><p style="color:#888;">{e.pregunta_abierta}</p></details>' if e.pregunta_abierta else ''}
+  <strong>{_esc(e.patron_id)}</strong> <span style="float:right;color:#888;">confianza: {e.confianza:.0%}</span>
+  <p style="margin:4px 0;font-size:0.85em;">{_esc(e.argumento[:200])}</p>
+  {f'<span style="font-size:0.8em;color:#888;">Nodos: {_esc(", ".join(e.nodos_sugeridos))}</span>' if e.nodos_sugeridos else ''}
+  {f'<details style="font-size:0.8em;margin-top:4px;"><summary>Pregunta abierta</summary><p style="color:#888;">{_esc(e.pregunta_abierta)}</p></details>' if e.pregunta_abierta else ''}
 </div>""")
         especulaciones_html = f'<div class="card" style="margin-top:16px;"><h2>Especulaciones del Artista</h2>{"".join(items)}</div>'
 
@@ -688,11 +694,11 @@ def generar_panel(
         for est in estudios:
             veredicto_cls = "ok" if est.veredicto == "validado" else "fail"
             analisis_str = "".join(
-                f'<div>{dim}: {"CONFIRMADO" if a.confirmado else "NO"} (confianza: {a.confianza:.0%})<br><span style="color:#aaa;">{a.conclusion[:100]}</span></div>'
+                f'<div>{dim}: {"CONFIRMADO" if a.confirmado else "NO"} (confianza: {a.confianza:.0%})<br><span style="color:#aaa;">{_esc(a.conclusion[:100])}</span></div>'
                 for dim, a in est.analisis.items()
             )
             items.append(f"""<div class="spec-card {veredicto_cls}">
-  <strong>{est.patron_id}</strong> -> <strong>{est.veredicto.upper()}</strong>
+  <strong>{_esc(est.patron_id)}</strong> -> <strong>{_esc(est.veredicto.upper())}</strong>
   <div style="font-size:0.8em;color:#888;margin-top:4px;">{analisis_str}</div>
 </div>""")
         estudios_html = f'<div class="card" style="margin-top:16px;"><h2>Estudios</h2>{"".join(items)}</div>'
@@ -730,9 +736,11 @@ def generar_panel(
                 ],
             })
 
-    historial_json = json.dumps(historial_completo, ensure_ascii=False)
+    # El JSON se incrusta dentro de <script type="application/json">: escapar
+    # "</" impide romper la etiqueta con texto del LLM/noticias (</script>).
+    historial_json = json.dumps(historial_completo, ensure_ascii=False).replace("</", "<\\/")
 
-    html = TEMPLATE_PANEL.replace("{sociedad}", sociedad)
+    html = TEMPLATE_PANEL.replace("{sociedad}", _esc(sociedad))
     html = html.replace("{alertas_html}", alertas_html)
     html = html.replace("{resumen_html}", resumen_html)
     html = html.replace("{nodos_html}", "\n".join(nodos_parts))
