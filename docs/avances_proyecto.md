@@ -28,17 +28,17 @@ Topología Social es un sistema autónomo de monitoreo cultural diario que model
 | Paso | Componente | Descripción |
 |------|-----------|-------------|
 | 0 | Diagnóstico histórico | Genera estrategia de recolección (nodos prioritarios, brechas, umbral) |
-| 1 | Recolección clásica | RSS (20), BCN (3), Resumen (10), Espectro B (3), YouTube (10), Trends (10) |
+| 1 | Recolección clásica | RSS (20), BCN (3), BCentral/BDE (28), Resumen (10), INE (17), Espectro B, YouTube (10), Trends (10) |
 | 2 | Recolección estratégica | Queries dirigidas por nodo (~3 por nodo prioritario) |
-| 3 | Filtro adaptativo | Scoring y selección de 15–20 items finales |
+| 3 | Filtro adaptativo | Scoring de relevancia + gate "Chile fuerte" (fuentes no chilenas exigen señal chilena) |
 | 4 | Scraping por déficit | Búsqueda específica para nodos sub-representados |
 | 5 | Descubrimiento dinámico | Búsqueda de nuevas fuentes para nodos prioritarios/déficit |
-| 6 | Observación multi-agente | 9 nodos × 3 agentes × 2 rondas = 54 llamadas LLM (~10 min) |
+| 6 | Observación multi-agente | 9 nodos × 3 agentes × 2 rondas (hasta 54 llamadas LLM, con fallbacks) |
 | 7 | Detección cinética | 6 operaciones (O3a, O4a, O5, O6, O9, O11) + O1b sistémica |
 | 8 | Especulación | Artista genera patrones desde noticias + historia + memoria |
 | 9 | Investigación | Web search para cada pregunta abierta; validación 3-dimensiones |
 | 10 | Riesgo compuesto | 6 índices normalizados → R compuesto + red de riesgo |
-| 11 | Calibración histórica | Correlación de fingerprint contra 7 hitos |
+| 11 | (No se ejecuta en el ciclo) | La calibración contra hitos es un paso CLI independiente: `topologia calibrar` |
 | 12 | Síntesis | Redactor genera narrativa + HTML con gráficos |
 | 13 | Timeline | Actualización de serie temporal + gráficos de evolución |
 
@@ -108,12 +108,12 @@ U, T, C, S, F, O, D).
 
 | Agente | Rol | Modelo |
 |--------|-----|--------|
-| **Estadista** | Evalúa M_m (material) | deepseek-v4-flash |
-| **Filósofo** | Evalúa M_l (lógica) | deepseek-v4-flash |
-| **Sociólogo** | Evalúa M_s (social) | deepseek-v4-flash |
-| **Árbitro** | Resuelve discrepancias, alertas | deepseek-v4-flash |
-| **Artista** | Genera especulaciones analógicas | deepseek-v4-flash |
-| **Redactor** | Sintetiza informe narrativo | deepseek-v4-flash |
+| **Estadista** | Evalúa M_m (material) | deepseek-chat |
+| **Filósofo** | Evalúa M_l (lógica) | deepseek-chat |
+| **Sociólogo** | Evalúa M_s (social) | deepseek-chat |
+| **Árbitro** | Deliberación heurística (sin LLM) | — |
+| **Artista** | Genera especulaciones analógicas | deepseek-chat |
+| **Redactor** | Sintetiza informe narrativo | deepseek-chat |
 
 ### 2.4 Operaciones Cinéticas Detectadas
 
@@ -165,13 +165,15 @@ U, T, C, S, F, O, D).
 
 | Hito | Fecha | δ | M | θ | Tensión | Operaciones |
 |------|-------|---|---|---|---------|-------------|
-| plebiscito_1988 | 1988-10-05 | 8.4° | (5.2,6.3,6.2) | 57.3° | — | O11 |
-| estallido_2019 | 2019-10-18 | 5.1° | (5.4,5.4,5.3) | 66.6° | 335.5 | O11, O4a, O1b |
-| pandemia_ola1_2020 | 2020-03-19 | 4.1° | (4.8,5.3,5.3) | 68.1° | — | O11, O4a |
-| pandemia_ola2_2021 | 2021-03-15 | 5.1° | (4.8,5.4,5.5) | 67.0° | 167.7 | O11, O4a |
-| temporal_julio_2026 | 2026-07-17 | 5.3° | (5.2,5.7,5.1) | 63.8° | 289.9 | O11 |
-| plebiscito_2020 | 2020-10-25 | 7.5° | (5.0,5.6,5.4) | 64.6° | 312.9 | O11, O4a |
-| estallido_nocturno_2020 | 2020-11-08 | 5.8° | (5.3,5.5,5.6) | 65.0° | 460.6 | O11, O4a |
+| plebiscito_1988 | 1988-10-01/31 | 8.4° | (5.2,6.3,6.2) | 57.3° | 270.9 | O11 |
+| estallido_2019 | 2019-10-18/11-30 | 5.1° | (5.1,5.8,5.9) | 62.5° | 335.5 | O11 |
+| pandemia_ola1_2020 | 2020-03-15/06-30 | 4.1° | (4.8,5.3,5.3) | 68.1° | 193.1 | — |
+| pandemia_ola2_2021 | 2021-03-01/06-30 | 5.1° | (4.8,5.4,5.5) | 67.2° | 226.4 | — |
+| temporal_julio_2026 | 2026-07-15/22 | 5.3° | (4.9,5.4,5.4) | 67.1° | 207.1 | — |
+| plebiscito_2020 | 2020-10-01/31 | 7.5° | (4.6,5.5,5.2) | 66.0° | 312.9 | — |
+| estallido_nocturno_2020 | 2020-06-01/08-31 | 5.8° | (4.9,5.5,5.1) | 65.6° | 460.6 | — |
+
+*Valores vigentes en `config/hitos.yaml`; la calibración se ejecuta con `topologia calibrar` (CLI), no dentro del ciclo diario.*
 
 ### 4.1 Patrones Estructurales Identificados
 
@@ -265,15 +267,15 @@ U, T, C, S, F, O, D).
     └── axiomas_fractales.md    # Formalización del UNO y el tecelado social
 ```
 
-### 7.2 Commits Recientes (6 nuevos)
+### 7.2 Commits Recientes
 
 ```
-372e0b7 gitignore: data/rendimiento_fuentes.yaml, data/barrido/
-4cf2b80 mantencion: elimina timeline.json y rendimiento_fuentes.yaml
-787c87e artista: patrones como herramientas permanentes, no se refutan
-303796a mantencion: .gitignore, limpia basura, fix dead code
-2fe5620 informe_topologia.py: script HTML unificado
-1bf81b2 calibracion historica: 7 hitos, escalar de riesgo R, topologia 24D
+950a729 feat: trabajo pendiente del ciclo (parser JSON LLM, biblioteca diaria, gate Chile fuerte, supervisor)
+a1a9da8 chore: .gitattributes con eol=lf (normalización CRLF→LF)
+de97b3a desarrollo temporal: distingue observado vs proyectado y expone confianza de la proyeccion
+a946974 noticias destacadas: seleccion por score real de relevancia
+af9615d retira clasificador local qwen3 (Ollama) de la destilacion 27D
+ccdaaa4 destilacion 27D + fuentes estatales (bcentral/ine) + desarrollo temporal (axioma T)
 ```
 
 ---

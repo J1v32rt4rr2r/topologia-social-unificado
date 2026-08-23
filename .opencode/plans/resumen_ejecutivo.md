@@ -42,7 +42,7 @@ condiciones de crisis histórica.
 - [x] Escalar R integrado en Orchestrator (post-observe)
 - [x] Archivos de red exportados por fecha
 - [x] Calibración leave-one-out completada
-- [x] Comando `opencode riesgo` funcional
+- [x] Comando `topologia riesgo` funcional
 
 ## Próximo
 

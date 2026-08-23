@@ -36,7 +36,7 @@ flowchart TD
     end
 
     subgraph SINTESIS [Pasos 10-13 · Síntesis y reporte]
-        RIESGO[P10-11 Riesgo R<br/>6 índices → compuesto<br/>+ red de riesgo + calibración vs hitos]
+        RIESGO[P10-11 Riesgo R<br/>6 índices → compuesto<br/>+ red de riesgo (calibración: CLI `topologia calibrar`)]
         RED[P12 Redactor<br/>informe con contexto de memoria conversacional]
         REPORTE[P13 Reporte<br/>HTML · gráficos · tromba/tecelado · timeline]
         RIESGO --> RED --> REPORTE
@@ -49,7 +49,7 @@ flowchart TD
     end
 
     subgraph EXTERNO [Externo]
-        LLM[DeepSeek API<br/>deepseek-v4-flash · thinking disabled]
+        LLM[DeepSeek API<br/>deepseek-chat · thinking disabled]
         WEB[Web · RSS · Playwright<br/>YouTube Data · Trends]
     end
 
@@ -106,7 +106,7 @@ PASO 8-9      [Artista] ── patrones analógicos (memoria/patrones.json + poe
                ▼
 PASO 10-11    [Riesgo R] ──────────────────────────────── math/torus (δ, θ, M, formas)
                6 índices (escalar/indices) · compuesto ──► escalar/red_riesgo → redes_riesgo/
-               + Calibración vs 7 hitos (config/hitos.yaml)
+               + (La calibración vs 7 hitos es CLI: `topologia calibrar`)
                │
                ▼
 PASO 12-13    [Redactor] ──► memoria conversacional (buffer + resumen + archivado)
@@ -126,7 +126,7 @@ CLI (main.py)                 SERVIDOR (fastapi, port 8000)
  trends · graficos · calibrar
  riesgo · test-llm
 ══════════════════════════════════════════════════════════════════════════
-PIPELINE ANALÓGICO (pipeline/engine + skills/fase1..6): inmersion → pictorica → analisis
+PIPELINE ANALÓGICO (pipeline/engine + prompts/pipeline_f1..f6): inmersion → pictorica → analisis
 → reescritura → emergencias → formalizacion   (usa BloquesMemoria: analogia-visual/cinetica/emergente)
 ```
 
@@ -142,5 +142,5 @@ PIPELINE ANALÓGICO (pipeline/engine + skills/fase1..6): inmersion → pictorica
 | `storage/store.py` | FileStore → `estados/`, `reportes/`, `reportes_json/`, `memoria/`, `proyecciones/` |
 | `web/` | rss, bcn, resumen, espectro_b, youtube, tendencias, scraping, search, descubridor, historico, gutenberg, reddit |
 | `orchestrator.py` | Ciclo diario (pasos 0-13), orquesta agentes, memoria y reportes |
-| `pipeline/engine.py` | Pipeline analógico fase1-6 (skills/) |
+| `pipeline/engine.py` | Pipeline analógico fase1-6 (prompts/pipeline_f1..f6) |
 | `server/` | FastAPI: dashboard, observacion, memoria, aprendizaje |

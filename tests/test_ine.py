@@ -82,10 +82,13 @@ class TestParsearPeriodo:
 
 
 class TestNodoPara:
-    def test_demografia_sociedad(self):
-        assert _nodo_para("Población total") == "SOCIEDAD"
-        assert _nodo_para("Esperanza de vida al nacer") == "SOCIEDAD"
-        assert _nodo_para("Denuncias registradas") == "SOCIEDAD"
+    def test_demografia_sin_nodo(self):
+        # Población/esperanza de vida no tienen nodo cultural directo: se
+        # dejan sin nodo sugerido ("" ) para que la clasificación semántica
+        # los asigne; "SOCIEDAD" no existe en la taxonomía.
+        assert _nodo_para("Población total") == ""
+        assert _nodo_para("Esperanza de vida al nacer") == ""
+        assert _nodo_para("Denuncias registradas") == "POLITICA"
 
     def test_economia(self):
         assert _nodo_para("Índice de Precios al Consumidor") == "ECONOMIA"
@@ -137,7 +140,7 @@ class TestParseoHTML:
         items = obtener_items(limite=15)
         assert len(items) == 5
         pob = [i for i in items if "Población total" in i.titulo][0]
-        assert pob.nodo_sugerido == "SOCIEDAD"
+        assert pob.nodo_sugerido == ""
         assert pob.fecha == datetime(2026, 6, 30)
         noticia = [i for i in items if i.titulo.startswith("La tasa de")][0]
         assert noticia.url == "http://www.ine.gob.cl/sala-de-prensa/noticia/1"

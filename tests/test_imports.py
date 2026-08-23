@@ -104,22 +104,22 @@ def test_patron_analogico():
     print(f"[OK] Patron analogico: {patron.id} - {patron.forma[:30]}...")
 
 
-def test_store():
-    store = FileStore()
+def test_store(tmp_path):
+    store = FileStore(data_dir=str(tmp_path / "store"))
     assert store.base.exists()
     print(f"[OK] Store en: {store.base}")
 
 
-def test_memoria():
-    db = DecisionDB()
+def test_memoria(tmp_path):
+    db = DecisionDB(ruta=str(tmp_path / "memoria"))
     stats = db.estadisticas()
     assert "total" in stats
     assert "por_tipo" in stats
     print(f"[OK] Memoria: {stats['total']} decisiones, {stats['patrones']} patrones")
 
 
-def test_bloques():
-    b = BloquesMemoria()
+def test_bloques(tmp_path):
+    b = BloquesMemoria(ruta=str(tmp_path / "bloques"))
     b.escribir("test-blq", "contenido de prueba")
     leido = b.leer("test-blq")
     assert leido == "contenido de prueba"
@@ -160,14 +160,18 @@ def test_detectar_operaciones():
 
 
 if __name__ == "__main__":
+    import tempfile
+    from pathlib import Path
+
+    tmp = Path(tempfile.mkdtemp())
     test_especulacion()
     test_toro_3d()
     test_coherencia()
     test_operaciones_catalogo()
     test_estado_cultural()
     test_patron_analogico()
-    test_store()
-    test_memoria()
-    test_bloques()
+    test_store(tmp)
+    test_memoria(tmp)
+    test_bloques(tmp)
     test_detectar_operaciones()
     print("\n[OK] Todas las pruebas basicas pasaron")

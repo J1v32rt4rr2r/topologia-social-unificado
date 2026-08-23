@@ -246,7 +246,7 @@ def test_artista_especular_con_historial(mock_llm):
     result = ag.especular(items, estado=estado, historial=historial)
     assert len(result) == 1
     assert result[0].patron_id == "P-015"
-    assert "historial" in result[0].argumento or True  # no force assert
+    assert "historial" in result[0].argumento
 
 
 @patch("topologia.agents.base.Agent.ejecutar_prompt")

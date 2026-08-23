@@ -16,7 +16,7 @@ src/topologia/
 ├── math/            # Ente fractal: tromba ℝ×T³, tecelado, formas complejas, cinética
 ├── memoria/         # DecisionDB, BloquesMemoria, MemoriaRedactor (conversacional)
 ├── models/          # Schemas Pydantic, patrones, cliente LLM
-├── pipeline/        # Pipeline analógico de 6 fases (skills/fase1-6/)
+├── pipeline/        # Pipeline analógico de 6 fases (prompts/pipeline_f1-6.md)
 ├── server/          # Servidor web FastAPI + dashboard
 ├── storage/         # Persistencia en archivos JSON/YAML
 ├── web/             # Fuentes: RSS, búsqueda, tendencias, BCN, Gutenberg, Descubridor
@@ -113,8 +113,10 @@ pip install -e .
 # Configurar entorno
 cp .env.example .env
 # Editar .env con tu DEEPSEEK_API_KEY
-# Recomendado: LLM_MODELO="deepseek-v4-flash" (el sistema deshabilita el
+# Recomendado: LLM_MODELO="deepseek-chat" (el sistema deshabilita el
 # razonamiento del modelo automáticamente para evitar respuestas vacías)
+# Si vas a exponer el servidor web, define API_AUTH_KEY: protege
+# /api/observe, /api/daily y POST /api/learn (header "X-API-Key").
 ```
 
 ## Uso
@@ -179,6 +181,6 @@ topologia test-llm
 
 ```bash
 pytest tests/
-# Los tests de RSS (tests/test_rss.py) requieren red; omitir en offline:
-pytest tests/ --ignore=tests/test_rss.py
+# Los tests mockean red y LLM (sin claves ni internet), excepto los que
+# requieren fuentes externas si se marcan explícitamente.
 ```
