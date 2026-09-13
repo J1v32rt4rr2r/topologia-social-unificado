@@ -170,7 +170,7 @@ def consolidar_dia(
     estado_src = base / _ORIGEN_ESTADOS / f"{sociedad}_{fecha.isoformat()}.json"
     informe_src = base / _ORIGEN_REPORTES_JSON / f"{sociedad}_{fecha.isoformat()}.json"
     riesgo_src = reportes_dir / "redes_riesgo" / f"red_riesgo_{fecha.isoformat()}.json"
-    log_src = Path(__file__).resolve().parents[2] / "data" / "logs" / f"ciclo_{fecha.isoformat()}.log"
+    log_src = base / "logs" / f"ciclo_{fecha.isoformat()}.log"
 
     archivos: list[dict[str, Any]] = []
 
@@ -234,7 +234,7 @@ def consolidar_dia(
         "archivos": archivos,
         "conteos": conteos,
         "estrategia_presente": (dia / "estrategia.json").exists(),
-        "log": f"data/logs/ciclo_{fecha.isoformat()}.log",
+        "log": str(log_src),
     }
     (dia / "manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
